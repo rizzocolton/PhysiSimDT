@@ -1,0 +1,3 @@
+C:/Users/coltr/PhysiSim/build/CMakeFiles/PhysiSim.dir
+C:/Users/coltr/PhysiSim/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/coltr/PhysiSim/build/CMakeFiles/ZERO_CHECK.dir
