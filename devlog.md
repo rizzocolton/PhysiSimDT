@@ -13,8 +13,16 @@
 
 ## Creating First Objects
 
-1. Created a base PhysicsObject Class to be a superclass of all objects
+1. Created a base PhysicsObject Class to be parent class of all objects
 2. Created a subclass, Circle, for circular object
 3. Got objects to have positions updated by velocities and forces, so added gravity as well
 4. Made boundary collision particular to PhysicsObject type
+5. Separated PhysicsObject and Circle into their own file(s)
 
+## Making Collisions
+
+1. Implemented a collision method into the circle class
+    * Checks if circles are intersecting
+    * If yes, uses vector mathematics to compute velocities parallel to line of impact/perpendicular to plane of contact
+    * Then uses conservation of energy and momentum to compute resultant velocities along line of impact
+    * 

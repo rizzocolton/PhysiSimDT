@@ -19,7 +19,10 @@ public:
     void checkBounds() override;
 
     //Rendering of circle onto screen
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) override;
+
+    //Collision detection/response with another Circle
+    void collide(Circle& other);
 };
 
 #endif
