@@ -10,7 +10,7 @@ int main(){
 
     //DISPLAY SETUP
 
-    //creating display & control windows 
+    //CONTROLS
     sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(SCREEN_WIDTH),static_cast<unsigned int>(SCREEN_HEIGHT)}), "PhysiSim",sf::Style::Close);
     window.setPosition({300,100});
     sf::RenderWindow controls(sf::VideoMode({300,800}),"Controls",sf::Style::Titlebar);
@@ -34,13 +34,20 @@ int main(){
     }
     controls.display();
 
+    //SIMULATION
+    sf::Text fpsCounter(font);
+    fpsCounter.setPosition({1.f,0.f});
 
+    sf::Text population(font);
+    population.setPosition({1.f,20.f});
     
     //Objects container
     std::vector<Circle> objects;
 
     //* MAIN LOOP */
-    sf::Clock clock;
+    int fps=0;
+    sf::Clock oneSecond;
+    sf::Clock timeSinceLastFrame;
     while(window.isOpen()){
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
@@ -60,7 +67,7 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,40,1,sf::Color::Red);
+                    objects.emplace_back(mousePos,10,1,sf::Color(rand()%255,rand()%255,rand()%255));
                 }
             }
             
@@ -76,7 +83,7 @@ int main(){
         window.clear();
 
         //time elapsed since last frame
-        float dt=clock.restart().asSeconds();
+        float dt=timeSinceLastFrame.restart().asSeconds();
         
 
         //updates and draws every object created
@@ -91,6 +98,19 @@ int main(){
         }
 
         //end frame
+        fps++;
+        //display fps
+        if(oneSecond.getElapsedTime().asSeconds()>=1){
+            fpsCounter.setString("FPS: "+std::to_string(fps));
+            oneSecond.restart();
+            fps=0;
+        }
+        window.draw(fpsCounter);
+
+        //display population
+        population.setString("Population: "+std::to_string(objects.size()));
+        window.draw(population);
+
         window.display();
 
         //* CONTROL WINDOW RENDERING */

@@ -33,3 +33,7 @@
 5. After a lot of fiddling, I saw that sfml already has a "projectedOnto" function which does the behavior I've described. Only thing is I still need that one negative for the impact velocity... strange... I'm going to test that out a bit.
 6. Realized that my velocity calculations were actually wrong, had some signs off explaining the whole negative sign creating almost normal behavior thing. As it turns out the projection doesn't do any weird sign correction thing and behaves as you would think it would.
 7. I've deemed that clipping is more accurate than adjusting positions of intersecting circles, so I removed the position correction formula and added a velocity check formula instead (that way collisions don't happen if objects are already moving away from eachother).
+
+## Making Collisions More Efficient
+
+1. Added an fps counter to see how efficiently my simulation is running
