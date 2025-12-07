@@ -1,44 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Constants.h"
-#include "PhysicsObject.h"
-
-//OBJECT SETUP
-
-
-
-class Circle : public PhysicsObject{
-private:
-    sf::CircleShape shape;
-
-public:
-    //creates a circle at (x,y) with a particular radius and color
-    Circle(sf::Vector2f place, float radius, float m, sf::Color color):
-    PhysicsObject(pos,m){
-        shape.setRadius(radius);
-        shape.setPosition(place);
-        pos=place;
-        mass=m;
-    }
-
-    //renders the circle onto whatever window is passed in
-    void draw(sf::RenderWindow& window){
-        shape.setPosition(pos);
-        window.draw(shape);
-    }
-
-    //overrides virtual check boundaries for circular geometry
-    //origin for circle is top left, hence the odd looking inequalities
-    void checkBounds() override{
-        if(pos.x<0||pos.x+2*shape.getRadius()>SCREEN_WIDTH){
-            vel.x*=-1;
-        }
-        if(pos.y<0||pos.y+2*shape.getRadius()>SCREEN_HEIGHT){
-            vel.y*=-1;
-        }
-    }
-};
-
+#include "Circle.h"
 
 int main()
 {
