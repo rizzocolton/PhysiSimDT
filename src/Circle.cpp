@@ -1,5 +1,6 @@
 #include "Circle.h"
 #include "Constants.h"
+#include <iostream>
 
 //Constructor
 
@@ -39,28 +40,39 @@ void Circle::collide(Circle& other){
     sf::Vector2f otherPos=other.getPos();
     sf::Vector2f diff=otherPos-pos;
     if(diff.lengthSquared()>(radius+other.radius)*(radius+other.radius)) return; 
+
+    /*
+    if intersecting push back so no longer intersecting
+    sf::Vector2f correction=(radius+other.radius-diff.length())*diff.normalized()/2.0f;
+    pos-=correction;
+    other.pos+=correction;
+    */
+    
+    //^I'm not going to do this one as it will result in inaccurate positions.
     
     //COLLISION CALCULATION
-    
-    //unit vector pointing to line of impact
-    sf::Vector2f dirOfCollision=diff.normalized();
 
     //component of this circles velocity along the line of impact
-    sf::Vector2f v1_impact=dirOfCollision*(vel.dot(dirOfCollision));
+    sf::Vector2f v1_impact=vel.projectedOnto(diff);
     //component of this circles velocity along the plane of contact
-    sf::Vector2f v1_contact=dirOfCollision*vel.cross(dirOfCollision);
+    sf::Vector2f v1_contact=vel.projectedOnto(diff.perpendicular());
     //component of other circles velocity along the line of impact
-    sf::Vector2f v2_impact=-dirOfCollision*other.vel.dot(dirOfCollision);
+    sf::Vector2f v2_impact=other.vel.projectedOnto(diff);
     //component of other circles velocity along the plane of contact
-    sf::Vector2f v2_contact=dirOfCollision*other.vel.cross(dirOfCollision);
+    sf::Vector2f v2_contact=other.vel.projectedOnto(diff.perpendicular());
+
+    //don't collide if moving apart
+    if((v1_impact-v2_impact).dot(diff.normalized())<=0) return;
 
     //computes resultant velocity for this circle along the line of impact (justification/explanation in docs)
-    sf::Vector2f v1_impact_prime=((mass+COEFFICIENT_OF_RESTITUTION*other.mass)*v1_impact+
-                (other.mass-COEFFICIENT_OF_RESTITUTION*other.mass)*v2_impact)/
+    sf::Vector2f v1_impact_prime=((mass-COEFFICIENT_OF_RESTITUTION*other.mass)*v1_impact+
+                (1+COEFFICIENT_OF_RESTITUTION)*v2_impact*other.mass)/
                 (mass+other.mass);
     
     //computes resultant velocity for othre circle along the line of impact
-    sf::Vector2f v2_impact_prime=COEFFICIENT_OF_RESTITUTION*(v2_impact-v1_impact)+v1_impact_prime;
+    sf::Vector2f v2_impact_prime=((other.mass-COEFFICIENT_OF_RESTITUTION*mass)*v2_impact+
+                (1+COEFFICIENT_OF_RESTITUTION)*v1_impact*mass)/
+                (mass+other.mass);
 
     //reconstructs and assigns new velocity vectors to respective circles
     vel=v1_impact_prime+v1_contact;

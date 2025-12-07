@@ -30,3 +30,6 @@
 3. Fixed origin issues but now circles are being attracted when they touch, not bouncing...
 4. After about a minute of thinking, I've realized it's because I need to change the sign when computing one of the circles impact velocity.
     * as of now, the direction of collision is faced one particular direction and both circles are giving components along it (in the same direction)
+5. After a lot of fiddling, I saw that sfml already has a "projectedOnto" function which does the behavior I've described. Only thing is I still need that one negative for the impact velocity... strange... I'm going to test that out a bit.
+6. Realized that my velocity calculations were actually wrong, had some signs off explaining the whole negative sign creating almost normal behavior thing. As it turns out the projection doesn't do any weird sign correction thing and behaves as you would think it would.
+7. I've deemed that clipping is more accurate than adjusting positions of intersecting circles, so I removed the position correction formula and added a velocity check formula instead (that way collisions don't happen if objects are already moving away from eachother).

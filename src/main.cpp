@@ -60,7 +60,7 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,20,1,sf::Color::Red);
+                    objects.emplace_back(mousePos,40,1,sf::Color::Red);
                 }
             }
             
@@ -77,7 +77,7 @@ int main(){
 
         //time elapsed since last frame
         float dt=clock.restart().asSeconds();
-        std::cout<<dt<<std::endl;
+        
 
         //updates and draws every object created
         for(auto& obj:objects){
