@@ -3,8 +3,7 @@
 #include "Constants.h"
 #include "Circle.h"
 
-int main()
-{
+int main(){
 
     //** SETUP */
 
@@ -82,9 +81,12 @@ int main()
 
         //updates and draws every object created
         for(auto& obj:objects){
-            sf::Vector2f weight{0.0f,obj.getMass()*9.8f};
+            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
             obj.push(weight,dt);
             obj.update(dt);
+            for(auto& otherObj:objects){
+                obj.collide(otherObj);
+            }
             obj.draw(window);
         }
 

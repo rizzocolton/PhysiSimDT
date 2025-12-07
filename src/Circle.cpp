@@ -9,16 +9,17 @@ PhysicsObject(p,m){
     color=c;
     shape.setRadius(radius);
     shape.setPosition(pos);
+    //makes origin of circle at its center, much easier/intuitive for collisions
+    shape.setOrigin({radius,radius});
     shape.setFillColor(color);
 };
 
 //overrides virtual check boundaries for circular geometry
-//origin for circle is top left, hence the odd looking inequaliti
 void Circle::checkBounds(){
-    if(pos.x<0||pos.x+2*radius>SCREEN_WIDTH){
+    if(pos.x-radius<=0||pos.x+radius>=SCREEN_WIDTH){
         vel.x*=-1;
     }
-    if(pos.y<0||pos.y+2*radius>SCREEN_HEIGHT){
+    if(pos.y-radius<=0||pos.y+radius>=SCREEN_HEIGHT){
         vel.y*=-1;
     }
 }
@@ -49,7 +50,7 @@ void Circle::collide(Circle& other){
     //component of this circles velocity along the plane of contact
     sf::Vector2f v1_contact=dirOfCollision*vel.cross(dirOfCollision);
     //component of other circles velocity along the line of impact
-    sf::Vector2f v2_impact=dirOfCollision*other.vel.dot(dirOfCollision);
+    sf::Vector2f v2_impact=-dirOfCollision*other.vel.dot(dirOfCollision);
     //component of other circles velocity along the plane of contact
     sf::Vector2f v2_contact=dirOfCollision*other.vel.cross(dirOfCollision);
 

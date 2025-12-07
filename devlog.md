@@ -25,4 +25,8 @@
     * Checks if circles are intersecting
     * If yes, uses vector mathematics to compute velocities parallel to line of impact/perpendicular to plane of contact
     * Then uses conservation of energy and momentum to compute resultant velocities along line of impact
-    * 
+    * Then recombines to form and assign new velocities
+2. Ran into issues making collisions functional... lots of clipping and annoying problems with top left origin circles
+3. Fixed origin issues but now circles are being attracted when they touch, not bouncing...
+4. After about a minute of thinking, I've realized it's because I need to change the sign when computing one of the circles impact velocity.
+    * as of now, the direction of collision is faced one particular direction and both circles are giving components along it (in the same direction)
