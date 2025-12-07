@@ -5,44 +5,6 @@
 
 //OBJECT SETUP
 
-//An object which has a position, can be moved by a velocity, and can be pushed by a force
-
-class PhysicsObject{
-protected:
-    sf::Vector2f pos;
-    sf::Vector2f vel;
-    float mass;
-    bool boundaryCollision;
-
-public:
-    PhysicsObject(bool constrained=true)
-        :boundaryCollision(constrained){}
-
-    virtual void checkBounds()=0;
-    
-    void update(float dt){
-        pos+=vel*dt;
-        if(boundaryCollision){
-            checkBounds();
-        }
-    }
-
-    void push(sf::Vector2f force,float dt){
-        vel+=(force/mass)*dt;
-    }
-
-    void draw(sf::RenderWindow& window);
-
-    float getMass(){
-        return mass;
-    }    
-    sf::Vector2f getPos(){
-        return pos;
-    }
-    sf::Vector2f getVel(){
-        return vel;
-    }
-};
 
 
 class Circle : public PhysicsObject{
@@ -51,7 +13,8 @@ private:
 
 public:
     //creates a circle at (x,y) with a particular radius and color
-    Circle(sf::Vector2f place, float radius, float m, sf::Color color){
+    Circle(sf::Vector2f place, float radius, float m, sf::Color color):
+    PhysicsObject(pos,m){
         shape.setRadius(radius);
         shape.setPosition(place);
         pos=place;
