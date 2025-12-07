@@ -37,3 +37,4 @@
 ## Making Collisions More Efficient
 
 1. Added an fps counter to see how efficiently my simulation is running
+2. Corrected floor clipping along the way

@@ -17,10 +17,12 @@ PhysicsObject(p,m){
 
 //overrides virtual check boundaries for circular geometry
 void Circle::checkBounds(){
-    if(pos.x-radius<=0||pos.x+radius>=SCREEN_WIDTH){
+    //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away
+    if((vel.x<0&&pos.x-radius<=0)||(vel.x>0&&pos.x+radius>=SCREEN_WIDTH)){
         vel.x*=-1;
     }
-    if(pos.y-radius<=0||pos.y+radius>=SCREEN_HEIGHT){
+    
+    if((vel.y<0&&pos.y-radius<=0)||(vel.y>0&&pos.y+radius>=SCREEN_HEIGHT)){
         vel.y*=-1;
     }
 }
@@ -48,7 +50,7 @@ void Circle::collide(Circle& other){
     other.pos+=correction;
     */
     
-    //^I'm not going to do this one as it will result in inaccurate positions.
+    //^I'm not going to do the one above as it will result in inaccurate positions.
     
     //COLLISION CALCULATION
 
