@@ -7,7 +7,10 @@
 
 ## Getting The Display
 
-1. Went through many hoops and hurdles to get CMake to recognize sfml.
+1. Went through many hoops and hurdles to get CMake to recognize SFML.
 2. Finally got a simple screen with a circle set up.
+3. A secondary display for controls was also added.
 
+## Creating First Drawings
 
+* Simple circle
