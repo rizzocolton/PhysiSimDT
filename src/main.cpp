@@ -1,12 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
+#include "Constants.h"
+#include "PhysicsObject.h"
 
 //OBJECT SETUP
 
 //An object which has a position, can be moved by a velocity, and can be pushed by a force
-float screenWidth=1600.f;
-float screenHeight=1000.f;
 
 class PhysicsObject{
 protected:
@@ -68,10 +67,10 @@ public:
     //overrides virtual check boundaries for circular geometry
     //origin for circle is top left, hence the odd looking inequalities
     void checkBounds() override{
-        if(pos.x<0||pos.x+2*shape.getRadius()>screenWidth){
+        if(pos.x<0||pos.x+2*shape.getRadius()>SCREEN_WIDTH){
             vel.x*=-1;
         }
-        if(pos.y<0||pos.y+2*shape.getRadius()>screenHeight){
+        if(pos.y<0||pos.y+2*shape.getRadius()>SCREEN_HEIGHT){
             vel.y*=-1;
         }
     }
@@ -87,7 +86,7 @@ int main()
     //DISPLAY SETUP
 
     //creating display & control windows 
-    sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(screenWidth),static_cast<unsigned int>(screenHeight)}), "PhysiSim",sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(SCREEN_WIDTH),static_cast<unsigned int>(SCREEN_HEIGHT)}), "PhysiSim",sf::Style::Close);
     window.setPosition({300,100});
     sf::RenderWindow controls(sf::VideoMode({300,800}),"Controls",sf::Style::Titlebar);
     controls.setPosition({0,100});

@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
-add_executable(PhysiSim main.cpp)
+add_executable(PhysiSim 
+    src/main.cpp
+    src/PhysicsObject.cpp
+    src/Circle.cpp
+)
 target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
