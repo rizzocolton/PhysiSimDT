@@ -42,4 +42,4 @@
 4. Ran into a huge amount of issues with finding a good key to use that hashes in the unordered_map
 5. Ended up having to make my own GridKey struct and hash to work in the unordered_map
 6. Got displaying the spatial map down using sf::RectangleShape
-7. Added features for circles entering and exiting cells
+7. Added features for circles entering and exiting cells in spatial map

@@ -1,4 +1,5 @@
 #include "SpatialMap.h"
+#include "Circle.h"
 #include "Constants.h"
 
 SpatialMap::SpatialMap(int cs){
@@ -17,24 +18,15 @@ SpatialMap::SpatialMap(int cs){
 
 
 GridKey SpatialMap::getKey(Circle& c){
-    return GridKey(c.getPos());
+    return GridKey(c.getPos(),cellSize);
 }
 
 void SpatialMap::enterCell(Circle* c){
-    GridKey current=getKey(*c.getPos());
-    if(sm.count(current)==0){
-        std::unordered_set newSet={c};
-        sm.insert({current,newSet});
-    }else if(sm.at(current).count(c)==0){
-        std::unordered_set currentSet=sm.at(current);
-        sm.erase(current);
-        currentSet.insert(c);
-        sm.insert({current,currentSet});
-    }
+    sm[getKey(*c)].insert(c);
 }
 
-void SpatialMap::exitCell(Circle* c){
-
+int SpatialMap::getCellSize(){
+    return cellSize;
 }
 
 std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash> SpatialMap::getMap(){

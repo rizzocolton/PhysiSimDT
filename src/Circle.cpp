@@ -1,10 +1,11 @@
 #include "Circle.h"
+#include "SpatialMap.h"
 #include "Constants.h"
 #include <iostream>
 
 //Constructor
 
-Circle::Circle(sf::Vector2f p, float r, float m, sf::Color c):
+Circle::Circle(sf::Vector2f p, float r, float m, sf::Color c,SpatialMap& sm):
 PhysicsObject(p,m){
     radius=r;
     color=c;
@@ -32,6 +33,8 @@ void Circle::draw(sf::RenderWindow& window){
     shape.setPosition(pos);
     window.draw(shape);
 }
+
+
 
 //simple collision detection/response with another PhysicsObject
 void Circle::collide(Circle& other){

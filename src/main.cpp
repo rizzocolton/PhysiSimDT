@@ -70,7 +70,7 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,10,1,sf::Color(rand()%255,rand()%255,rand()%255));
+                    objects.emplace_back(mousePos,10,1,sf::Color(rand()%255,rand()%255,rand()%255),sm);
                 }
             }
             
@@ -86,20 +86,14 @@ int main(){
         window.clear();
 
         sm.draw(window);
+        sm.getMap().clear();
         //time elapsed since last frame
         float dt=timeSinceLastFrame.restart().asSeconds();
         
 
-        //updates and draws every object created
-        for(auto& obj:objects){
-            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
-            obj.push(weight,dt);
-            obj.update(dt);
-            obj.draw(window);
-        }
-
         for(auto& [cell,objs]: sm.getMap()){
-            std::vector<Circle*> objVec={objs.begin(),objs.end()};
+            //makes a vector of all objs in set
+            std::vector<Circle*> objVec(objs.begin(),objs.end());
 
             for(int i=0;i<objVec.size();i++){
                 for(int j=i+1;j<objVec.size();j++){
@@ -107,6 +101,16 @@ int main(){
                 }
             }
         }
+
+        //updates and draws every object created
+        for(auto& obj:objects){
+            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
+            obj.push(weight,dt);
+            obj.update(dt);
+            sm.enterCell(&obj);
+            obj.draw(window);
+        }
+        
 
         //end frame
         fps++;

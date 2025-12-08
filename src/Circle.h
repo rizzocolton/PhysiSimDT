@@ -4,16 +4,20 @@
 #include <SFML/Graphics.hpp>
 #include "PhysicsObject.h"
 
+//Forward declaration of spatial map to avoid circular dependencies
+class SpatialMap;
+
 class Circle : public PhysicsObject{
 private:
     //The rendering of the circle
     sf::CircleShape shape;
+
     float radius;
     sf::Color color;
 
 public:
     //Constructor (PhysicsObject parent)
-    Circle(sf::Vector2f p, float r, float m, sf::Color color);
+    Circle(sf::Vector2f p, float r, float m, sf::Color color, SpatialMap& sm);
 
     //Virtual checkBounds override
     void checkBounds() override;
