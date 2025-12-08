@@ -33,7 +33,9 @@ public:
 
     int getCellSize();
 
-    std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash> getMap();
+    void clear();
+
+    std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash>& getMap();
 
     //Display function
 

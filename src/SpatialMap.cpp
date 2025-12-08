@@ -29,7 +29,11 @@ int SpatialMap::getCellSize(){
     return cellSize;
 }
 
-std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash> SpatialMap::getMap(){
+void SpatialMap::clear(){
+    sm.clear();
+}
+
+std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash>& SpatialMap::getMap(){
     return sm;
 }
 

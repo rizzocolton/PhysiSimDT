@@ -86,7 +86,7 @@ int main(){
         window.clear();
 
         sm.draw(window);
-        sm.getMap().clear();
+        sm.clear();
         //time elapsed since last frame
         float dt=timeSinceLastFrame.restart().asSeconds();
         
