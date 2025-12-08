@@ -37,4 +37,9 @@
 ## Making Collisions More Efficient
 
 1. Added an fps counter to see how efficiently my simulation is running
-2. Corrected floor clipping along the way
+2. Corrected floor clipping along the way, basically a circle needs to be outside of bounds and actively moving outside of bounds to have a component flipped
+3. Started work on a hashmap to contain each object in pockets of space
+4. Ran into a huge amount of issues with finding a good key to use that hashes in the unordered_map
+5. Ended up having to make my own GridKey struct and hash to work in the unordered_map
+6. Got displaying the spatial map down using sf::RectangleShape
+7. Added features for circles entering and exiting cells

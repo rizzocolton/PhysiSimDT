@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Constants.h"
+#include "SpatialMap.h"
 #include "Circle.h"
 
 int main(){
@@ -48,6 +49,8 @@ int main(){
     int fps=0;
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
+
+    SpatialMap sm=SpatialMap(100);
     while(window.isOpen()){
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
@@ -82,6 +85,7 @@ int main(){
         //clear frame
         window.clear();
 
+        sm.draw(window);
         //time elapsed since last frame
         float dt=timeSinceLastFrame.restart().asSeconds();
         
@@ -91,10 +95,17 @@ int main(){
             sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
             obj.push(weight,dt);
             obj.update(dt);
-            for(auto& otherObj:objects){
-                obj.collide(otherObj);
-            }
             obj.draw(window);
+        }
+
+        for(auto& [cell,objs]: sm.getMap()){
+            std::vector<Circle*> objVec={objs.begin(),objs.end()};
+
+            for(int i=0;i<objVec.size();i++){
+                for(int j=i+1;j<objVec.size();j++){
+                    objVec[i]->collide(*objVec[j]);
+                }
+            }
         }
 
         //end frame
