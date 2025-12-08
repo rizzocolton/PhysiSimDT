@@ -41,10 +41,12 @@ void Circle::collide(Circle& other){
     //don't collide with self
     if(&other==this) return; 
 
-    //don't collide if not intersecting
+    //don't collide if not intersecting or if in the exact same position
     sf::Vector2f otherPos=other.getPos();
     sf::Vector2f diff=otherPos-pos;
-    if(diff.lengthSquared()>(radius+other.radius)*(radius+other.radius)) return; 
+    if(diff.lengthSquared()>(radius+other.radius)*(radius+other.radius)||diff.lengthSquared()<0.001f) return; 
+
+    
 
     /*
     if intersecting push back so no longer intersecting

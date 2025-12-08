@@ -91,6 +91,17 @@ int main(){
         float dt=timeSinceLastFrame.restart().asSeconds();
         
 
+        
+
+        //updates and draws every object created
+        for(auto& obj:objects){
+            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
+            obj.push(weight,dt);
+            obj.update(dt);
+            sm.enterCell(&obj);
+            obj.draw(window);
+        }
+
         for(auto& [cell,objs]: sm.getMap()){
             //makes a vector of all objs in set
             std::vector<Circle*> objVec(objs.begin(),objs.end());
@@ -100,15 +111,6 @@ int main(){
                     objVec[i]->collide(*objVec[j]);
                 }
             }
-        }
-
-        //updates and draws every object created
-        for(auto& obj:objects){
-            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
-            obj.push(weight,dt);
-            obj.update(dt);
-            sm.enterCell(&obj);
-            obj.draw(window);
         }
         
 
