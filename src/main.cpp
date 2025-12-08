@@ -50,7 +50,7 @@ int main(){
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
 
-    SpatialMap sm=SpatialMap(100);
+    SpatialMap sm=SpatialMap(50);
     while(window.isOpen()){
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
@@ -70,7 +70,9 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,10,1,sf::Color(rand()%255,rand()%255,rand()%255),sm);
+                    for(int i=1;i<=20;i++){
+                        objects.emplace_back(mousePos,5,i,sf::Color(rand()%255,rand()%255,rand()%255));
+                    }
                 }
             }
             

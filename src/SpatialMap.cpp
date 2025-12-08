@@ -10,7 +10,7 @@ SpatialMap::SpatialMap(int cs){
             cell.setPosition({static_cast<float>(i),static_cast<float>(j)});
             cell.setSize({static_cast<float>(cellSize),static_cast<float>(cellSize)});
             cell.setFillColor(sf::Color::Transparent);
-            cell.setOutlineThickness(1.f);
+            cell.setOutlineThickness(0.5f);
             cells.push_back(cell);
         }
     }
