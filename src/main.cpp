@@ -17,7 +17,7 @@ int main(){
     controls.setPosition({0,100});
 
     //loading text and ui elements
-    sf::Font font("../assets/Iceland-Regular.ttf");
+    sf::Font font("./assets/Iceland-Regular.ttf");
 
     //vector to hold all controlsText
     std::vector<sf::Text> controlsText;
@@ -67,7 +67,9 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,10,1,sf::Color(rand()%255,rand()%255,rand()%255));
+                    for(int i=1;i<=100;i++){
+                        objects.emplace_back(mousePos+sf::Vector2f{static_cast<float>(i),static_cast<float>(i)},2,i,sf::Color(rand()%255,rand()%255,rand()%255));
+                    }
                 }
             }
             
