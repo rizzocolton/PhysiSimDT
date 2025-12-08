@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Constants.h"
-#include "SpatialMap.h"
-#include "Circle.h"
+#include "Physics/Constants.h"
+#include "Physics/SpatialMap.h"
+#include "Physics/Objects/Circle.h"
 
 int main(){
 
@@ -18,7 +18,7 @@ int main(){
     controls.setPosition({0,100});
 
     //loading text and ui elements
-    sf::Font font("../assets/Iceland-Regular.ttf");
+    sf::Font font("./assets/Iceland-Regular.ttf");
 
     //vector to hold all controlsText
     std::vector<sf::Text> controlsText;

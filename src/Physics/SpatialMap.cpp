@@ -1,5 +1,5 @@
 #include "SpatialMap.h"
-#include "Circle.h"
+#include "Objects/Circle.h"
 #include "Constants.h"
 
 SpatialMap::SpatialMap(int cs){

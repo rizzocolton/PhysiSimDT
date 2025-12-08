@@ -7,9 +7,9 @@ find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
 add_executable(PhysiSim 
     src/main.cpp
-    src/PhysicsObject.cpp
-    src/Circle.cpp
-    src/SpatialMap.cpp
+    src/Physics/Objects/PhysicsObject.cpp
+    src/Physics/Objects/Circle.cpp
+    src/Physics/SpatialMap.cpp
 )
 target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
