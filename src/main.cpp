@@ -17,14 +17,12 @@ int main(){
     sf::RenderWindow controls(sf::VideoMode({300,800}),"Controls",sf::Style::Titlebar);
     controls.setPosition({0,100});
 
-    //loading text and ui elements
-    sf::Font font("../assets/Iceland-Regular.ttf");
-
+    loadFonts();
     //vector to hold all controlsText
     std::vector<sf::Text> controlsText;
 
     //creating title
-    sf::Text controlTitle(font);
+    sf::Text controlTitle(ICELAND);
     controlTitle.setString("Controls");
     controlTitle.setCharacterSize(24);
     controlTitle.setFillColor(sf::Color::White);
@@ -36,10 +34,10 @@ int main(){
     controls.display();
 
     //SIMULATION
-    sf::Text fpsCounter(font);
+    sf::Text fpsCounter(ICELAND);
     fpsCounter.setPosition({1.f,0.f});
 
-    sf::Text population(font);
+    sf::Text population(ICELAND);
     population.setPosition({1.f,20.f});
     
     //Objects container
@@ -72,7 +70,11 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    objects.emplace_back(mousePos,rand()%10+1,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
+
+                    for(int i=0;i<20;i++){
+                        objects.emplace_back(mousePos,2,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
+                    }
+                    
                 }
             }
             
@@ -88,7 +90,7 @@ int main(){
         //clear frame
         window.clear();
 
-        sm.draw(window);
+        //sm.draw(window);
         sm.clear();
         //time elapsed since last frame
         float dt=timeSinceLastFrame.restart().asSeconds();

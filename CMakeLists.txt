@@ -10,6 +10,7 @@ add_executable(PhysiSim
     src/Physics/Objects/PhysicsObject.cpp
     src/Physics/Objects/Circle.cpp
     src/Physics/SpatialMap.cpp
+    src/Physics/Constants.cpp
 )
 target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
