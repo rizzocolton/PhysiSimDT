@@ -4,15 +4,21 @@
 
 SpatialMap::SpatialMap(int cs){
     cellSize=cs;
-    for(int i=0;i<SCREEN_WIDTH;i+=cellSize){
-        for(int j=0;j<SCREEN_HEIGHT;j+=cellSize){
-            sf::RectangleShape cell;
-            cell.setPosition({static_cast<float>(i),static_cast<float>(j)});
-            cell.setSize({static_cast<float>(cellSize),static_cast<float>(cellSize)});
-            cell.setFillColor(sf::Color::Transparent);
-            cell.setOutlineThickness(0.5f);
-            cells.push_back(cell);
-        }
+    grid.setPrimitiveType(sf::PrimitiveType::Lines);
+    //need to resize for 2 vertices for every line, should be bounds/cellsize lines for each axis
+    grid.resize(2*(static_cast<int>(SCREEN_HEIGHT)+static_cast<int>(SCREEN_WIDTH))/cellSize);
+    int i=0;
+    for(int x=0;x<SCREEN_WIDTH;x+=cellSize){
+        grid[i].position=sf::Vector2f{static_cast<float>(x),0.f};
+        i++;
+        grid[i].position=sf::Vector2f{static_cast<float>(x),SCREEN_HEIGHT};
+        i++;
+    }
+    for(int y=0;y<SCREEN_HEIGHT;y+=cellSize){
+        grid[i].position=sf::Vector2f{0.f,static_cast<float>(y)};
+        i++;
+        grid[i].position=sf::Vector2f{SCREEN_WIDTH,static_cast<float>(y)};
+        i++;
     }
 }
 
@@ -38,7 +44,5 @@ std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash>& SpatialMap:
 }
 
 void SpatialMap::draw(sf::RenderWindow& window){
-    for(sf::RectangleShape& cell:cells){
-        window.draw(cell);
-    }
+    window.draw(grid);
 }

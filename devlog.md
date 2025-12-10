@@ -43,3 +43,11 @@
 5. Ended up having to make my own GridKey struct and hash to work in the unordered_map
 6. Got displaying the spatial map down using sf::RectangleShape
 7. Added features for circles entering and exiting cells in spatial map
+8. Decided to rework that strategy and instead have circles enter their cell every frame
+9. Finally got spatial map working and fully functional
+
+Overall I had very impressive performance gains on this. Went from 43 fps at 2000 objects for pre-spatial map implementation, now it's at 430 fps for 2000 objects with a spatial map.
+
+## Creating UI
+
+1. Started with start/pause and reset buttons

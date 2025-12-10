@@ -19,7 +19,7 @@ private:
     //need to use custom hash for the custome gridkey struct
     std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash> sm;
     int cellSize;
-    std::vector<sf::RectangleShape> cells;
+    sf::VertexArray grid;
     
 
 public:
