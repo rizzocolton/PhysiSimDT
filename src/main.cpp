@@ -3,6 +3,7 @@
 #include "Physics/Constants.h"
 #include "Physics/SpatialMap.h"
 #include "Physics/Objects/Circle.h"
+#include "UI/Button.h"
 
 int main(){
 
@@ -21,18 +22,7 @@ int main(){
     //vector to hold all controlsText
     std::vector<sf::Text> controlsText;
 
-    //creating title
-    sf::Text controlTitle(ICELAND);
-    controlTitle.setString("Controls");
-    controlTitle.setCharacterSize(24);
-    controlTitle.setFillColor(sf::Color::White);
-    controlsText.push_back(controlTitle);
-
-    for(sf::Text text : controlsText){
-        controls.draw(text);
-    }
-    controls.display();
-
+    
     //SIMULATION
     sf::Text fpsCounter(ICELAND);
     fpsCounter.setPosition({1.f,0.f});
@@ -50,7 +40,11 @@ int main(){
 
     SpatialMap sm=SpatialMap(40);
 
-    
+    Button b{sf::Vector2f{10.f,50.f}, sf::Vector2f{200.f,20.f}};
+    b.setText("Test Button");
+    sf::Vector2i mousePos;
+
+    controls.display();
     while(window.isOpen()){
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
@@ -70,9 +64,8 @@ int main(){
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-
-                    for(int i=0;i<20;i++){
-                        objects.emplace_back(mousePos,2,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
+                    for(int i=0;i<10;i++){
+                        objects.emplace_back(mousePos,10,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
                     }
                     
                 }
@@ -82,8 +75,10 @@ int main(){
         
         
         while(const std::optional event = controls.pollEvent()){   
-            
         }
+
+        //FIND MOUSE LOCATION; USEFUL FOR MANY INTERACTIONS
+        mousePos=sf::Mouse::getPosition(controls);
 
         //* PRIMARY WINDOW RENDERING */
 
@@ -136,7 +131,16 @@ int main(){
         window.display();
 
         //* CONTROL WINDOW RENDERING */
+        
+        controls.clear();
 
+        bool mouseClicked=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+
+        b.update(mousePos,mouseClicked);
+        //b.draw(controls);
+
+
+        controls.display();
         
     }
 }

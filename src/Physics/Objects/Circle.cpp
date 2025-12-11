@@ -5,7 +5,7 @@
 
 //Constructor
 
-Circle::Circle(sf::Vector2f p, float r, float m, sf::Color c):
+Circle::Circle(sf::Vector2f& p, float r, float m, sf::Color& c):
 PhysicsObject(p,m){
     radius=r;
     color=c;

@@ -3,7 +3,7 @@
 
 //Constructor
 
-PhysicsObject::PhysicsObject(sf::Vector2f p, float m){
+PhysicsObject::PhysicsObject(sf::Vector2f& p, float m){
     pos=p;
     mass=m;
     vel={0.f,0.f};
@@ -18,7 +18,7 @@ void PhysicsObject::update(float dt){
 }
 
 //"pushes" object by a force times time elapsed. this impulse is then divided by mass of the object to create a change in velocity
-void PhysicsObject::push(sf::Vector2f force, float dt){
+void PhysicsObject::push(sf::Vector2f& force, float dt){
     vel+=(force/mass)*dt;
 }
 

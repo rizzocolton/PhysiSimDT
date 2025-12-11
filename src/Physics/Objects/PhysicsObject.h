@@ -13,12 +13,12 @@ protected:
 
 public:
     //Constructor
-    PhysicsObject(sf::Vector2f p, float m);
+    PhysicsObject(sf::Vector2f& p, float m);
 
     //Physics
 
     void update(float dt);
-    void push(sf::Vector2f force,float dt);
+    void push(sf::Vector2f& force,float dt);
 
     //Accessors
 

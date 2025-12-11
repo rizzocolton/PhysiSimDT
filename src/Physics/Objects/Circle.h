@@ -17,7 +17,7 @@ private:
 
 public:
     //Constructor (PhysicsObject parent)
-    Circle(sf::Vector2f p, float r, float m, sf::Color color);
+    Circle(sf::Vector2f& p, float r, float m, sf::Color& color);
 
     //Virtual checkBounds override
     void checkBounds() override;
