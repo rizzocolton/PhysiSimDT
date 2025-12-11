@@ -10,41 +10,51 @@ int main(){
     //** SETUP */
 
 
-    //DISPLAY SETUP
+    //WINDOWS
 
-    //CONTROLS
     sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(SCREEN_WIDTH),static_cast<unsigned int>(SCREEN_HEIGHT)}), "PhysiSim",sf::Style::Close);
     window.setPosition({300,100});
     sf::RenderWindow controls(sf::VideoMode({300,800}),"Controls",sf::Style::Titlebar);
     controls.setPosition({0,100});
 
-    loadFonts();
-    //vector to hold all controlsText
-    std::vector<sf::Text> controlsText;
-
     
-    //SIMULATION
+    //SIMULATION SCREEN
+
+    loadFonts();
     sf::Text fpsCounter(ICELAND);
     fpsCounter.setPosition({1.f,0.f});
 
     sf::Text population(ICELAND);
     population.setPosition({1.f,20.f});
+
+    //SIMULATION VARIABLES
     
     //Objects container
+    bool simulating=false;
     std::vector<Circle> objects;
-
-    //* MAIN LOOP */
     int fps=0;
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
-
     SpatialMap sm=SpatialMap(40);
+    
 
-    Button b{sf::Vector2f{10.f,50.f}, sf::Vector2f{200.f,20.f}};
-    b.setText("Test Button");
-    sf::Vector2i mousePos;
+    //CONTROLS SCREEN
 
-    controls.display();
+     sf::Vector2i mousePos;
+
+    Button start_Stop{sf::Vector2f{10.f,50.f}, sf::Vector2f{200.f,200.f}};
+    start_Stop.setText("Start");
+    start_Stop.setOnClick([&simulating,&start_Stop](){
+        simulating=!simulating;
+        if(simulating){
+            start_Stop.setText("Stop");
+        }else{
+            start_Stop.setText("Start");
+        }
+    });
+    
+
+    //* MAIN LOOP */
     while(window.isOpen()){
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
@@ -82,16 +92,16 @@ int main(){
 
         //* PRIMARY WINDOW RENDERING */
 
-        //clear frame
-        window.clear();
+        //SIMULATION
 
-        //sm.draw(window);
+        window.clear();
+        sm.draw(window);
         sm.clear();
         //time elapsed since last frame
         float dt=timeSinceLastFrame.restart().asSeconds();
-        
-
-        
+        if(!simulating){
+            dt=0.f; //Nothing will simulate if no time has passed.
+        }
 
         //updates and draws every object created
         for(auto& obj:objects){
@@ -111,10 +121,7 @@ int main(){
                     objVec[i]->collide(*objVec[j]);
                 }
             }
-        }
-        
-
-        //end frame
+        }//end simulation frame
         fps++;
         //display fps
         if(oneSecond.getElapsedTime().asSeconds()>=1){
@@ -136,8 +143,8 @@ int main(){
 
         bool mouseClicked=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
-        b.update(mousePos,mouseClicked);
-        //b.draw(controls);
+        start_Stop.update(mousePos,mouseClicked);
+        start_Stop.draw(controls);
 
 
         controls.display();
