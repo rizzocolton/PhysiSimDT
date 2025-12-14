@@ -31,6 +31,8 @@ public:
 
     void setOnClick(std::function<void()> func);
 
+    void runOnClick();
+
     void draw(sf::RenderWindow& window);
 
 };

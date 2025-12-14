@@ -16,6 +16,11 @@ PhysicsObject(p,m){
     shape.setFillColor(color);
 };
 
+void Circle::highlight(){
+    shape.setOutlineColor(sf::Color::White);
+    shape.setOutlineThickness(-2.f);
+}
+
 //overrides virtual check boundaries for circular geometry
 void Circle::checkBounds(){
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away

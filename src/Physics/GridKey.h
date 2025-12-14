@@ -19,6 +19,14 @@ struct GridKey{
         y=0;
     }
 
+    int getX(){
+        return x;
+    }
+
+    int getY(){
+        return y;
+    }
+
     //found this online, needed to make sure that equalities work between GridKeys
     bool operator==(const GridKey& other) const{
         return x==other.x&&y==other.y;

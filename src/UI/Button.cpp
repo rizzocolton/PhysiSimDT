@@ -47,7 +47,19 @@ void Button::setOnClick(std::function<void()> func){
     onClick=func;
 }
 
+void Button::runOnClick(){
+    onClick();
+}
+
 void Button::draw(sf::RenderWindow& window){
+    switch(state){
+        case ButtonState::Normal:
+            shape.setFillColor(sf::Color::White);
+            break;
+        case ButtonState::Hovered:
+            shape.setFillColor(sf::Color(200,200,200));
+            break;
+    }
     window.draw(shape);
     window.draw(text);
 }

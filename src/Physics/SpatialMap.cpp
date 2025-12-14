@@ -27,6 +27,10 @@ GridKey SpatialMap::getKey(Circle& c){
     return GridKey(c.getPos(),cellSize);
 }
 
+GridKey SpatialMap::getKey(sf::Vector2f p){
+    return GridKey(p,cellSize);
+}
+
 void SpatialMap::enterCell(Circle* c){
     sm[getKey(*c)].insert(c);
 }

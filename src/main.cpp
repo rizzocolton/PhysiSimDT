@@ -11,12 +11,19 @@ int main(){
 
 
     //WINDOWS
-
+    
     sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(SCREEN_WIDTH),static_cast<unsigned int>(SCREEN_HEIGHT)}), "PhysiSim",sf::Style::Close);
-    window.setPosition({300,100});
-    sf::RenderWindow controls(sf::VideoMode({300,800}),"Controls",sf::Style::Titlebar);
-    controls.setPosition({0,100});
+    window.setPosition({500,0});
+    sf::RenderWindow controls(sf::VideoMode({500,600}),"Controls",sf::Style::Titlebar);
+    controls.setPosition({0,0});
+    sf::RenderWindow object(sf::VideoMode({500,400}),"Object",sf::Style::Titlebar);
+    object.setPosition({0,600});
 
+    //close up of a specific object
+    sf::View objectView({SCREEN_WIDTH/2.f,SCREEN_HEIGHT/2.f},{300.f,300.f});
+    objectView.setViewport(sf::FloatRect({0.52f, 0.f}, {0.48f, 0.6f}));
+    //pointer to that object
+    Circle* selectedObject=nullptr;
     
     //SIMULATION SCREEN
 
@@ -29,13 +36,16 @@ int main(){
 
     //SIMULATION VARIABLES
     
-    //Objects container
+    
     bool simulating=false;
+    //Objects container
     std::vector<Circle> objects;
     int fps=0;
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
-    SpatialMap sm=SpatialMap(40);
+
+    //Collision specific
+    SpatialMap sm=SpatialMap(100);
     
 
     //CONTROLS SCREEN
@@ -45,11 +55,12 @@ int main(){
     Button start_Stop{sf::Vector2f{10.f,50.f}, sf::Vector2f{200.f,200.f}};
     start_Stop.setText("Start");
     start_Stop.setOnClick([&simulating,&start_Stop](){
-        simulating=!simulating;
         if(simulating){
-            start_Stop.setText("Stop");
-        }else{
+            simulating=false;
             start_Stop.setText("Start");
+        }else{
+            simulating=true;
+            start_Stop.setText("Stop");
         }
     });
     
@@ -63,21 +74,54 @@ int main(){
                 window.close();
                 controls.close();
             }
-            //if escape is pressed, close all windows
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
                 if (keyPressed->scancode == sf::Keyboard::Scan::Escape){
                     window.close();
                     controls.close();
                 }
+                if(keyPressed->scancode==sf::Keyboard::Scan::Space){
+                    start_Stop.runOnClick();
+                }
+                if(keyPressed->scancode==sf::Keyboard::Scan::Tab){
+                    controls.setVisible(true);
+                }
             }
-            //if the mouse is pressed, put an object at that positon
+            
             if(const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
+                //if the left mouse is pressed, put an object at that positon
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
                     for(int i=0;i<10;i++){
                         objects.emplace_back(mousePos,10,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
                     }
-                    
+                }
+                //if the right mouse is pressed, get the nearest object at that position
+                if(mouseButtonPressed->button==sf::Mouse::Button::Right){
+                    //mouse's current position
+                    sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
+                    //set of all objects at that cell
+                    std::unordered_set objs=sm.getMap()[sm.getKey(mousePos)];
+                    //vector pointing to every object in that cell
+                    std::vector<Circle*> objVec;
+                    //filling that vector using extraction (C++17 exclusive thing)
+                    objVec.reserve(objs.size());
+                    while(!objs.empty()){
+                        objVec.push_back(std::move(objs.extract(objs.begin()).value()));
+                    }
+                    //finds the index of the object closest to the mouse
+                    if(!objVec.empty()){
+                        float minDistSqrd=static_cast<float>(sm.getCellSize())*static_cast<float>(sm.getCellSize());
+                        int minIndex=0;
+                        for(int i=0;i<objVec.size();i++){
+                            float distSqrd=(mousePos-objVec.at(i)->getPos()).lengthSquared();
+                            if(distSqrd<minDistSqrd){
+                                minDistSqrd=distSqrd;
+                                minIndex=i;
+                            }
+                        }
+                        selectedObject=objVec.at(minIndex);
+                        objVec.at(minIndex)->highlight();
+                    }
                 }
             }
             
@@ -85,6 +129,18 @@ int main(){
         
         
         while(const std::optional event = controls.pollEvent()){   
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape){
+                    window.close();
+                    controls.close();
+                }
+                if(keyPressed->scancode==sf::Keyboard::Scan::Space){
+                    start_Stop.runOnClick();
+                }
+                if(keyPressed->scancode==sf::Keyboard::Scan::Tab){
+                    controls.setVisible(false);
+                }
+            }
         }
 
         //FIND MOUSE LOCATION; USEFUL FOR MANY INTERACTIONS
@@ -112,17 +168,37 @@ int main(){
             obj.draw(window);
         }
 
+        //checks for collisions with every object in every cell and adjacent cells
         for(auto& [cell,objs]: sm.getMap()){
             //makes a vector of all objs in set
             std::vector<Circle*> objVec(objs.begin(),objs.end());
 
             for(int i=0;i<objVec.size();i++){
-                for(int j=i+1;j<objVec.size();j++){
-                    objVec[i]->collide(*objVec[j]);
+                GridKey currentKey=sm.getKey(*objVec[i]);
+                int cellSize=sm.getCellSize();
+                sf::Vector2f objPos=objVec[i]->getPos();
+    
+                // Check 3x3 grid 
+                for(int dx=-1;dx<=1;dx++){
+                    for(int dy=-1;dy<=1;dy++){
+                        sf::Vector2f adjPos(
+                            objPos.x+dx*cellSize, 
+                            objPos.y+dy*cellSize
+                        );
+                        GridKey adjKey(adjPos,cellSize);
+            
+                        auto& map=sm.getMap();
+                        if(map.count(adjKey)!=0){
+                            for(Circle* otherObj : map[adjKey]){
+                                objVec[i]->collide(*otherObj);
+                            }
+                        }
+                    }
                 }
             }
         }//end simulation frame
         fps++;
+
         //display fps
         if(oneSecond.getElapsedTime().asSeconds()>=1){
             fpsCounter.setString("FPS: "+std::to_string(fps));
@@ -148,6 +224,21 @@ int main(){
 
 
         controls.display();
+
+        //* OBJECT WINDOW RENDERING */
         
+        object.clear();
+
+        if(selectedObject!=nullptr){
+            objectView.setCenter(selectedObject->getPos());
+        }
+        object.setView(objectView);
+
+        for(auto& obj : objects){
+            obj.draw(object);
+        }
+
+
+        object.display();
     }
 }

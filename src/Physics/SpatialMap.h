@@ -28,6 +28,9 @@ public:
     SpatialMap(int cs);
 
     GridKey getKey(Circle& c);
+
+    //alternate constructor for mouse button checks
+    GridKey getKey(sf::Vector2f p);
     
     void enterCell(Circle* c);
 
