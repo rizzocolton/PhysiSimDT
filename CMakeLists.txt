@@ -12,6 +12,7 @@ add_executable(PhysiSim
     src/Physics/SpatialMap.cpp
     src/Physics/Constants.cpp
     src/UI/Button.cpp
+    src/UI/Slider.cpp
 )
 target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

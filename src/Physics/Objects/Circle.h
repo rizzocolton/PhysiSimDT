@@ -21,6 +21,8 @@ public:
 
     void highlight();
 
+    void unhighlight();
+
     //Virtual checkBounds override
     void checkBounds() override;
 

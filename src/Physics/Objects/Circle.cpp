@@ -21,6 +21,10 @@ void Circle::highlight(){
     shape.setOutlineThickness(-2.f);
 }
 
+void Circle::unhighlight(){
+    shape.setOutlineThickness(0.f);
+}
+
 //overrides virtual check boundaries for circular geometry
 void Circle::checkBounds(){
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away

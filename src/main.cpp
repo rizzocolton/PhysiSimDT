@@ -4,6 +4,7 @@
 #include "Physics/SpatialMap.h"
 #include "Physics/Objects/Circle.h"
 #include "UI/Button.h"
+#include "UI/Slider.h"
 
 int main(){
 
@@ -20,8 +21,8 @@ int main(){
     object.setPosition({0,600});
 
     //close up of a specific object
-    sf::View objectView({SCREEN_WIDTH/2.f,SCREEN_HEIGHT/2.f},{300.f,300.f});
-    objectView.setViewport(sf::FloatRect({0.52f, 0.f}, {0.48f, 0.6f}));
+    sf::View objectView({SCREEN_WIDTH/2.f,SCREEN_HEIGHT/2.f},{250.f,250.f});
+    objectView.setViewport(sf::FloatRect({0.6f, 0.f}, {0.4f, 0.5f}));
     //pointer to that object
     Circle* selectedObject=nullptr;
     
@@ -64,9 +65,18 @@ int main(){
         }
     });
     
+    Slider gravitySlider(
+        sf::Vector2f{10.f,400.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        0.f, //min value
+        500.f, //max value
+        GRAVITY //current value
+    );
 
     //* MAIN LOOP */
     while(window.isOpen()){
+        //FIND MOUSE LOCATION; USEFUL FOR MANY INTERACTIONS
+        mousePos=sf::Mouse::getPosition(controls);
         //checks all window events that were triggered since last loop
         while(const auto event = window.pollEvent()){   
             //if close is requested, then close the window
@@ -119,6 +129,9 @@ int main(){
                                 minIndex=i;
                             }
                         }
+                        if(selectedObject!=nullptr){
+                            selectedObject->unhighlight();
+                        }
                         selectedObject=objVec.at(minIndex);
                         objVec.at(minIndex)->highlight();
                     }
@@ -128,7 +141,8 @@ int main(){
         }
         
         
-        while(const std::optional event = controls.pollEvent()){   
+        while(const std::optional event = controls.pollEvent()){
+
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
                 if (keyPressed->scancode == sf::Keyboard::Scan::Escape){
                     window.close();
@@ -143,8 +157,7 @@ int main(){
             }
         }
 
-        //FIND MOUSE LOCATION; USEFUL FOR MANY INTERACTIONS
-        mousePos=sf::Mouse::getPosition(controls);
+        
 
         //* PRIMARY WINDOW RENDERING */
 
@@ -221,6 +234,12 @@ int main(){
 
         start_Stop.update(mousePos,mouseClicked);
         start_Stop.draw(controls);
+
+        
+        gravitySlider.update(mousePos,mouseClicked);
+        gravitySlider.draw(controls);
+
+        GRAVITY=static_cast<float>(gravitySlider.getValue());
 
 
         controls.display();
