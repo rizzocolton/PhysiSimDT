@@ -2,7 +2,8 @@
 
 
 float GRAVITY=98.f;
+float COEFFICENT_OF_RESTITUTION=0.9f;
 sf::Font ICELAND;
-void loadFonts(){
-    ICELAND.openFromFile("../assets/Iceland-Regular.ttf");
+bool loadFonts(){
+    return ICELAND.openFromFile("../assets/Iceland-Regular.ttf");
 }

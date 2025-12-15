@@ -30,7 +30,7 @@ bool Slider::update(sf::Vector2i mousePos, bool mousePressed){
 
     if(isInside&&mousePressed){
         float percent=(mousePos.x - pos.x)/size.x;
-        float value=minValue + percent*(maxValue - minValue);
+        float value=minValue+percent*(maxValue - minValue);
         setValue(value);
     }
     return isInside&&mousePressed;

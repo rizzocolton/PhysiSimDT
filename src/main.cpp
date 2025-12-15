@@ -44,6 +44,8 @@ int main(){
     int fps=0;
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
+    float g=GRAVITY;
+    float coefRestitution=1.0f;
     
     sf::Vector2i mousePos;
 
@@ -71,8 +73,16 @@ int main(){
         sf::Vector2f{10.f,400.f}, //position
         sf::Vector2f{200.f,50.f}, //size
         0.f, //min value
-        500.f, //max value
-        GRAVITY //current value
+        50.f, //max value
+        1.f //current value
+    );
+
+    Slider restitutionSlider(
+        sf::Vector2f{10.f,500.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        0.f, //min value
+        1.f, //max value
+        1.f //current value
     );
 
     //OBJECT SCREEN
@@ -148,10 +158,10 @@ int main(){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
                     for(int i=0;i<100;i++){
                         objects.emplace_back(
-                            mousePos,
-                            5,
-                            rand()%10+1,
-                            sf::Color(rand()%255,rand()%255,rand()%255)
+                            mousePos, //position
+                            10, //radius
+                            rand()%10+1, //mass
+                            sf::Color(rand()%255,rand()%255,rand()%255) //color
                         );
                     }
                 }
@@ -224,7 +234,7 @@ int main(){
 
         //updates and draws every object created
         for(auto& obj:objects){
-            sf::Vector2f weight{0.0f,obj.getMass()*GRAVITY};
+            sf::Vector2f weight{0.0f,obj.getMass()*g};
             obj.push(weight,dt);
             obj.update(dt);
             sm.enterCell(&obj);
@@ -253,7 +263,7 @@ int main(){
                         auto& map=sm.getMap();
                         if(map.count(adjKey)!=0){
                             for(Circle* otherObj : map[adjKey]){
-                                objVec[i]->collide(*otherObj);
+                                objVec[i]->collide(*otherObj,coefRestitution);
                             }
                         }
                     }
@@ -289,7 +299,12 @@ int main(){
         gravitySlider.update(mousePos,mouseClicked);
         gravitySlider.draw(controls);
 
-        GRAVITY=static_cast<float>(gravitySlider.getValue());
+        g=static_cast<float>(gravitySlider.getValue())*GRAVITY;
+
+        restitutionSlider.update(mousePos,mouseClicked);
+        restitutionSlider.draw(controls);
+
+        coefRestitution=restitutionSlider.getValue();
 
 
         controls.display();

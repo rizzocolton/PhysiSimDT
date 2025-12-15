@@ -5,9 +5,8 @@
 
 const float SCREEN_WIDTH=1400.f;
 const float SCREEN_HEIGHT=1000.f;
-const float COEFFICIENT_OF_RESTITUTION=1.f;
 extern float GRAVITY;
 extern sf::Font ICELAND;
-void loadFonts();
+bool loadFonts();
 
 #endif
