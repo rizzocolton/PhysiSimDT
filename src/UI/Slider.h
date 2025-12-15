@@ -22,7 +22,7 @@ public:
 
     void setRange(float min, float max);
 
-    void update(sf::Vector2i mousePos, bool mousePressed);
+    bool update(sf::Vector2i mousePos, bool mousePressed);
 
     void draw(sf::RenderWindow& window);
 };

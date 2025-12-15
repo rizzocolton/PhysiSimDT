@@ -25,6 +25,24 @@ void Circle::unhighlight(){
     shape.setOutlineThickness(0.f);
 }
 
+void Circle::setMass(float m){
+    mass=m;
+}
+
+void Circle::setRadius(float r){
+    radius=r;
+    shape.setRadius(radius);
+    shape.setOrigin({radius,radius});
+}
+
+void Circle::setPos(sf::Vector2f& p){
+    pos=p;
+}
+
+void Circle::setVel(sf::Vector2f& v){
+    vel=v;
+}
+
 //overrides virtual check boundaries for circular geometry
 void Circle::checkBounds(){
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away

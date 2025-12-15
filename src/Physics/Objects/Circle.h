@@ -23,6 +23,14 @@ public:
 
     void unhighlight();
 
+    void setMass(float m);
+
+    void setRadius(float r);
+
+    void setPos(sf::Vector2f& p);
+
+    void setVel(sf::Vector2f& v);
+
     //Virtual checkBounds override
     void checkBounds() override;
 

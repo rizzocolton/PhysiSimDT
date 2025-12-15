@@ -24,7 +24,7 @@ void Slider::setRange(float min, float max){
     if(currentValue>maxValue) currentValue=maxValue;
 }
 
-void Slider::update(sf::Vector2i mousePos, bool mousePressed){
+bool Slider::update(sf::Vector2i mousePos, bool mousePressed){
     //if mouse is within all bounds of the slider
     bool isInside=(mousePos.x>pos.x&&mousePos.x<pos.x+size.x&&mousePos.y>pos.y&&mousePos.y<pos.y+size.y);
 
@@ -33,7 +33,7 @@ void Slider::update(sf::Vector2i mousePos, bool mousePressed){
         float value=minValue + percent*(maxValue - minValue);
         setValue(value);
     }
-
+    return isInside&&mousePressed;
 }
 
 void Slider::draw(sf::RenderWindow& window){

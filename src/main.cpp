@@ -44,14 +44,16 @@ int main(){
     int fps=0;
     sf::Clock oneSecond;
     sf::Clock timeSinceLastFrame;
+    
+    sf::Vector2i mousePos;
 
     //Collision specific
-    SpatialMap sm=SpatialMap(100);
+    SpatialMap sm=SpatialMap(50);
     
 
     //CONTROLS SCREEN
 
-     sf::Vector2i mousePos;
+     
 
     Button start_Stop{sf::Vector2f{10.f,50.f}, sf::Vector2f{200.f,200.f}};
     start_Stop.setText("Start");
@@ -72,6 +74,49 @@ int main(){
         500.f, //max value
         GRAVITY //current value
     );
+
+    //OBJECT SCREEN
+
+    Slider massSlider(
+        sf::Vector2f{10.f,10.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        1.f, //min value
+        100.f, //max value
+        10.f //current value
+    );
+
+    Slider radiusSlider(
+        sf::Vector2f{10.f,100.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        5.f, //min value
+        50.f, //max value
+        10.f //current value
+    );
+
+    Slider positionSlider(
+        sf::Vector2f{10.f,300.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        0.f, //min value
+        1400.f, //max value
+        700.f //current value
+    );
+
+    Slider velocitySlider(
+        sf::Vector2f{10.f,200.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        0.f, //min value
+        500.f, //max value
+        0.f //current value
+    );
+
+    Slider angleSlider(
+        sf::Vector2f{10.f,400.f}, //position
+        sf::Vector2f{200.f,50.f}, //size
+        0.f, //min value
+        360.f, //max value
+        0.f //current value
+    );
+
 
     //* MAIN LOOP */
     while(window.isOpen()){
@@ -101,8 +146,13 @@ int main(){
                 //if the left mouse is pressed, put an object at that positon
                 if(mouseButtonPressed->button==sf::Mouse::Button::Left){
                     sf::Vector2f mousePos(mouseButtonPressed->position.x,mouseButtonPressed->position.y);
-                    for(int i=0;i<10;i++){
-                        objects.emplace_back(mousePos,10,rand()%10+1,sf::Color(rand()%255,rand()%255,rand()%255));
+                    for(int i=0;i<100;i++){
+                        objects.emplace_back(
+                            mousePos,
+                            5,
+                            rand()%10+1,
+                            sf::Color(rand()%255,rand()%255,rand()%255)
+                        );
                     }
                 }
                 //if the right mouse is pressed, get the nearest object at that position
@@ -245,18 +295,24 @@ int main(){
         controls.display();
 
         //* OBJECT WINDOW RENDERING */
+
+        mousePos=sf::Mouse::getPosition(object);
         
         object.clear();
 
-        if(selectedObject!=nullptr){
-            objectView.setCenter(selectedObject->getPos());
+        
+        
+        if(massSlider.update(mousePos,mouseClicked) && selectedObject!=nullptr){
+            selectedObject->setMass(massSlider.getValue());
         }
-        object.setView(objectView);
+        massSlider.draw(object);
 
-        for(auto& obj : objects){
-            obj.draw(object);
+        
+        
+        if(radiusSlider.update(mousePos,mouseClicked) && selectedObject!=nullptr){
+            selectedObject->setRadius(radiusSlider.getValue());
         }
-
+        radiusSlider.draw(object);
 
         object.display();
     }
