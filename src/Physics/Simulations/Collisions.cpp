@@ -82,3 +82,7 @@ void Collisions::handleEvent(const sf::Event& event){
     
 }
 
+int Collisions::getPopulation(){
+    return static_cast<int>(objects.size());
+}
+

@@ -60,3 +60,6 @@ Overall I had very impressive performance gains on this. Went from 43 fps at 200
 
 1. Figured that 3 windows would be clunky and unoptimized
 2. Decided to restart main.cpp with a Simulation class base
+3. After a single window mode was functional, moved on to some more organizational fixes before fully refactoring all UI/interactions
+3. Reorganized storage of simulation objects to be more generic using a vector of unique pointers (for the sweet polymorphism)
+4. Reogranized storage of ui objects accordingly

@@ -11,15 +11,21 @@ int main(){
     );
 
     sf::RectangleShape simSpace{sf::Vector2f{1400.f,1000.f}};
-    simSpace.setFillColor(sf::Color::Green);
+    simSpace.setFillColor(sf::Color::Black);
+    simSpace.setOutlineColor(sf::Color::White);
+    simSpace.setOutlineThickness(-2.f);
     simSpace.setPosition(sf::Vector2f{500.f,0.f});
 
     sf::RectangleShape simControls{sf::Vector2f{500.f,600.f}};
-    simControls.setFillColor(sf::Color::Blue);
+    simControls.setFillColor(sf::Color::Black);
+    simControls.setOutlineColor(sf::Color::White);
+    simControls.setOutlineThickness(-2.f);
     simControls.setPosition(sf::Vector2f{0.f,0.f});
 
     sf::RectangleShape simObjectDetail{sf::Vector2f{500.f,400.f}};
-    simObjectDetail.setFillColor(sf::Color::Red);
+    simObjectDetail.setFillColor(sf::Color::Black);
+    simObjectDetail.setOutlineColor(sf::Color::White);
+    simObjectDetail.setOutlineThickness(-2.f);
     simObjectDetail.setPosition(sf::Vector2f{0.f,600.f});
 
     sf::Font icelandFont{"../assets/Iceland-Regular.ttf"};
@@ -34,7 +40,10 @@ int main(){
     );
 
     sf::Text fpsCounter(icelandFont);
-    fpsCounter.setPosition({500.f,10.f});
+    fpsCounter.setPosition({500.f,0.f});
+    sf::Text populationCounter(icelandFont);
+    populationCounter.setPosition({500.f,20.f});
+
     int fps=0;
     sf::Clock fpsClock;
     sf::Clock deltaClock;
@@ -71,6 +80,9 @@ int main(){
             fpsClock.restart();
         }
         window.draw(fpsCounter);
+
+        populationCounter.setString("Population: "+std::to_string(currentSim->getPopulation()));
+        window.draw(populationCounter);
 
         window.display();
     }

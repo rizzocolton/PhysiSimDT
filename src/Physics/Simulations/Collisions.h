@@ -30,6 +30,8 @@ class Collisions: public Simulation{
 
         void handleEvent(const sf::Event& event) override;
 
+        int getPopulation() override;
+
         ~Collisions() override = default;
 };
 
