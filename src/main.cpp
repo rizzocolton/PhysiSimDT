@@ -27,8 +27,8 @@ int main(){
     //Simulation management
     std::unique_ptr<Simulation> currentSim = std::make_unique<Collisions>(
         98.f, //gravity
-        0.9f,  //col restitution
-        0.8f,  //bounds restitution
+        1.0f,  //collision restitution
+        1.0f,  //bounds restitution
         50,    //cell size
         simSpace.getGlobalBounds() //simulation bounds
     );
@@ -48,6 +48,15 @@ int main(){
         window.draw(simObjectDetail);
 
         //Handle events
+
+        while(const std::optional event = window.pollEvent()){
+            if(event->is<sf::Event::Closed>()){
+                window.close();
+            }
+
+
+            currentSim->handleEvent(*event);
+        }
 
         //Update simulation
         float dt=deltaClock.restart().asSeconds();

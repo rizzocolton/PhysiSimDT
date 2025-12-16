@@ -38,6 +38,8 @@ public:
     virtual void checkBounds(sf::FloatRect bounds,float restitution)=0;
     //Subclasses (different shaped objects) utilize their own draw implementation according to their geometry
     virtual void draw(sf::RenderWindow& window)=0;
+    //Subclasses (different shaped objects) utilize their own collision detection and response according to their geometry
+    virtual void collide(PhysicsObject& other, float restitution)=0;
     
 };
 

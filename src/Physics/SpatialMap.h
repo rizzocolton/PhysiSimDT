@@ -7,17 +7,17 @@
 #include<unordered_set>
 #include<vector>
 
-//Forward declaration of circle to avoid circular dependency
-class Circle;
+//Forward declaration of physics object to avoid circular dependency
+class PhysicsObject;
 
 
 
 
 class SpatialMap{
 private:
-    //hashmap with key representing a cell and value representing the circles contained in the map
+    //hashmap with key representing a cell and value representing the physics objects contained in the map
     //need to use custom hash for the custome gridkey struct
-    std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash> sm;
+    std::unordered_map<GridKey,std::unordered_set<PhysicsObject*>,GridKeyHash> sm;
     int cellSize;
     sf::VertexArray grid;
     
@@ -27,18 +27,18 @@ public:
 
     SpatialMap(int cs, sf::FloatRect bounds);
 
-    GridKey getKey(Circle& c);
+    GridKey getKey(PhysicsObject& c);
 
     //alternate constructor for mouse button checks
     GridKey getKey(sf::Vector2f p);
     
-    void enterCell(Circle* c);
+    void enterCell(PhysicsObject* c);
 
     int getCellSize();
 
     void clear();
 
-    std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash>& getMap();
+    std::unordered_map<GridKey,std::unordered_set<PhysicsObject*>,GridKeyHash>& getMap();
 
     //Display function
 

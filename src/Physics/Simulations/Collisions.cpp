@@ -12,7 +12,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
             (rand()%256),
             (rand()%256)
         );
-        objects.emplace_back(position,radius,mass,color);
+        objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
     }
 }
 
@@ -21,17 +21,17 @@ void Collisions::update(float dt){
     sm.clear();
     //Update position of all objects
     for(auto& obj : objects){
-        sf::Vector2f weight{0.0f,obj.getMass()*gravity};
-        obj.push(weight,dt);
-        obj.update(dt);
-        obj.checkBounds(simBounds,boundsRestitution);
-        sm.enterCell(&obj);
+        sf::Vector2f weight{0.0f,obj->getMass()*gravity};
+        obj->push(weight,dt);
+        obj->update(dt);
+        obj->checkBounds(simBounds,boundsRestitution);
+        sm.enterCell(obj.get());
     }
 
     //Check for collisions between objects in cells and adjacent cells
     for(auto& [cell,objs]: sm.getMap()){
         //makes a vector of all objs in set
-        std::vector<Circle*> objVec(objs.begin(),objs.end());
+        std::vector<PhysicsObject*> objVec(objs.begin(),objs.end());
         for(int i=0;i<objVec.size();i++){
             GridKey currentKey=sm.getKey(*objVec[i]);
             int cellSize=sm.getCellSize();
@@ -48,7 +48,7 @@ void Collisions::update(float dt){
             
                     auto& map=sm.getMap();
                     if(map.count(adjKey)!=0){
-                        for(Circle* otherObj : map[adjKey]){
+                        for(PhysicsObject* otherObj : map[adjKey]){
                             objVec[i]->collide(*otherObj,colRestitution);
                         }
                     }
@@ -65,8 +65,13 @@ void Collisions::draw(sf::RenderWindow& window){
 
     //Draw all objects
     for(auto& obj : objects){
-        obj.draw(window);
+        obj->draw(window);
     }
+}
+
+void Collisions::initUI(){
+    //Placeholder for future UI elements
+
 }
 
 void Collisions::drawUI(sf::RenderWindow& window){

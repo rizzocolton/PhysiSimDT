@@ -12,14 +12,19 @@ class Collisions: public Simulation{
         float colRestitution;
         float boundsRestitution;
         SpatialMap sm;
-        std::vector<Circle> objects;
         sf::FloatRect simBounds;
+
+        std::vector<std::unique_ptr<PhysicsObject>> objects;
+        //MAKE THE UI CLASS NEXT SESSION AND MAKE ALL OTHER UI ELEMENTS INHERIT FROM IT
+        //std::unique_ptr<UI> UIElements;
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);
         void update(float dt) override;
             
         void draw(sf::RenderWindow& window) override;
+
+        void initUI() override;
 
         void drawUI(sf::RenderWindow& window) override;
 

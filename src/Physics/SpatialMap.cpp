@@ -23,7 +23,7 @@ SpatialMap::SpatialMap(int cs, sf::FloatRect bounds){
 }
 
 
-GridKey SpatialMap::getKey(Circle& c){
+GridKey SpatialMap::getKey(PhysicsObject& c){
     return GridKey(c.getPos(),cellSize);
 }
 
@@ -31,7 +31,7 @@ GridKey SpatialMap::getKey(sf::Vector2f p){
     return GridKey(p,cellSize);
 }
 
-void SpatialMap::enterCell(Circle* c){
+void SpatialMap::enterCell(PhysicsObject* c){
     sm[getKey(*c)].insert(c);
 }
 
@@ -43,7 +43,7 @@ void SpatialMap::clear(){
     sm.clear();
 }
 
-std::unordered_map<GridKey,std::unordered_set<Circle*>,GridKeyHash>& SpatialMap::getMap(){
+std::unordered_map<GridKey,std::unordered_set<PhysicsObject*>,GridKeyHash>& SpatialMap::getMap(){
     return sm;
 }
 

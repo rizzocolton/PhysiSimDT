@@ -37,8 +37,8 @@ public:
     //Rendering of circle onto screen
     void draw(sf::RenderWindow& window) override;
 
-    //Collision detection/response with another Circle depending on coefficient of restitution
-    void collide(Circle& other, float res);
+    //Collision detection/response with another PhysicsObject depending on coefficient of restitution
+    void collide(PhysicsObject& other, float res) override;
 };
 
 #endif
