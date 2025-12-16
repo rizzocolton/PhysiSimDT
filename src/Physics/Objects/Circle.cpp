@@ -44,14 +44,14 @@ void Circle::setVel(sf::Vector2f& v){
 }
 
 //overrides virtual check boundaries for circular geometry
-void Circle::checkBounds(){
+void Circle::checkBounds(sf::FloatRect bounds,float restitution){
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away
-    if((vel.x<0&&pos.x-radius<=0)||(vel.x>0&&pos.x+radius>=SCREEN_WIDTH)){
-        vel.x*=-1;
+    if((vel.x<0&&pos.x-radius<=bounds.position.x)||(vel.x>0&&pos.x+radius>=bounds.position.x+bounds.size.x)){
+        vel.x*=-1*restitution;
     }
-    
-    if((vel.y<0&&pos.y-radius<=0)||(vel.y>0&&pos.y+radius>=SCREEN_HEIGHT)){
-        vel.y*=-1;
+
+    if((vel.y<0&&pos.y-radius<=bounds.position.y)||(vel.y>0&&pos.y+radius>=bounds.position.y+bounds.size.y)){
+        vel.y*=-1*restitution;
     }
 }
 

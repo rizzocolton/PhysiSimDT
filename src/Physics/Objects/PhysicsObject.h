@@ -34,8 +34,8 @@ public:
 
     //Virtuals
 
-    //Subclasses (different shaped objects) may check to see if their projection is within bounds
-    virtual void checkBounds()=0;
+    //Subclasses (different shaped objects) may check to see if their projection is within bounds (the screen in which they are enclosed)
+    virtual void checkBounds(sf::FloatRect bounds,float restitution)=0;
     //Subclasses (different shaped objects) utilize their own draw implementation according to their geometry
     virtual void draw(sf::RenderWindow& window)=0;
     

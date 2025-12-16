@@ -14,7 +14,6 @@ PhysicsObject::PhysicsObject(sf::Vector2f& p, float m){
 //Changes position by velocity times time elapsed. Then checks to see if object is still in bounds.
 void PhysicsObject::update(float dt){
     pos+=vel*dt;
-    checkBounds();
 }
 
 //"pushes" object by a force times time elapsed. this impulse is then divided by mass of the object to create a change in velocity

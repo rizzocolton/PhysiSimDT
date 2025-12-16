@@ -7,6 +7,7 @@ find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
 add_executable(PhysiSim 
     src/main.cpp
+    src/Physics/Simulations/Collisions.cpp
     src/Physics/Objects/PhysicsObject.cpp
     src/Physics/Objects/Circle.cpp
     src/Physics/SpatialMap.cpp

@@ -32,7 +32,7 @@ public:
     void setVel(sf::Vector2f& v);
 
     //Virtual checkBounds override
-    void checkBounds() override;
+    void checkBounds(sf::FloatRect bounds,float restitution) override;
 
     //Rendering of circle onto screen
     void draw(sf::RenderWindow& window) override;
