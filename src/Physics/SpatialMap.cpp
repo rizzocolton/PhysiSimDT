@@ -2,22 +2,22 @@
 #include "Objects/Circle.h"
 #include "Constants.h"
 
-SpatialMap::SpatialMap(int cs){
+SpatialMap::SpatialMap(int cs, sf::FloatRect bounds){
     cellSize=cs;
     grid.setPrimitiveType(sf::PrimitiveType::Lines);
     //need to resize for 2 vertices for every line, should be bounds/cellsize lines for each axis
-    grid.resize(2*(static_cast<int>(SCREEN_HEIGHT)+static_cast<int>(SCREEN_WIDTH))/cellSize);
+    grid.resize(2*(static_cast<int>(bounds.size.y)+static_cast<int>(bounds.size.x))/cellSize);
     int i=0;
-    for(int x=0;x<SCREEN_WIDTH;x+=cellSize){
-        grid[i].position=sf::Vector2f{static_cast<float>(x),0.f};
+    for(int x=bounds.position.x;x<bounds.size.x+bounds.position.x;x+=cellSize){
+        grid[i].position=sf::Vector2f{static_cast<float>(x),bounds.position.y};
         i++;
-        grid[i].position=sf::Vector2f{static_cast<float>(x),SCREEN_HEIGHT};
+        grid[i].position=sf::Vector2f{static_cast<float>(x),bounds.size.y+bounds.position.y};
         i++;
     }
-    for(int y=0;y<SCREEN_HEIGHT;y+=cellSize){
-        grid[i].position=sf::Vector2f{0.f,static_cast<float>(y)};
+    for(int y=bounds.position.y;y<bounds.size.y+bounds.position.y;y+=cellSize){
+        grid[i].position=sf::Vector2f{bounds.position.x,static_cast<float>(y)};
         i++;
-        grid[i].position=sf::Vector2f{SCREEN_WIDTH,static_cast<float>(y)};
+        grid[i].position=sf::Vector2f{bounds.size.x+bounds.position.x,static_cast<float>(y)};
         i++;
     }
 }

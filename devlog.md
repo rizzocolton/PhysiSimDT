@@ -50,4 +50,13 @@ Overall I had very impressive performance gains on this. Went from 43 fps at 200
 
 ## Creating UI
 
-1. Started with start/pause and reset buttons
+1. Started with start/pause with states (normal, hovered, clicked)
+2. Progressed to sliders
+3. Made gravity and res sliders
+4. Made separate window with detail view of an object
+5. Made adjustable mass and radius for that particular object
+
+## Refactoring For One Window
+
+1. Figured that 3 windows would be clunky and unoptimized
+2. Decided to restart main.cpp with a Simulation class base

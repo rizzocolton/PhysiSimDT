@@ -25,7 +25,7 @@ private:
 public:
     //Constructor
 
-    SpatialMap(int cs);
+    SpatialMap(int cs, sf::FloatRect bounds);
 
     GridKey getKey(Circle& c);
 

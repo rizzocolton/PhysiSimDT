@@ -1,7 +1,7 @@
 #include "Collisions.h"
 
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds)
-: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize), simBounds(bounds){
+: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){
     //Initialize with some circles for testing
     for(int i=0;i<50;i++){
         sf::Vector2f position{static_cast<float>(rand()%1400+500),static_cast<float>(rand()%800)};
@@ -61,7 +61,7 @@ void Collisions::update(float dt){
 
 void Collisions::draw(sf::RenderWindow& window){
     //Optionally draw spatial map grid
-    //sm.draw(window);
+    sm.draw(window);
 
     //Draw all objects
     for(auto& obj : objects){
@@ -74,6 +74,6 @@ void Collisions::drawUI(sf::RenderWindow& window){
 }
 
 void Collisions::handleEvent(const sf::Event& event){
-    //Placeholder for future event handling
+    
 }
 
