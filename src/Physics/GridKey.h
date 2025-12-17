@@ -13,17 +13,23 @@ struct GridKey{
         y=static_cast<int>(p.y)/cellSize;
     }
 
+    //constructor with x and y directly
+    GridKey(int x,int y){
+        this->x=x;
+        this->y=y;
+    }
+
     //default constructor so the compiler will stop complaining when initializing circles
     GridKey(){
         x=0;
         y=0;
     }
 
-    int getX(){
+    int getX() const{
         return x;
     }
 
-    int getY(){
+    int getY() const{
         return y;
     }
 

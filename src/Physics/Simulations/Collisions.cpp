@@ -3,9 +3,9 @@
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds)
 : gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){
     //Initialize with some circles for testing
-    for(int i=0;i<50;i++){
+    for(int i=0;i<10000;i++){
         sf::Vector2f position{static_cast<float>(rand()%1400+500),static_cast<float>(rand()%800)};
-        float radius=10.f+static_cast<float>(rand()%20);
+        float radius=1.f;
         float mass=radius*radius*3.14f; //mass proportional to area
         sf::Color color(
             (rand()%256),
@@ -33,35 +33,51 @@ void Collisions::update(float dt){
         //makes a vector of all objs in set
         std::vector<PhysicsObject*> objVec(objs.begin(),objs.end());
         for(int i=0;i<objVec.size();i++){
-            GridKey currentKey=sm.getKey(*objVec[i]);
-            int cellSize=sm.getCellSize();
-            sf::Vector2f objPos=objVec[i]->getPos();
-    
-            // Check 3x3 grid 
-            for(int dx=-1;dx<=1;dx++){
-                for(int dy=-1;dy<=1;dy++){
-                    sf::Vector2f adjPos(
-                        objPos.x+dx*cellSize, 
-                        objPos.y+dy*cellSize
-                    );
-                    GridKey adjKey(adjPos,cellSize);
-            
-                    auto& map=sm.getMap();
-                    if(map.count(adjKey)!=0){
-                        for(PhysicsObject* otherObj : map[adjKey]){
-                            objVec[i]->collide(*otherObj,colRestitution);
-                        }
-                    }
+            for(int j=i+1;j<objVec.size();j++){
+                objVec[i]->collide(*objVec[j],colRestitution);
+            }
+        }
+
+        //check adjacent cells
+        for(int i=0;i<objVec.size();i++){
+            //right cell
+            GridKey rightKey(cell.getX()+1,cell.getY());
+            if(sm.getMap().count(rightKey)!=0){
+                for(auto& otherObj : sm.getMap().at(rightKey)){
+                    objVec[i]->collide(*otherObj,colRestitution);
+                }
+            }
+
+            //bottom cell
+            GridKey bottomKey(cell.getX(),cell.getY()+1);
+            if(sm.getMap().count(bottomKey)!=0){
+                for(auto& otherObj : sm.getMap().at(bottomKey)){
+                    objVec[i]->collide(*otherObj,colRestitution);
+                }
+            }
+
+            //bottom-right cell
+            GridKey bottomRightKey(cell.getX()+1,cell.getY()+1);
+            if(sm.getMap().count(bottomRightKey)!=0){
+                for(auto& otherObj : sm.getMap().at(bottomRightKey)){
+                    objVec[i]->collide(*otherObj,colRestitution);
+                }
+            }
+
+            //bottom-left cell
+            GridKey bottomLeftKey(cell.getX()-1,cell.getY()+1);
+            if(sm.getMap().count(bottomLeftKey)!=0){
+                for(auto& otherObj : sm.getMap().at(bottomLeftKey)){
+                    objVec[i]->collide(*otherObj,colRestitution);
                 }
             }
         }
     }
-    
 }
 
 void Collisions::draw(sf::RenderWindow& window){
     //Optionally draw spatial map grid
-    sm.draw(window);
+    //sm.draw(window);
 
     //Draw all objects
     for(auto& obj : objects){
