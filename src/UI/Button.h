@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include "UI.h"
 
 enum class ButtonState{
     Normal,
@@ -10,12 +11,12 @@ enum class ButtonState{
     Pressed
 };
 
-class Button{
+class Button: public UI{
 private:
     sf::RectangleShape shape;
-    sf::Vector2f pos;
-    sf::Vector2f size;
     sf::Text text;
+    sf::Font font;
+    sf::Vector2f size;
     ButtonState state;
 
     std::function<void()> onClick;
@@ -23,17 +24,17 @@ private:
 
 public:
 
-    Button(const sf::Vector2f& p, const sf::Vector2f& s);
+    Button(const sf::Vector2f& p, const sf::Vector2f& s, sf::Font& font);
 
     void setText(const std::string& str);
 
-    void update(const sf::Vector2i& mousePos, bool mousePressed);
+    void handleEvent(const sf::Event& event) override;
 
     void setOnClick(std::function<void()> func);
 
     void runOnClick();
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) override;
 
 };
 

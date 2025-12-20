@@ -1,11 +1,12 @@
 #include "Collisions.h"
+#include "../../UI/Button.h"
 
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds)
 : gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){
     //Initialize with some circles for testing
-    for(int i=0;i<10000;i++){
+    for(int i=0;i<5000;i++){
         sf::Vector2f position{static_cast<float>(rand()%1400+500),static_cast<float>(rand()%800)};
-        float radius=1.f;
+        float radius=2.f;
         float mass=radius*radius*3.14f; //mass proportional to area
         sf::Color color(
             (rand()%256),
@@ -36,10 +37,9 @@ void Collisions::update(float dt){
             for(int j=i+1;j<objVec.size();j++){
                 objVec[i]->collide(*objVec[j],colRestitution);
             }
-        }
 
         //check adjacent cells
-        for(int i=0;i<objVec.size();i++){
+        
             //right cell
             GridKey rightKey(cell.getX()+1,cell.getY());
             if(sm.getMap().count(rightKey)!=0){
@@ -85,13 +85,18 @@ void Collisions::draw(sf::RenderWindow& window){
     }
 }
 
-void Collisions::initUI(){
+void Collisions::initUI(sf::Font& font){
     //Placeholder for future UI elements
-
+    Button* dummyButton = new Button({50.f,50.f},{200.f,100.f},font);
+    dummyButton->setText(std::string("Dummy"));
+    UIElements.push_back(std::unique_ptr<Button>(dummyButton));
 }
 
 void Collisions::drawUI(sf::RenderWindow& window){
     //Placeholder for future UI elements
+    for(auto& element : UIElements){
+        element->draw(window);
+    }
 }
 
 void Collisions::handleEvent(const sf::Event& event){

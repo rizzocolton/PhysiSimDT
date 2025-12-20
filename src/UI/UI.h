@@ -7,13 +7,13 @@ class UI{
     protected:
         sf::Vector2f pos;
     public:
-        UI(sf::Vector2f p);
+        UI(sf::Vector2f p): pos(p) {};
 
         virtual void draw(sf::RenderWindow& window)=0;
 
         virtual void handleEvent(const sf::Event& event)=0;
 
         virtual ~UI()=default;
-}
+};
 
 #endif

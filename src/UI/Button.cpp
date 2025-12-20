@@ -2,8 +2,8 @@
 #include "Button.h"
 #include "../Physics/Constants.h"
 
-Button::Button(const sf::Vector2f& p, const sf::Vector2f& s):
-text(ICELAND),pos(p),size(s),state(ButtonState::Normal),onClick([](){}){
+Button::Button(const sf::Vector2f& p, const sf::Vector2f& s, sf::Font& font):UI(p),
+text(font),size(s),state(ButtonState::Normal),onClick([](){}){
     text.setFillColor(sf::Color::Black);
     shape.setPosition(pos);
     shape.setSize(size);
@@ -22,24 +22,36 @@ void Button::setText(const std::string& str){
     );
 }
 
-void Button::update(const sf::Vector2i& mousePos, bool mousePressed){
-    //if mouse is within all bounds of the button
-    bool isInside=(mousePos.x>pos.x&&mousePos.x<pos.x+size.x&&mousePos.y>pos.y&&mousePos.y<pos.y+size.y);
+void Button::handleEvent(const sf::Event& event){
+    sf::Vector2i mousePos=sf::Mouse::getPosition();
+    bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
-    
-    if(isInside){
-        if(mousePressed){
-            //only changes state if state isn't already changed (prevents onClick from running repeatedly)
-            if(state!=ButtonState::Pressed){
-                state=ButtonState::Pressed;
-                onClick();
-            }
-        }else if(state!=ButtonState::Hovered){
+    if(event.getIf<sf::Event::MouseMoved>()){
+        if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
+           mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
             state=ButtonState::Hovered;
-
+        } else {
+            state=ButtonState::Normal;
         }
-    }else if(state!=ButtonState::Normal){
-        state=ButtonState::Normal;
+    }
+
+    if(event.getIf<sf::Event::MouseButtonPressed>()){
+        if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
+           mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
+            state=ButtonState::Pressed;
+        }
+    }
+
+    if(event.getIf<sf::Event::MouseButtonReleased>()){
+        if(state==ButtonState::Pressed){
+            if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
+               mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
+                runOnClick();
+                state=ButtonState::Hovered;
+            } else {
+                state=ButtonState::Normal;
+            }
+        }
     }
 }
 

@@ -32,12 +32,13 @@ int main(){
 
     //Simulation management
     std::unique_ptr<Simulation> currentSim = std::make_unique<Collisions>(
-        9.f, //gravity
+        98.f, //gravity
         1.0f,  //collision restitution
         1.0f,  //bounds restitution
-        25,    //cell size
+        10,    //cell size
         simSpace.getGlobalBounds() //simulation bounds
     );
+    currentSim->initUI(icelandFont);
 
     sf::Text fpsCounter(icelandFont);
     fpsCounter.setPosition({500.f,0.f});
@@ -66,6 +67,9 @@ int main(){
 
             currentSim->handleEvent(*event);
         }
+
+        //Draw UI
+        currentSim->drawUI(window);
 
         //Update simulation
         float dt=deltaClock.restart().asSeconds();

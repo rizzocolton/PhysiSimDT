@@ -5,6 +5,7 @@
 #include "Simulation.h"
 #include "../SpatialMap.h"
 #include "../Objects/Circle.h"
+#include "../../UI/UI.h"
 
 class Collisions: public Simulation{
     private:
@@ -16,7 +17,7 @@ class Collisions: public Simulation{
 
         std::vector<std::unique_ptr<PhysicsObject>> objects;
         //MAKE THE UI CLASS NEXT SESSION AND MAKE ALL OTHER UI ELEMENTS INHERIT FROM IT
-        //std::unique_ptr<UI> UIElements;
+        std::vector<std::unique_ptr<UI>> UIElements;
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);
@@ -24,7 +25,7 @@ class Collisions: public Simulation{
             
         void draw(sf::RenderWindow& window) override;
 
-        void initUI() override;
+        void initUI(sf::Font& font) override;
 
         void drawUI(sf::RenderWindow& window) override;
 
