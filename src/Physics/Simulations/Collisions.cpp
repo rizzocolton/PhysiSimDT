@@ -20,6 +20,10 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
 void Collisions::update(float dt){
     //Clear spatial map for new frame
     sm.clear();
+    //If simulation is not running, skip physics update
+    if(!simulating){
+        return;
+    }
     //Update position of all objects
     for(auto& obj : objects){
         sf::Vector2f weight{0.0f,obj->getMass()*gravity};
@@ -86,10 +90,19 @@ void Collisions::draw(sf::RenderWindow& window){
 }
 
 void Collisions::initUI(sf::Font& font){
-    //Placeholder for future UI elements
-    Button* dummyButton = new Button({50.f,50.f},{200.f,100.f},font);
-    dummyButton->setText(std::string("Dummy"));
-    UIElements.push_back(std::unique_ptr<Button>(dummyButton));
+    //Start/stop button
+    Button* startStop = new Button({100.f,50.f},{200.f,100.f},font);
+    startStop->setText(std::string("Start/Stop"));
+    startStop->setOnClick([this,startStop](){
+        if(simulating){
+            simulating=false;
+            startStop->setText("Start");
+        }else{
+            simulating=true;
+            startStop->setText("Stop");
+        }
+    });
+    UIElements.push_back(std::unique_ptr<Button>(startStop));
 }
 
 void Collisions::drawUI(sf::RenderWindow& window){
@@ -100,7 +113,12 @@ void Collisions::drawUI(sf::RenderWindow& window){
 }
 
 void Collisions::handleEvent(const sf::Event& event){
-    
+
+
+    //update all UI elements
+    for(auto& element : UIElements){
+        element->handleEvent(event);
+    }
 }
 
 int Collisions::getPopulation(){

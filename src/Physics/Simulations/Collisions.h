@@ -15,9 +15,13 @@ class Collisions: public Simulation{
         SpatialMap sm;
         sf::FloatRect simBounds;
 
+
+        //Collection of physics objects in the simulation
         std::vector<std::unique_ptr<PhysicsObject>> objects;
-        //MAKE THE UI CLASS NEXT SESSION AND MAKE ALL OTHER UI ELEMENTS INHERIT FROM IT
+        //Collection of UI elements
         std::vector<std::unique_ptr<UI>> UIElements;
+
+        bool simulating=false;
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);

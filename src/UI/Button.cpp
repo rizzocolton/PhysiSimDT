@@ -39,6 +39,7 @@ void Button::handleEvent(const sf::Event& event){
         if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
            mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
             state=ButtonState::Pressed;
+            runOnClick();
         }
     }
 
@@ -46,7 +47,6 @@ void Button::handleEvent(const sf::Event& event){
         if(state==ButtonState::Pressed){
             if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
                mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
-                runOnClick();
                 state=ButtonState::Hovered;
             } else {
                 state=ButtonState::Normal;

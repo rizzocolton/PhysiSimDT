@@ -63,3 +63,7 @@ Overall I had very impressive performance gains on this. Went from 43 fps at 200
 3. After a single window mode was functional, moved on to some more organizational fixes before fully refactoring all UI/interactions
 3. Reorganized storage of simulation objects to be more generic using a vector of unique pointers (for the sweet polymorphism)
 4. Reogranized storage of ui objects accordingly
+
+While finicking around with ui and testing I realized a great way to optimize cell checks for collisions
+each object should only check its own cell and the cells to the right, down right, down, and down left from itself. 
+every celll only once checks every other cell adjacent once
