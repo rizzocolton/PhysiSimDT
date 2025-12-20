@@ -20,6 +20,7 @@ private:
     std::unordered_map<GridKey,std::unordered_set<PhysicsObject*>,GridKeyHash> sm;
     int cellSize;
     sf::VertexArray grid;
+    sf::FloatRect bounds;
     
 
 public:
@@ -35,6 +36,8 @@ public:
     void enterCell(PhysicsObject* c);
 
     int getCellSize();
+
+    void setCellSize(int cs);
 
     void clear();
 

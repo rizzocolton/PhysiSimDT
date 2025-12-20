@@ -4,6 +4,7 @@
 
 SpatialMap::SpatialMap(int cs, sf::FloatRect bounds){
     cellSize=cs;
+    this->bounds=bounds;
     grid.setPrimitiveType(sf::PrimitiveType::Lines);
     //need to resize for 2 vertices for every line, should be bounds/cellsize lines for each axis
     grid.resize(2*(static_cast<int>(bounds.size.y)+static_cast<int>(bounds.size.x))/cellSize);
@@ -37,6 +38,24 @@ void SpatialMap::enterCell(PhysicsObject* c){
 
 int SpatialMap::getCellSize(){
     return cellSize;
+}
+
+void SpatialMap::setCellSize(int cs){
+    cellSize=cs;
+    grid.resize(2*(static_cast<int>(bounds.size.y)+static_cast<int>(bounds.size.x))/cellSize);
+    int i=0;
+    for(int x=bounds.position.x;x<bounds.size.x+bounds.position.x;x+=cellSize){
+        grid[i].position=sf::Vector2f{static_cast<float>(x),bounds.position.y};
+        i++;
+        grid[i].position=sf::Vector2f{static_cast<float>(x),bounds.size.y+bounds.position.y};
+        i++;
+    }
+    for(int y=bounds.position.y;y<bounds.size.y+bounds.position.y;y+=cellSize){
+        grid[i].position=sf::Vector2f{bounds.position.x,static_cast<float>(y)};
+        i++;
+        grid[i].position=sf::Vector2f{bounds.size.x+bounds.position.x,static_cast<float>(y)};
+        i++;
+    }
 }
 
 void SpatialMap::clear(){

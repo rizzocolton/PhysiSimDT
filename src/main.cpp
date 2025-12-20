@@ -40,6 +40,8 @@ int main(){
     );
     currentSim->initUI(icelandFont);
 
+    //FPS and population counter
+
     sf::Text fpsCounter(icelandFont);
     fpsCounter.setPosition({500.f,0.f});
     sf::Text populationCounter(icelandFont);

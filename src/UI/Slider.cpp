@@ -1,8 +1,8 @@
 #include "Slider.h"
 #include "../Physics/Constants.h"
 
-Slider::Slider(sf::Vector2f p, sf::Vector2f s, float min, float max, float value):UI(p),
-    size(s), minValue(min), maxValue(max), currentValue(value){
+Slider::Slider(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value):UI(p),
+    size(s), label(f), minValue(min), maxValue(max), currentValue(value){
     if(currentValue<minValue) currentValue=minValue;
     if(currentValue>maxValue) currentValue=maxValue;
 };
@@ -11,6 +11,17 @@ void Slider::setValue(float value){
     if(value<minValue) currentValue=minValue;
     else if(value>maxValue) currentValue=maxValue;
     else currentValue=value;
+}
+
+void Slider::setText(const std::string& str){
+    label.setString(str);
+
+    sf::FloatRect textBounds=label.getLocalBounds();
+    label.setOrigin(textBounds.getCenter());
+
+    label.setPosition(
+        sf::Vector2f{pos.x+size.x/2.f,pos.y-10.f}
+    );
 }
 
 float Slider::getValue(){
@@ -57,4 +68,6 @@ void Slider::draw(sf::RenderWindow& window){
     filledBar.setFillColor(sf::Color(100,100,250));
     filledBar.setPosition(pos);
     window.draw(filledBar);
+
+    window.draw(label);
 }

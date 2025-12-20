@@ -22,6 +22,10 @@ void Button::setText(const std::string& str){
     );
 }
 
+void Button::rotateText(float angle){
+    text.rotate(sf::Angle{sf::degrees(angle)});
+}
+
 void Button::handleEvent(const sf::Event& event){
     sf::Vector2i mousePos=sf::Mouse::getPosition();
     bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);

@@ -28,6 +28,8 @@ public:
 
     void setText(const std::string& str);
 
+    void rotateText(float angle);
+
     void handleEvent(const sf::Event& event) override;
 
     void setOnClick(std::function<void()> func);

@@ -13,13 +13,16 @@ private:
     sf::Vector2f size;
     sf::RectangleShape filledBar;
     sf::RectangleShape bar;
+    sf::Text label;
 
     std::function<void()> onChange;
 
 public:
-    Slider(sf::Vector2f p, sf::Vector2f s, float min, float max, float value);
+    Slider(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value);
 
     void setValue(float value);
+
+    void setText(const std::string& str);
 
     float getValue();
 

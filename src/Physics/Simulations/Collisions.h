@@ -6,6 +6,8 @@
 #include "../SpatialMap.h"
 #include "../Objects/Circle.h"
 #include "../../UI/UI.h"
+#include <iomanip>
+#include <sstream>
 
 class Collisions: public Simulation{
     private:
@@ -20,6 +22,9 @@ class Collisions: public Simulation{
         std::vector<std::unique_ptr<PhysicsObject>> objects;
         //Collection of UI elements
         std::vector<std::unique_ptr<UI>> UIElements;
+
+        //Selected object for detail panel
+        std::unique_ptr<PhysicsObject> selectedObject=nullptr;
 
         bool simulating=false;
 
@@ -39,5 +44,12 @@ class Collisions: public Simulation{
 
         ~Collisions() override = default;
 };
+
+inline std::string formatFloatToDecimalPlaces(float value, int decimalPlaces){
+    //ridiculous way to format float to 2 decimal places which i must do because c++ is bad
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << value;
+    return stream.str();
+}
 
 #endif

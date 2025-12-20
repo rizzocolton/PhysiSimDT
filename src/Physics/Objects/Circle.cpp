@@ -52,6 +52,10 @@ void Circle::checkBounds(sf::FloatRect bounds,float restitution){
 
     if((vel.y<0&&pos.y-radius<=bounds.position.y)||(vel.y>0&&pos.y+radius>=bounds.position.y+bounds.size.y)){
         vel.y*=-1*restitution;
+        //prevents clipping due to gravity when near the bottom boundary
+        if(std::abs(vel.y)<0.1f){
+            vel.y=0.f;
+        }
     }
 }
 
