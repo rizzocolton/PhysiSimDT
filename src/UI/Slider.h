@@ -2,16 +2,19 @@
 #define SLIDER_H
 
 #include <SFML/Graphics.hpp>
+#include <functional>
+#include "UI.h"
 
-class Slider{
+class Slider: public UI{
 private:
     float minValue;
     float maxValue;
     float currentValue;
-    sf::Vector2f pos;
     sf::Vector2f size;
     sf::RectangleShape filledBar;
     sf::RectangleShape bar;
+
+    std::function<void()> onChange;
 
 public:
     Slider(sf::Vector2f p, sf::Vector2f s, float min, float max, float value);
@@ -22,9 +25,13 @@ public:
 
     void setRange(float min, float max);
 
-    bool update(sf::Vector2i mousePos, bool mousePressed);
+    void setOnChange(std::function<void()> func);
 
-    void draw(sf::RenderWindow& window);
+    void runOnChange();
+
+    void handleEvent(const sf::Event& event) override;
+
+    void draw(sf::RenderWindow& window) override;
 };
 
 #endif

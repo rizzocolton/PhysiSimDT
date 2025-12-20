@@ -35,7 +35,7 @@ int main(){
         98.f, //gravity
         1.0f,  //collision restitution
         1.0f,  //bounds restitution
-        10,    //cell size
+        20,    //cell size
         simSpace.getGlobalBounds() //simulation bounds
     );
     currentSim->initUI(icelandFont);
@@ -63,7 +63,11 @@ int main(){
             if(event->is<sf::Event::Closed>()){
                 window.close();
             }
-
+            if(event->is<sf::Event::KeyPressed>()){
+                if(event->getIf<sf::Event::KeyPressed>()->scancode==sf::Keyboard::Scancode::Escape){
+                    window.close();
+                }
+            }
 
             currentSim->handleEvent(*event);
         }

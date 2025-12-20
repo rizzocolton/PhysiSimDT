@@ -67,3 +67,11 @@ Overall I had very impressive performance gains on this. Went from 43 fps at 200
 While finicking around with ui and testing I realized a great way to optimize cell checks for collisions
 each object should only check its own cell and the cells to the right, down right, down, and down left from itself. 
 every celll only once checks every other cell adjacent once
+
+
+## Adding More UI
+
+
+## TO-DO
+
+* Refine keyboard input functionality

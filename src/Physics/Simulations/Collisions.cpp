@@ -1,29 +1,19 @@
 #include "Collisions.h"
 #include "../../UI/Button.h"
+#include "../../UI/Slider.h"
 
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds)
-: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){
-    //Initialize with some circles for testing
-    for(int i=0;i<5000;i++){
-        sf::Vector2f position{static_cast<float>(rand()%1400+500),static_cast<float>(rand()%800)};
-        float radius=2.f;
-        float mass=radius*radius*3.14f; //mass proportional to area
-        sf::Color color(
-            (rand()%256),
-            (rand()%256),
-            (rand()%256)
-        );
-        objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
-    }
-}
+: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){}
 
 void Collisions::update(float dt){
-    //Clear spatial map for new frame
-    sm.clear();
     //If simulation is not running, skip physics update
     if(!simulating){
         return;
     }
+
+    //Clear spatial map for new frame
+    sm.clear();
+
     //Update position of all objects
     for(auto& obj : objects){
         sf::Vector2f weight{0.0f,obj->getMass()*gravity};
@@ -90,8 +80,9 @@ void Collisions::draw(sf::RenderWindow& window){
 }
 
 void Collisions::initUI(sf::Font& font){
-    //Start/stop button
-    Button* startStop = new Button({100.f,50.f},{200.f,100.f},font);
+    //CORE SIM CONTROL BUTTONS
+
+    Button* startStop = new Button({345.f,5.f},{150.f,50.f},font);
     startStop->setText(std::string("Start/Stop"));
     startStop->setOnClick([this,startStop](){
         if(simulating){
@@ -103,6 +94,50 @@ void Collisions::initUI(sf::Font& font){
         }
     });
     UIElements.push_back(std::unique_ptr<Button>(startStop));
+
+    Button* saveState = new Button({345.f,65.f},{150.f,50.f},font);
+    saveState->setText(std::string("Save State"));
+    saveState->setOnClick([this](){
+        //Placeholder for future save state functionality
+    });
+    UIElements.push_back(std::unique_ptr<Button>(saveState));
+
+    Button* loadState = new Button({345.f,125.f},{150.f,50.f},font);
+    loadState->setText(std::string("Load State"));
+    loadState->setOnClick([this](){
+        //Placeholder for future load state functionality
+    });
+    UIElements.push_back(std::unique_ptr<Button>(loadState));
+
+    Button* reset = new Button({345.f,185.f},{150.f,50.f},font);
+    reset->setText(std::string("Reset"));
+    reset->setOnClick([this](){
+        objects.clear();
+    });
+    UIElements.push_back(std::unique_ptr<Button>(reset));
+
+
+    //SIMULATION PARAMETER CONTROLS
+
+
+    Slider* gravitySlider = new Slider({5.f,65.f},{200.f,50.f},0.f,100.f,gravity/10.f);
+    gravitySlider->setOnChange([this,gravitySlider](){
+        gravity=10*gravitySlider->getValue();
+    });
+    UIElements.push_back(std::unique_ptr<Slider>(gravitySlider));
+
+    Slider* colRestitutionSlider = new Slider({5.f,125.f},{200.f,50.f},0.f,1.f,colRestitution);
+    colRestitutionSlider->setOnChange([this,colRestitutionSlider](){
+        colRestitution=colRestitutionSlider->getValue();
+    });
+    UIElements.push_back(std::unique_ptr<Slider>(colRestitutionSlider));
+
+    Slider* boundsRestitutionSlider = new Slider({5.f,185.f},{200.f,50.f},0.f,1.f,boundsRestitution);
+    boundsRestitutionSlider->setOnChange([this,boundsRestitutionSlider](){
+        boundsRestitution=boundsRestitutionSlider->getValue();
+    });
+    UIElements.push_back(std::unique_ptr<Slider>(boundsRestitutionSlider));
+
 }
 
 void Collisions::drawUI(sf::RenderWindow& window){
@@ -113,7 +148,52 @@ void Collisions::drawUI(sf::RenderWindow& window){
 }
 
 void Collisions::handleEvent(const sf::Event& event){
+    //if space pressed, toggle simulation state
+    if(event.getIf<sf::Event::KeyPressed>()){
+        if(event.getIf<sf::Event::KeyPressed>()->scancode==sf::Keyboard::Scancode::Space){
+            simulating = !simulating;
+        }
+    }
+    
+    //if mouse pressed on sim screen, add a new circle at mouse position
+    if(event.getIf<sf::Event::MouseButtonPressed>()){
+        if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Left){
+            sf::Vector2i mousePos=sf::Mouse::getPosition();
+            //if mouse is within simulation bounds, place a new circle
+            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
+               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
+                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
+                float radius=10.f;
+                float mass=5;
+                sf::Color color(
+                    (rand()%256),
+                    (rand()%256),
+                    (rand()%256)
+                );
+                objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+            }
+        }
+    }
 
+    //if mouse is held down and moved, add circles along the drag path
+    if(event.getIf<sf::Event::MouseMoved>()){
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
+            sf::Vector2i mousePos=sf::Mouse::getPosition();
+            //if mouse is within simulation bounds, place a new circle
+            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
+               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
+                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
+                float radius=10.f;
+                float mass=5;
+                sf::Color color(
+                    (rand()%256),
+                    (rand()%256),
+                    (rand()%256)
+                );
+                objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+            }
+        }
+    }
 
     //update all UI elements
     for(auto& element : UIElements){

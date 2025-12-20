@@ -1,8 +1,8 @@
 #include "Slider.h"
 #include "../Physics/Constants.h"
 
-Slider::Slider(sf::Vector2f p, sf::Vector2f s, float min, float max, float value):
-    pos(p), size(s), minValue(min), maxValue(max), currentValue(value){
+Slider::Slider(sf::Vector2f p, sf::Vector2f s, float min, float max, float value):UI(p),
+    size(s), minValue(min), maxValue(max), currentValue(value){
     if(currentValue<minValue) currentValue=minValue;
     if(currentValue>maxValue) currentValue=maxValue;
 };
@@ -24,16 +24,26 @@ void Slider::setRange(float min, float max){
     if(currentValue>maxValue) currentValue=maxValue;
 }
 
-bool Slider::update(sf::Vector2i mousePos, bool mousePressed){
-    //if mouse is within all bounds of the slider
-    bool isInside=(mousePos.x>pos.x&&mousePos.x<pos.x+size.x&&mousePos.y>pos.y&&mousePos.y<pos.y+size.y);
+void Slider::setOnChange(std::function<void()> func){
+    onChange=func;
+}
+
+void Slider::runOnChange(){
+    onChange();
+}
+
+void Slider::handleEvent(const sf::Event& event){
+    sf::Vector2i mousePos=sf::Mouse::getPosition();
+    bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+    bool isInside=(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
+                   mousePos.y>=pos.y && mousePos.y<=pos.y+size.y);
 
     if(isInside&&mousePressed){
         float percent=(mousePos.x - pos.x)/size.x;
         float value=minValue+percent*(maxValue - minValue);
         setValue(value);
+        runOnChange();
     }
-    return isInside&&mousePressed;
 }
 
 void Slider::draw(sf::RenderWindow& window){
