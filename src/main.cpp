@@ -74,6 +74,17 @@ int main(){
             currentSim->handleEvent(*event);
         }
 
+        //Do live updates for UI elements
+        for(auto& element : currentSim->UIElements){
+            //If element is a Spinner, run its live update
+            Spinner* spinnerPtr = dynamic_cast<Spinner*>(element.get());
+            if(spinnerPtr!=nullptr){
+                if(spinnerPtr->getValue()>=-1000.f && spinnerPtr->getValue()<=1000.f){
+                    spinnerPtr->runLiveUpdate();
+                }
+            }
+        }
+
         //Draw UI
         currentSim->drawUI(window);
 

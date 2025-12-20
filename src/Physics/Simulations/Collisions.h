@@ -6,6 +6,9 @@
 #include "../SpatialMap.h"
 #include "../Objects/Circle.h"
 #include "../../UI/UI.h"
+#include "../../UI/Button.h"
+#include "../../UI/Slider.h"
+#include "../../UI/Spinner.h"
 #include <iomanip>
 #include <sstream>
 
@@ -18,15 +21,7 @@ class Collisions: public Simulation{
         sf::FloatRect simBounds;
 
 
-        //Collection of physics objects in the simulation
-        std::vector<std::unique_ptr<PhysicsObject>> objects;
-        //Collection of UI elements
-        std::vector<std::unique_ptr<UI>> UIElements;
-
-        //Selected object for detail panel
-        std::unique_ptr<PhysicsObject> selectedObject=nullptr;
-
-        bool simulating=false;
+       
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);

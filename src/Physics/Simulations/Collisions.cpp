@@ -239,7 +239,6 @@ void Collisions::handleEvent(const sf::Event& event){
             std::unordered_set objs=sm.getMap()[sm.getKey(mousePosf)];
             //vector pointing to every object in that cell
             std::vector<PhysicsObject*> objVec;
-            std::cout<<"Objects in cell: "<<objs.size()<<"\n";
             //filling that vector using extraction (C++17 exclusive thing)
             objVec.reserve(objs.size());
             while(!objs.empty()){
@@ -256,7 +255,7 @@ void Collisions::handleEvent(const sf::Event& event){
                         minIndex=i;
                     }
                 }
-                selectedObject=std::unique_ptr<PhysicsObject>(objVec.at(minIndex));
+                selectedObject=objVec.at(minIndex);
                 std::cout<<"Selected object at position: "<<selectedObject->getPos().x<<","<<selectedObject->getPos().y<<"\n";
             }
         }
@@ -285,13 +284,6 @@ void Collisions::handleEvent(const sf::Event& event){
     //update all UI elements
     for(auto& element : UIElements){
         element->handleEvent(event);
-        //If element is a Spinner, run its live update
-        Spinner* spinnerPtr = dynamic_cast<Spinner*>(element.get());
-        if(spinnerPtr!=nullptr){
-            if(spinnerPtr->getValue()>=-1000.f && spinnerPtr->getValue()<=1000.f){
-                spinnerPtr->runLiveUpdate();
-            }
-        }
     }
 }
 
