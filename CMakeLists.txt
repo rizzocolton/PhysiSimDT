@@ -12,7 +12,6 @@ add_executable(PhysiSim
     src/Physics/Objects/PhysicsObject.cpp
     src/Physics/Objects/Circle.cpp
     src/Physics/SpatialMap.cpp
-    src/Physics/Constants.cpp
     src/UI/Button.cpp
     src/UI/Slider.cpp
     src/UI/Spinner.cpp

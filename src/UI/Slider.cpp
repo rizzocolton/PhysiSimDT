@@ -1,5 +1,4 @@
 #include "Slider.h"
-#include "../Physics/Constants.h"
 
 Slider::Slider(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value):UI(p),
     size(s), label(f), minValue(min), maxValue(max), currentValue(value){

@@ -1,6 +1,5 @@
 #include "SpatialMap.h"
 #include "Objects/Circle.h"
-#include "Constants.h"
 
 SpatialMap::SpatialMap(int cs, sf::FloatRect bounds){
     cellSize=cs;

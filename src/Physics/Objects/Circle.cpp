@@ -1,6 +1,5 @@
 #include "Circle.h"
 #include "../SpatialMap.h"
-#include "../Constants.h"
 #include <iostream>
 
 //Constructor
