@@ -40,6 +40,10 @@ public:
     virtual void draw(sf::RenderWindow& window)=0;
     //Subclasses (different shaped objects) utilize their own collision detection and response according to their geometry
     virtual void collide(PhysicsObject& other, float restitution)=0;
+    //Subclasses should be able to highlight themselves when selected
+    virtual void highlight()=0;
+    //Should also unhighlight themselves
+    virtual void unhighlight()=0;
 
     virtual ~PhysicsObject() = default;
     

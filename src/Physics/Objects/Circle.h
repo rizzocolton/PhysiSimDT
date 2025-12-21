@@ -19,17 +19,13 @@ public:
     //Constructor (PhysicsObject parent)
     Circle(sf::Vector2f& p, float r, float m, sf::Color& color);
 
-    void highlight();
+    void highlight() override;
 
-    void unhighlight();
-
-    void setMass(float m);
+    void unhighlight() override;
 
     void setRadius(float r);
 
-    void setPos(sf::Vector2f& p);
-
-    void setVel(sf::Vector2f& v);
+    float getRadius();
 
     //Virtual checkBounds override
     void checkBounds(sf::FloatRect bounds,float restitution) override;

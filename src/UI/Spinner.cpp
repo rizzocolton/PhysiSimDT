@@ -2,8 +2,8 @@
 
 Spinner::Spinner(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value):
 UI(p), 
-upButton({p.x + s.x, p.y}, {s.x / 3.f, s.y / 2.f}, f),
-downButton({p.x + s.x, p.y + s.y / 2.f}, {s.x / 3.f, s.y / 2.f}, f),
+upButton({p.x + s.x+5.f, p.y}, {20.f, s.y / 2.f}, f),
+downButton({p.x + s.x+5.f, p.y + s.y / 2.f}, {20.f, s.y / 2.f}, f),
     size(s), label(f), minValue(min), maxValue(max), currentValue(value){
     if(currentValue<minValue) currentValue=minValue;
     if(currentValue>maxValue) currentValue=maxValue;
@@ -30,8 +30,10 @@ void Spinner::setValue(float value){
 
 void Spinner::setText(const std::string& str){
     label.setString(str);
+    sf::FloatRect textBounds=label.getLocalBounds();
+    label.setOrigin({textBounds.size.x,0.f});
     label.setPosition(
-        sf::Vector2f{pos.x,pos.y}
+        sf::Vector2f{pos.x+size.x,pos.y}
     );
 }
 

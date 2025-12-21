@@ -15,7 +15,11 @@ class Simulation{
         //Selected object for detail panel
         PhysicsObject* selectedObject=nullptr;
 
-        bool simulating=false;    
+        bool simulating=false;
+        
+        float scaleFactor=100.f; //100 pixels = 1 meter
+        float timeFactor=1.f;  //real-time by default
+         
 
 
         virtual void update(float dt)=0;

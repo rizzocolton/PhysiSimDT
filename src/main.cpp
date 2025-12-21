@@ -32,10 +32,10 @@ int main(){
 
     //Simulation management
     std::unique_ptr<Simulation> currentSim = std::make_unique<Collisions>(
-        98.f, //gravity
+        9.8f, //gravity
         1.0f,  //collision restitution
         1.0f,  //bounds restitution
-        20,    //cell size
+        20,    //cell size (in pixels)
         simSpace.getGlobalBounds() //simulation bounds
     );
     currentSim->initUI(icelandFont);

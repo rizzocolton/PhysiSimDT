@@ -1,8 +1,6 @@
 #include "Collisions.h"
 #include <iostream>
 
-
-
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds)
 : gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds){}
 
@@ -17,9 +15,9 @@ void Collisions::update(float dt){
 
     //Update position of all objects
     for(auto& obj : objects){
-        sf::Vector2f weight{0.0f,obj->getMass()*gravity};
-        obj->push(weight,dt);
-        obj->update(dt);
+        sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
+        obj->push(weight,timeFactor*dt);
+        obj->update(timeFactor*dt);
         obj->checkBounds(simBounds,boundsRestitution);
         sm.enterCell(obj.get());
     }
@@ -141,8 +139,16 @@ void Collisions::handleEvent(const sf::Event& event){
                         minIndex=i;
                     }
                 }
+                if(selectedObject!=nullptr){
+                    selectedObject->unhighlight();
+                }
                 selectedObject=objVec.at(minIndex);
-                std::cout<<"Selected object at position: "<<selectedObject->getPos().x<<","<<selectedObject->getPos().y<<"\n";
+                selectedObject->highlight();
+            }else{
+                if(selectedObject!=nullptr){
+                    selectedObject->unhighlight();
+                }
+                selectedObject=nullptr;
             }
         }
     }

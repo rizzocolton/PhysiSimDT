@@ -25,22 +25,14 @@ void Circle::unhighlight(){
     shape.setOutlineThickness(0.f);
 }
 
-void Circle::setMass(float m){
-    mass=m;
-}
-
 void Circle::setRadius(float r){
     radius=r;
     shape.setRadius(radius);
     shape.setOrigin({radius,radius});
 }
 
-void Circle::setPos(sf::Vector2f& p){
-    pos=p;
-}
-
-void Circle::setVel(sf::Vector2f& v){
-    vel=v;
+float Circle::getRadius(){
+    return radius;
 }
 
 //overrides virtual check boundaries for circular geometry

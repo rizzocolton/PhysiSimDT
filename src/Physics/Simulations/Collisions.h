@@ -19,8 +19,7 @@ class Collisions: public Simulation{
         float boundsRestitution;
         SpatialMap sm;
         sf::FloatRect simBounds;
-
-
+        
        
 
     public:

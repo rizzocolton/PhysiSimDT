@@ -45,10 +45,10 @@ void Collisions::initUI(sf::Font& font){
     /** SIMULATION PARAMETER CONTROLS */
 
 
-    Slider* gravitySlider = new Slider({23.f,70.f},{300.f,40.f}, font,0.f,100.f,gravity/10.f);
+    Slider* gravitySlider = new Slider({23.f,70.f},{300.f,40.f}, font,0.f,100.f,gravity);
     gravitySlider->setOnChange([this,gravitySlider](){
-        gravity=10*gravitySlider->getValue();
-        gravitySlider->setText("Gravity: " + formatFloatToDecimalPlaces(gravity/10.f,2));
+        gravity=gravitySlider->getValue();
+        gravitySlider->setText("Gravity: " + formatFloatToDecimalPlaces(gravity,2));
     });
     gravitySlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(gravitySlider));
@@ -56,7 +56,7 @@ void Collisions::initUI(sf::Font& font){
     Slider* colRestitutionSlider = new Slider({23.f,140.f},{300.f,40.f}, font,0.f,1.f,colRestitution);
     colRestitutionSlider->setOnChange([this,colRestitutionSlider](){
         colRestitution=colRestitutionSlider->getValue();
-        colRestitutionSlider->setText("Collision Restitution: " + formatFloatToDecimalPlaces(colRestitution,2));
+        colRestitutionSlider->setText("Collision Restitution: " + formatFloatToDecimalPlaces(colRestitution,1));
     });
     colRestitutionSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(colRestitutionSlider));
@@ -64,7 +64,7 @@ void Collisions::initUI(sf::Font& font){
     Slider* boundsRestitutionSlider = new Slider({23.f,210.f},{300.f,40.f}, font,0.f,1.f,boundsRestitution);
     boundsRestitutionSlider->setOnChange([this,boundsRestitutionSlider](){
         boundsRestitution=boundsRestitutionSlider->getValue();
-        boundsRestitutionSlider->setText("Bounds Restitution: " + formatFloatToDecimalPlaces(boundsRestitution,2));
+        boundsRestitutionSlider->setText("Bounds Restitution: " + formatFloatToDecimalPlaces(boundsRestitution,1));
     });
     boundsRestitutionSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(boundsRestitutionSlider));
@@ -82,44 +82,44 @@ void Collisions::initUI(sf::Font& font){
 
     //Position spinners
     
-    Spinner* posXSpinner = new Spinner({10.f,650.f},{120.f,40.f}, font,0.f,simBounds.size.x,0.f);
+    Spinner* posXSpinner = new Spinner({10.f,650.f},{120.f,40.f}, font,0.f,simBounds.size.x/scaleFactor,0.f);
     posXSpinner->setOnChange([this,posXSpinner](){
         //if selected object exists, update its x position
         if(this->selectedObject!=nullptr){
             this->selectedObject->setPos({
-                posXSpinner->getValue()+simBounds.position.x,
+                posXSpinner->getValue()*scaleFactor+simBounds.position.x,
                 this->selectedObject->getPos().y
             });
         }
-        posXSpinner->setText("X [" + formatFloatToDecimalPlaces(posXSpinner->getValue(),1)+"]");
+        posXSpinner->setText("X [" + formatFloatToDecimalPlaces(posXSpinner->getValue(),2)+"]");
     });
     posXSpinner->setLiveUpdate([this,posXSpinner](){
         //if selected object exists, update spinner text to match its x position
         if(this->selectedObject!=nullptr){
-             posXSpinner->setValue(this->selectedObject->getPos().x-simBounds.position.x);
+             posXSpinner->setValue((this->selectedObject->getPos().x-simBounds.position.x)/scaleFactor);
         }
-        posXSpinner->setText("X [" + formatFloatToDecimalPlaces(posXSpinner->getValue(),1)+"]");
+        posXSpinner->setText("X [" + formatFloatToDecimalPlaces(posXSpinner->getValue(),2)+"]");
     });
     posXSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(posXSpinner));
 
-    Spinner* posYSpinner = new Spinner({180.f,650.f},{120.f,40.f}, font,0.f,simBounds.size.y,0.f);
+    Spinner* posYSpinner = new Spinner({170.f,650.f},{120.f,40.f}, font,0.f,simBounds.size.y/scaleFactor,0.f);
     posYSpinner->setOnChange([this,posYSpinner](){
         //if selected object exists, update its y position
         if(this->selectedObject!=nullptr){
             this->selectedObject->setPos({
                 this->selectedObject->getPos().x,
-                simBounds.size.y-posYSpinner->getValue()+simBounds.position.y
+                simBounds.size.y-posYSpinner->getValue()*scaleFactor+simBounds.position.y
             });
         }
-        posYSpinner->setText("Y [" + formatFloatToDecimalPlaces(posYSpinner->getValue(),1)+"]");
+        posYSpinner->setText("Y [" + formatFloatToDecimalPlaces(posYSpinner->getValue(),2)+"]");
     });
     posYSpinner->setLiveUpdate([this,posYSpinner](){
         //if selected object exists, update spinner text to match its y position
         if(this->selectedObject!=nullptr){
-             posYSpinner->setValue(simBounds.size.y-this->selectedObject->getPos().y+simBounds.position.y);
+             posYSpinner->setValue((simBounds.size.y-this->selectedObject->getPos().y+simBounds.position.y)/scaleFactor);
         }
-        posYSpinner->setText("Y [" + formatFloatToDecimalPlaces(posYSpinner->getValue(),1)+"]");
+        posYSpinner->setText("Y [" + formatFloatToDecimalPlaces(posYSpinner->getValue(),2)+"]");
     });
     posYSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(posYSpinner));
@@ -130,7 +130,7 @@ void Collisions::initUI(sf::Font& font){
         //if selected object exists, update its x position
         if(this->selectedObject!=nullptr){
             this->selectedObject->setVel({
-                velXSpinner->getValue(),
+                velXSpinner->getValue()*scaleFactor,
                 this->selectedObject->getVel().y
             });
         }
@@ -139,32 +139,77 @@ void Collisions::initUI(sf::Font& font){
     velXSpinner->setLiveUpdate([this,velXSpinner](){
         //if selected object exists, update spinner text to match its x position
         if(this->selectedObject!=nullptr){
-             velXSpinner->setValue(this->selectedObject->getVel().x);
+             velXSpinner->setValue(this->selectedObject->getVel().x/scaleFactor);
         }
-        velXSpinner->setText("X [" + formatFloatToDecimalPlaces(velXSpinner->getValue(),1)+"]");
+        velXSpinner->setText("X [" + formatFloatToDecimalPlaces(velXSpinner->getValue(),2)+"]");
     });
     velXSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(velXSpinner));
 
-    Spinner* velYSpinner = new Spinner({180.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
+    Spinner* velYSpinner = new Spinner({170.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
     velYSpinner->setOnChange([this,velYSpinner](){
         //if selected object exists, update its y position
         if(this->selectedObject!=nullptr){
             this->selectedObject->setVel({
                 this->selectedObject->getVel().x,
-                -velYSpinner->getValue()
+                -velYSpinner->getValue()*scaleFactor
             });
         }
-        velYSpinner->setText("Y [" + formatFloatToDecimalPlaces(velYSpinner->getValue(),1)+"]");
+        velYSpinner->setText("Y [" + formatFloatToDecimalPlaces(velYSpinner->getValue(),2)+"]");
     });
     velYSpinner->setLiveUpdate([this,velYSpinner](){
         //if selected object exists, update spinner text to match its y position
         if(this->selectedObject!=nullptr){
-             velYSpinner->setValue(-this->selectedObject->getVel().y);
+             velYSpinner->setValue(-this->selectedObject->getVel().y/scaleFactor);
         }
-        velYSpinner->setText("Y [" + formatFloatToDecimalPlaces(velYSpinner->getValue(),1)+"]");
+        velYSpinner->setText("Y [" + formatFloatToDecimalPlaces(velYSpinner->getValue(),2)+"]");
     });
     velYSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(velYSpinner));
+
+    //mass spinner
+
+    Spinner* massSpinner = new Spinner({10.f,850.f},{120.f,40.f}, font,0.1f,FLT_MAX,1.f);
+    massSpinner->setOnChange([this,massSpinner](){
+        //if selected object exists, update its mass
+        if(this->selectedObject!=nullptr){
+            this->selectedObject->setMass(massSpinner->getValue());
+        }
+        massSpinner->setText("Mass [" + formatFloatToDecimalPlaces(massSpinner->getValue(),2)+"]");
+    });
+    massSpinner->setLiveUpdate([this, massSpinner](){
+        //if selected object exists, make the spinner match its mass
+        if(this->selectedObject!=nullptr){
+            massSpinner->setValue(this->selectedObject->getMass());
+        }
+        massSpinner->setText("Mass [" + formatFloatToDecimalPlaces(massSpinner->getValue(),2)+"]");
+    });
+    massSpinner->runOnChange();
+    UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
+
+    //radius spinner (for circles)
+    Spinner* radiusSpinner = new Spinner({170.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,FLT_MAX,10.f);
+    radiusSpinner->setOnChange([this,radiusSpinner](){
+        //if selected object exists and is a circle, update its radius
+        if(this->selectedObject!=nullptr){
+            Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
+            if(circle!=nullptr){
+                circle->setRadius(radiusSpinner->getValue()*scaleFactor);
+            }
+        }
+        radiusSpinner->setText("Radius [" + formatFloatToDecimalPlaces(radiusSpinner->getValue(),2)+"]");
+    });
+    radiusSpinner->setLiveUpdate([this,radiusSpinner](){
+        //if selected object exists and is a circle, update spinner to match its radius
+        if(this->selectedObject!=nullptr){
+            Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
+            if(circle!=nullptr){
+                radiusSpinner->setValue(circle->getRadius()/scaleFactor);
+            }
+        }
+        radiusSpinner->setText("Radius [" + formatFloatToDecimalPlaces(radiusSpinner->getValue(),2)+"]");
+    });
+    radiusSpinner->runOnChange();
+    UIElements.push_back(std::unique_ptr<Spinner>(radiusSpinner));
     
 }
