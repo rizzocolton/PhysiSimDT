@@ -79,9 +79,7 @@ int main(){
             //If element is a Spinner, run its live update
             Spinner* spinnerPtr = dynamic_cast<Spinner*>(element.get());
             if(spinnerPtr!=nullptr){
-                if(spinnerPtr->getValue()>=-1000.f && spinnerPtr->getValue()<=1000.f){
-                    spinnerPtr->runLiveUpdate();
-                }
+                spinnerPtr->runLiveUpdate();
             }
         }
 

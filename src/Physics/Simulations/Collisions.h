@@ -43,7 +43,7 @@ class Collisions: public Simulation{
 inline std::string formatFloatToDecimalPlaces(float value, int decimalPlaces){
     //ridiculous way to format float to 2 decimal places which i must do because c++ is bad
     std::stringstream stream;
-    stream << std::fixed << std::setprecision(2) << value;
+    stream << std::fixed << std::setprecision(decimalPlaces) << value;
     return stream.str();
 }
 
