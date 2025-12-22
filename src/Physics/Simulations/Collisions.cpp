@@ -112,6 +112,7 @@ void Collisions::handleEvent(const sf::Event& event){
                     (rand()%256)
                 );
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+                sm.enterCell(objects.back().get());
             }
         }
 

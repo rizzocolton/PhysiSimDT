@@ -234,8 +234,20 @@ void Collisions::initUI(sf::Font& font){
     radiusSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(radiusSpinner));
 
+    Label* mechEnergyLabel = new Label({20.f,900.f},font);
+    mechEnergyLabel->setLiveUpdate([this,mechEnergyLabel](){
+        //if selected object exists, update label to match its total mechanical energy
+        if(this->selectedObject!=nullptr){
+            //KE=0.5*m*v^2
+            float KE=this->selectedObject->getMass()*(this->selectedObject->getVel().lengthSquared()/(scaleFactor*scaleFactor))*0.5;
+            //U=mgh (don't need to divide by scale factor twice as gravity is already in correct units)
+            float U=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
+            mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(U+KE,3));
+        }
+    });
+    UIElements.push_back(std::unique_ptr<Label>(mechEnergyLabel));
 
-    Label* kineticEnergyLabel = new Label({50.f,900},font);
+    Label* kineticEnergyLabel = new Label({160.f,900},font);
     kineticEnergyLabel->setLiveUpdate([this,kineticEnergyLabel](){
         //if selected object exists, update label to match its kinetic energy
         if(this->selectedObject!=nullptr){
@@ -245,5 +257,16 @@ void Collisions::initUI(sf::Font& font){
         }
     });
     UIElements.push_back(std::unique_ptr<Label>(kineticEnergyLabel));
+
+    Label* potentialEnergyLabel = new Label({300.f,900},font);
+    potentialEnergyLabel->setLiveUpdate([this,potentialEnergyLabel](){
+        //if selected object exists, update label to match its potential energy
+        if(this->selectedObject!=nullptr){
+            potentialEnergyLabel->setText("U=" + formatFloatToSigFigs(
+                this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor),3
+            ));
+        }
+    });
+    UIElements.push_back(std::unique_ptr<Label>(potentialEnergyLabel));
     
 }

@@ -41,7 +41,7 @@ class Collisions: public Simulation{
 };
 
 inline std::string formatFloatToSigFigs(float value, int sigfigs){
-    //ridiculous way to format float to 2 decimal places which i must do because c++ is bad
+    //formats a float to specified # of significant figures
     std::stringstream stream;
     stream << std::setprecision(sigfigs) << value;
     return stream.str();
