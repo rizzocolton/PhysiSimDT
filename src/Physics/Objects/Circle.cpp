@@ -38,22 +38,25 @@ float Circle::getRadius(){
 void Circle::checkBounds(sf::FloatRect bounds,float restitution){
     float timeOutsideBounds;
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away
-    if((vel.x<0&&pos.x-radius<bounds.position.x)||(vel.x>0&&pos.x+radius>bounds.position.x+bounds.size.x)){
-        vel.x*=-1*restitution;
-        if(pos.x-radius<bounds.position.x){
-            pos.x=bounds.position.x+radius;
-        }else{
-            pos.x=bounds.position.x+bounds.size.x-radius;
+    // Check X bounds
+    if((vel.x<0&&pos.x-radius<bounds.position.x)|| 
+       (vel.x > 0&&pos.x+radius>bounds.position.x+bounds.size.x)){
+        vel.x *= -1 * restitution;
+        if(pos.x - radius < bounds.position.x){
+            pos.x = bounds.position.x + radius;
+        } else {
+            pos.x = bounds.position.x + bounds.size.x - radius;
         }
     }
 
-    if((vel.y<0&&pos.y-radius<bounds.position.y)||(vel.y>0&&pos.y+radius>bounds.position.y+bounds.size.y)){
-        vel.y*=-1*restitution;
-        if(pos.y-radius<bounds.position.y){
-            
-        }else{
-            timeOutsideBounds=(pos.y-(bounds.position.y+bounds.size.y)+radius)/(abs(vel.y));
-            update(timeOutsideBounds);
+    // Check Y bounds
+    if((vel.y < 0 && pos.y - radius < bounds.position.y) || 
+       (vel.y > 0 && pos.y + radius > bounds.position.y + bounds.size.y)){
+        vel.y *= -1 * restitution;
+        if(pos.y - radius < bounds.position.y){
+            pos.y = bounds.position.y + radius;
+        } else {
+            pos.y = bounds.position.y + bounds.size.y - radius;
         }
     }
 }

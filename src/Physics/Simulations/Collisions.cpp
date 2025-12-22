@@ -16,9 +16,9 @@ void Collisions::update(float dt){
     //Update position of all objects
     for(auto& obj : objects){
         sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
-        obj->push(weight,timeFactor*dt);
         obj->update(timeFactor*dt);
         obj->checkBounds(simBounds,boundsRestitution);
+        obj->push(weight,timeFactor*dt);
         sm.enterCell(obj.get());
     }
 
