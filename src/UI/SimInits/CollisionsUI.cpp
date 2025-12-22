@@ -69,10 +69,10 @@ void Collisions::initUI(sf::Font& font){
     boundsRestitutionSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(boundsRestitutionSlider));
 
-    Slider* cellSizeSlider = new Slider({23.f,280.f},{300.f,40.f}, font,5.f,100.f,(float)sm.getCellSize());
+    Slider* cellSizeSlider = new Slider({23.f,280.f},{300.f,40.f}, font,0.01f,10.f,(float)sm.getCellSize()/scaleFactor);
     cellSizeSlider->setOnChange([this,cellSizeSlider](){
-        sm.setCellSize(static_cast<int>(cellSizeSlider->getValue()));
-        cellSizeSlider->setText("Cell Size: " + std::to_string(static_cast<int>(cellSizeSlider->getValue())));
+        sm.setCellSize(static_cast<int>(cellSizeSlider->getValue()*scaleFactor));
+        cellSizeSlider->setText("Cell Size: " + formatFloatToDecimalPlaces(cellSizeSlider->getValue(),2));
     });
     cellSizeSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(cellSizeSlider));
@@ -86,6 +86,12 @@ void Collisions::initUI(sf::Font& font){
     posXSpinner->setOnChange([this,posXSpinner](){
         //if selected object exists, update its x position
         if(this->selectedObject!=nullptr){
+            
+            Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
+            if(circle!=nullptr){
+                posXSpinner->setRange(circle->getRadius()/scaleFactor,simBounds.size.x/scaleFactor);
+            }
+
             this->selectedObject->setPos({
                 posXSpinner->getValue()*scaleFactor+simBounds.position.x,
                 this->selectedObject->getPos().y
@@ -107,6 +113,12 @@ void Collisions::initUI(sf::Font& font){
     posYSpinner->setOnChange([this,posYSpinner](){
         //if selected object exists, update its y position
         if(this->selectedObject!=nullptr){
+
+            Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
+            if(circle!=nullptr){
+                posYSpinner->setRange(circle->getRadius()/scaleFactor,simBounds.size.y/scaleFactor);
+            }
+
             this->selectedObject->setPos({
                 this->selectedObject->getPos().x,
                 simBounds.size.y-posYSpinner->getValue()*scaleFactor+simBounds.position.y
@@ -169,7 +181,7 @@ void Collisions::initUI(sf::Font& font){
 
     //mass spinner
 
-    Spinner* massSpinner = new Spinner({10.f,850.f},{120.f,40.f}, font,0.1f,FLT_MAX,1.f);
+    Spinner* massSpinner = new Spinner({50.f,800.f},{120.f,40.f}, font,0.1f,FLT_MAX,0.f);
     massSpinner->setOnChange([this,massSpinner](){
         //if selected object exists, update its mass
         if(this->selectedObject!=nullptr){
@@ -188,7 +200,7 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
 
     //radius spinner (for circles)
-    Spinner* radiusSpinner = new Spinner({170.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,FLT_MAX,10.f);
+    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,FLT_MAX,0.f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
         //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){

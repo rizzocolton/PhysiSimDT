@@ -10,14 +10,14 @@ downButton({p.x + s.x+5.f, p.y + s.y / 2.f}, {20.f, s.y / 2.f}, f),
 
     upButton.setText("^");
     upButton.setOnClick([this]() {
-        setValue(currentValue + 0.1f);
+        setValue(currentValue + 0.01f);
         runOnChange();
     });
 
     downButton.setText("^");
     downButton.rotateText(180.f);
     downButton.setOnClick([this]() {
-        setValue(currentValue - 0.1f);
+        setValue(currentValue - 0.01f);
         runOnChange();
     });
 };
@@ -77,12 +77,12 @@ void Spinner::handleEvent(const sf::Event& event){
            mousePos.y >= pos.y && mousePos.y <= pos.y + size.y){
             //scroll up
             if(wheelEvent->delta > 0){
-                setValue(currentValue + 1.f);
+                setValue(currentValue + 0.1f);
                 runOnChange();
             }
             //scroll down
             else if(wheelEvent->delta < 0){
-                setValue(currentValue - 1.f);
+                setValue(currentValue - 0.1f);
                 runOnChange();
             }
         }
