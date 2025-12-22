@@ -15,6 +15,7 @@ add_executable(PhysiSim
     src/UI/Button.cpp
     src/UI/Slider.cpp
     src/UI/Spinner.cpp
+    src/UI/Label.cpp
 )
 target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

@@ -1,4 +1,4 @@
-#include Label.h
+#include "Label.h"
 
 Label::Label(const sf::Vector2f& p, sf::Font& font):UI(p), text(font){
     text.setFillColor(sf::Color::White);
@@ -7,6 +7,14 @@ Label::Label(const sf::Vector2f& p, sf::Font& font):UI(p), text(font){
 
 void Label::setText(const std::string& str){
     text.setString(str);
+}
+
+void Label::setLiveUpdate(std::function<void()> func){
+    liveUpdate=func;
+}
+
+void Label::runLiveUpdate(){
+    liveUpdate();
 }
 
 void Label::handleEvent(const sf::Event& event){

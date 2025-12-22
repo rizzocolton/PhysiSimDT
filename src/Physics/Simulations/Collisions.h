@@ -9,6 +9,7 @@
 #include "../../UI/Button.h"
 #include "../../UI/Slider.h"
 #include "../../UI/Spinner.h"
+#include "../../UI/Label.h"
 #include <iomanip>
 #include <sstream>
 
@@ -39,10 +40,10 @@ class Collisions: public Simulation{
         ~Collisions() override = default;
 };
 
-inline std::string formatFloatToDecimalPlaces(float value, int decimalPlaces){
+inline std::string formatFloatToSigFigs(float value, int sigfigs){
     //ridiculous way to format float to 2 decimal places which i must do because c++ is bad
     std::stringstream stream;
-    stream << std::fixed << std::setprecision(decimalPlaces) << value;
+    stream << std::setprecision(sigfigs) << value;
     return stream.str();
 }
 
