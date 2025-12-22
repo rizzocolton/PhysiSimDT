@@ -24,3 +24,7 @@ void Label::handleEvent(const sf::Event& event){
 void Label::draw(sf::RenderWindow& window){
     window.draw(text);
 }
+
+std::unique_ptr<UI> Label::clone() const {
+    return std::make_unique<Label>(*this);
+}

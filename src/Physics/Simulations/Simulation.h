@@ -5,12 +5,21 @@
 #include "../Objects/PhysicsObject.h"
 #include "../../UI/UI.h"
 
+struct SaveState{
+    std::vector<std::unique_ptr<PhysicsObject>> savedObjects;
+    std::vector<std::unique_ptr<UI>> savedUIElements;
+};
+
+
 class Simulation{
     public:
          //Collection of physics objects in the simulation
         std::vector<std::unique_ptr<PhysicsObject>> objects;
         //Collection of UI elements
         std::vector<std::unique_ptr<UI>> UIElements;
+
+        //a save state
+        SaveState save;
 
         //Selected object for detail panel
         PhysicsObject* selectedObject=nullptr;

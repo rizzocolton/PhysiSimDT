@@ -13,6 +13,9 @@ class UI{
 
         virtual void handleEvent(const sf::Event& event)=0;
 
+        //for copying into saves
+        virtual std::unique_ptr<UI> clone() const=0;
+
         virtual ~UI()=default;
 };
 

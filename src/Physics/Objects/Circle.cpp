@@ -119,3 +119,7 @@ void Circle::collide(PhysicsObject& other, float res){
     vel=v1_impact_prime+v1_contact;
     otherCircle->vel=v2_impact_prime+v2_contact;
 }
+
+std::unique_ptr<PhysicsObject> Circle::clone() const {
+    return std::make_unique<Circle>(*this);
+}

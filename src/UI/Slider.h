@@ -35,6 +35,8 @@ public:
     void handleEvent(const sf::Event& event) override;
 
     void draw(sf::RenderWindow& window) override;
+
+    std::unique_ptr<UI> clone() const override;
 };
 
 #endif

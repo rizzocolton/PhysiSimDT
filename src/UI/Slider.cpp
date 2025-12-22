@@ -70,3 +70,7 @@ void Slider::draw(sf::RenderWindow& window){
 
     window.draw(label);
 }
+
+std::unique_ptr<UI> Slider::clone() const {
+    return std::make_unique<Slider>(*this);
+}

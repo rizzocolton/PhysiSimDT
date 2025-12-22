@@ -23,20 +23,28 @@ void Collisions::initUI(sf::Font& font){
     Button* saveState = new Button({345.f,65.f},{150.f,50.f},font);
     saveState->setText(std::string("Save State"));
     saveState->setOnClick([this](){
-        //Placeholder for future save state functionality
+        this->save.savedObjects.clear();
+        for(auto& obj: this->objects){
+            this->save.savedObjects.push_back(obj->clone());
+        }
     });
     UIElements.push_back(std::unique_ptr<Button>(saveState));
 
     Button* loadState = new Button({345.f,125.f},{150.f,50.f},font);
     loadState->setText(std::string("Load State"));
     loadState->setOnClick([this](){
-        //Placeholder for future load state functionality
+        this->selectedObject=nullptr;
+        this->objects.clear();
+        for(auto& obj: this->save.savedObjects){
+            this->objects.push_back(obj->clone());
+            this->sm.enterCell(this->objects.back().get());
+        }
     });
     UIElements.push_back(std::unique_ptr<Button>(loadState));
 
     Button* reset = new Button({345.f,185.f},{150.f,50.f},font);
     reset->setText(std::string("Reset"));
-    reset->setOnClick([this](){
+    reset->setOnClick([this,&font](){
         selectedObject=nullptr;
         objects.clear();
     });

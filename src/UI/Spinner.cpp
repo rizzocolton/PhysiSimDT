@@ -97,3 +97,7 @@ void Spinner::draw(sf::RenderWindow& window){
     upButton.draw(window);
     downButton.draw(window);
 }
+
+std::unique_ptr<UI> Spinner::clone() const {
+    return std::make_unique<Spinner>(*this);
+}

@@ -45,6 +45,9 @@ public:
     //Should also unhighlight themselves
     virtual void unhighlight()=0;
 
+    //for copying into save sates
+    virtual std::unique_ptr<PhysicsObject> clone() const=0;
+
     virtual ~PhysicsObject() = default;
     
 };

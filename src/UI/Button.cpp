@@ -78,3 +78,7 @@ void Button::draw(sf::RenderWindow& window){
     window.draw(shape);
     window.draw(text);
 }
+
+std::unique_ptr<UI> Button::clone() const {
+    return std::make_unique<Button>(*this);
+}

@@ -35,6 +35,8 @@ public:
 
     //Collision detection/response with another PhysicsObject depending on coefficient of restitution
     void collide(PhysicsObject& other, float res) override;
+
+    std::unique_ptr<PhysicsObject> clone() const override;
 };
 
 #endif
