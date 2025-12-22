@@ -77,6 +77,14 @@ void Collisions::initUI(sf::Font& font){
     cellSizeSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(cellSizeSlider));
 
+    Slider* simSpeedSlider = new Slider({23.f,350.f},{300.f,40.f},font,0.01f,10.f,1.f);
+    simSpeedSlider->setOnChange([this,simSpeedSlider](){
+        this->timeFactor=simSpeedSlider->getValue();
+        simSpeedSlider->setText("Sim Speed: "+formatFloatToDecimalPlaces(simSpeedSlider->getValue(),2));
+    });
+    simSpeedSlider->runOnChange();
+    UIElements.push_back(std::unique_ptr<Slider>(simSpeedSlider));
+
 
     /** DETAIL PANEL */
 
@@ -216,6 +224,7 @@ void Collisions::initUI(sf::Font& font){
         if(this->selectedObject!=nullptr){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
+                radiusSpinner->setRange(1.f/scaleFactor,this->sm.getCellSize()/(scaleFactor));
                 radiusSpinner->setValue(circle->getRadius()/scaleFactor);
             }
         }

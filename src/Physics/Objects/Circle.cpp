@@ -37,15 +37,21 @@ float Circle::getRadius(){
 //overrides virtual check boundaries for circular geometry
 void Circle::checkBounds(sf::FloatRect bounds,float restitution){
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away
-    if((vel.x<0&&pos.x-radius<=bounds.position.x)||(vel.x>0&&pos.x+radius>=bounds.position.x+bounds.size.x)){
+    if((vel.x<0&&pos.x-radius<bounds.position.x)||(vel.x>0&&pos.x+radius>bounds.position.x+bounds.size.x)){
         vel.x*=-1*restitution;
+        if(pos.x-radius<bounds.position.x){
+            pos.x=bounds.position.x+radius;
+        }else{
+            pos.x=bounds.position.x+bounds.size.x-radius;
+        }
     }
 
-    if((vel.y<0&&pos.y-radius<=bounds.position.y)||(vel.y>0&&pos.y+radius>=bounds.position.y+bounds.size.y)){
+    if((vel.y<0&&pos.y-radius<bounds.position.y)||(vel.y>0&&pos.y+radius>bounds.position.y+bounds.size.y)){
         vel.y*=-1*restitution;
-        //prevents clipping due to gravity when near the bottom boundary
-        if(std::abs(vel.y)<0.1f){
-            vel.y=0.f;
+        if(pos.y-radius<bounds.position.y){
+            pos.y=bounds.position.y+radius;
+        }else{
+            pos.y=bounds.position.y+bounds.size.y-radius;
         }
     }
 }
