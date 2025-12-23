@@ -58,6 +58,9 @@ void Circle::checkBounds(sf::FloatRect bounds,float restitution){
         } else {
             pos.y = bounds.position.y + bounds.size.y - radius;
         }
+        if(abs(vel.y)<1){
+            vel.y=0;
+        }
     }
 }
 

@@ -94,6 +94,14 @@ void Collisions::initUI(sf::Font& font){
     simSpeedSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(simSpeedSlider));
 
+    Slider* scaleFactorSlider = new Slider({23.f,420.f},{300.f,40.f},font,1.f,500.f,100.f);
+    scaleFactorSlider->setOnChange([this,scaleFactorSlider](){
+        this->scaleFactor=scaleFactorSlider->getValue();
+        scaleFactorSlider->setText("Scale (ppm): "+formatFloatToSigFigs(scaleFactorSlider->getValue(),3));
+    });
+    scaleFactorSlider->runOnChange();
+    UIElements.push_back(std::unique_ptr<Slider>(scaleFactorSlider));
+
 
     /** DETAIL PANEL */
 
@@ -233,7 +241,7 @@ void Collisions::initUI(sf::Font& font){
         if(this->selectedObject!=nullptr){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
-                radiusSpinner->setRange(1.f/scaleFactor,this->sm.getCellSize()/(scaleFactor));
+                radiusSpinner->setRange(1.f/scaleFactor,this->sm.getCellSize()/(2*scaleFactor));
                 radiusSpinner->setValue(circle->getRadius()/scaleFactor);
             }
         }
@@ -255,7 +263,7 @@ void Collisions::initUI(sf::Font& font){
     });
     UIElements.push_back(std::unique_ptr<Label>(mechEnergyLabel));
 
-    Label* kineticEnergyLabel = new Label({160.f,900},font);
+    Label* kineticEnergyLabel = new Label({20.f,920.f},font);
     kineticEnergyLabel->setLiveUpdate([this,kineticEnergyLabel](){
         //if selected object exists, update label to match its kinetic energy
         if(this->selectedObject!=nullptr){
@@ -266,7 +274,7 @@ void Collisions::initUI(sf::Font& font){
     });
     UIElements.push_back(std::unique_ptr<Label>(kineticEnergyLabel));
 
-    Label* potentialEnergyLabel = new Label({300.f,900},font);
+    Label* potentialEnergyLabel = new Label({20.f,940.f},font);
     potentialEnergyLabel->setLiveUpdate([this,potentialEnergyLabel](){
         //if selected object exists, update label to match its potential energy
         if(this->selectedObject!=nullptr){
