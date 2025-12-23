@@ -25,6 +25,7 @@ class Collisions: public Simulation{
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);
+        
         void update(float dt) override;
             
         void draw(sf::RenderWindow& window) override;

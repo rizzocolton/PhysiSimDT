@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Physics/Simulations/Menu.h"
 #include "Physics/Simulations/Collisions.h"
 
 int main(){
@@ -31,14 +32,37 @@ int main(){
     sf::Font icelandFont{"../assets/Iceland-Regular.ttf"};
 
     //Simulation management
-    std::unique_ptr<Simulation> currentSim = std::make_unique<Collisions>(
-        9.8f, //gravity
-        1.0f,  //collision restitution
-        1.0f,  //bounds restitution
-        20,    //cell size (in pixels)
-        simSpace.getGlobalBounds() //simulation bounds
-    );
-    currentSim->initUI(icelandFont);
+    std::unique_ptr<Simulation> currentSim;
+
+    //lambda that the menu class can call to switch the sim. 
+    //Menu has access to it because it's passed in to its constructor
+    //need to declare what switchSim will be so that the lamdba can use it in itself
+    //& not this because its in a function not object
+    std::function<void(SimType)> switchSim;
+    switchSim=[&](SimType type){
+        switch(type){
+            case SimType::Menu:
+                currentSim= std::make_unique<Menu>(
+                    switchSim
+                );
+                break;
+            case SimType::Collisions:
+                currentSim= std::make_unique<Collisions>(
+                    9.8f, //gravity
+                    1.0f,  //collision restitution
+                    1.0f,  //bounds restitution
+                    100,    //cell size (in pixels)
+                    simSpace.getGlobalBounds() //simulation bounds
+                );
+                break;
+        }
+        currentSim->initUI(icelandFont);
+    };
+
+    
+
+    //start off on menu
+    switchSim(SimType::Menu);
 
     //FPS and population counter
 

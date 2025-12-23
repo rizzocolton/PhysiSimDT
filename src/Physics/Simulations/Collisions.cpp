@@ -78,7 +78,7 @@ void Collisions::draw(sf::RenderWindow& window){
     }
 }
 
-
+//initUI defined in SimInits under UI
 
 void Collisions::drawUI(sf::RenderWindow& window){
     for(auto& element : UIElements){

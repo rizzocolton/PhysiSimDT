@@ -9,6 +9,8 @@ add_executable(PhysiSim
     src/main.cpp
     src/Physics/Simulations/Collisions.cpp
     src/UI/SimInits/CollisionsUI.cpp
+    src/Physics/Simulations/Menu.cpp
+    src/UI/SimInits/MenuUI.cpp
     src/Physics/Objects/PhysicsObject.cpp
     src/Physics/Objects/Circle.cpp
     src/Physics/SpatialMap.cpp
