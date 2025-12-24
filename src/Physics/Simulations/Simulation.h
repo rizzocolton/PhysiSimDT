@@ -5,6 +5,8 @@
 #include <functional>
 #include "../Objects/PhysicsObject.h"
 #include "../../UI/UI.h"
+#include <iomanip>
+#include <sstream>
 
 struct SaveState{
     std::vector<std::unique_ptr<PhysicsObject>> savedObjects;
@@ -13,7 +15,9 @@ struct SaveState{
 
 enum class SimType{
     Menu,
-    Collisions
+    Collisions,
+    Gravity,
+    ElectricitynMagnetism
 };
 
 
@@ -46,5 +50,12 @@ class Simulation{
         virtual ~Simulation()=default;
 };
 
+
+inline std::string formatFloatToSigFigs(float value, int sigfigs){
+    //formats a float to specified # of significant figures
+    std::stringstream stream;
+    stream << std::setprecision(sigfigs) << value;
+    return stream.str();
+}
 
 #endif

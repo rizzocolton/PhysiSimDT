@@ -1,10 +1,10 @@
-#include "Collisions.h"
+#include "Gravity.h"
 #include <iostream>
 
-Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func)
-: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){}
+Gravity::Gravity(float colRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func)
+: colRestitution(colRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){}
 
-void Collisions::update(float dt){
+void Gravity::update(float dt){
     //If simulation is not running, skip physics update
     if(!simulating){
         return;
@@ -15,10 +15,7 @@ void Collisions::update(float dt){
 
     //Update position of all objects
     for(auto& obj : objects){
-        sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
         obj->move(timeFactor*dt);
-        obj->checkBounds(simBounds,boundsRestitution);
-        obj->push(weight,timeFactor*dt);
         sm.enterCell(obj.get());
     }
 
@@ -68,7 +65,7 @@ void Collisions::update(float dt){
     }
 }
 
-void Collisions::draw(sf::RenderWindow& window){
+void Gravity::draw(sf::RenderWindow& window){
     //Optionally draw spatial map grid
     //sm.draw(window);
 
@@ -80,13 +77,13 @@ void Collisions::draw(sf::RenderWindow& window){
 
 //initUI defined in SimInits under UI
 
-void Collisions::drawUI(sf::RenderWindow& window){
+void Gravity::drawUI(sf::RenderWindow& window){
     for(auto& element : UIElements){
         element->draw(window);
     }
 }
 
-void Collisions::handleEvent(const sf::Event& event){
+void Gravity::handleEvent(const sf::Event& event){
     //useful for a lot of event handling
     sf::Vector2i mousePos=sf::Mouse::getPosition();
 
@@ -180,7 +177,7 @@ void Collisions::handleEvent(const sf::Event& event){
     }
 }
 
-int Collisions::getPopulation(){
+int Gravity::getPopulation(){
     return static_cast<int>(objects.size());
 }
 

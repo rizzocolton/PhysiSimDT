@@ -12,7 +12,7 @@ PhysicsObject::PhysicsObject(sf::Vector2f& p, float m){
 //Physics
 
 //Changes position by velocity times time elapsed. Then checks to see if object is still in bounds.
-void PhysicsObject::update(float dt){
+void PhysicsObject::move(float dt){
     pos+=vel*dt;
 }
 

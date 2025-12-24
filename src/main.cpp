@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Physics/Simulations/Menu.h"
 #include "Physics/Simulations/Collisions.h"
+#include "Physics/Simulations/Gravity.h"
 
 int main(){
 
@@ -56,6 +57,17 @@ int main(){
                     simSpace.getGlobalBounds(), //simulation bounds
                     switchSim //lambda allowing switching to the menu
                 );
+                break;
+            case SimType::Gravity:
+                nextSim= std::make_unique<Gravity>(
+                    1.0f,
+                    100,
+                    simSpace.getGlobalBounds(),
+                    switchSim
+                );
+                break;
+            case SimType::ElectricitynMagnetism:
+
                 break;
         }
         nextSim->initUI(icelandFont);

@@ -17,7 +17,7 @@ public:
 
     //Physics
 
-    void update(float dt);
+    void move(float dt);
     void push(sf::Vector2f& force,float dt);
 
     //Accessors

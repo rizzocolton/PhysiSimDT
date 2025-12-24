@@ -1,5 +1,5 @@
-#ifndef COLLISIONS_H
-#define COLLISIONS_H
+#ifndef GRAVITY_H
+#define GRAVITY_H
 
 #include <SFML/Graphics.hpp>
 #include "Simulation.h"
@@ -11,19 +11,17 @@
 #include "../../UI/Spinner.h"
 #include "../../UI/Label.h"
 
-
-class Collisions: public Simulation{
+class Gravity: public Simulation{
     private:
-        float gravity;
+        const float G=6.6743e-11f;
         float colRestitution;
-        float boundsRestitution;
         SpatialMap sm;
         sf::FloatRect simBounds;
         std::function<void(SimType type)> switchSim;
        
 
     public:
-        Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func);
+        Gravity(float colRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func);
 
         void update(float dt) override;
             
@@ -37,7 +35,9 @@ class Collisions: public Simulation{
 
         int getPopulation() override;
 
-        ~Collisions() override = default;
+        ~Gravity() override = default;
 };
+
+
 
 #endif
