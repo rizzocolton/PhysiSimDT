@@ -88,8 +88,15 @@ void Gravity::initUI(sf::Font& font){
 
     Slider* scaleFactorSlider = new Slider({23.f,420.f},{300.f,40.f},font,1.f,500.f,100.f);
     scaleFactorSlider->setOnChange([this,scaleFactorSlider](){
+        float oldsf=this->scaleFactor;
         this->scaleFactor=scaleFactorSlider->getValue();
         scaleFactorSlider->setText("Scale (ppm): "+formatFloatToSigFigs(scaleFactorSlider->getValue(),3));
+        for(auto& obj: objects){
+            Circle* circle = dynamic_cast<Circle*>(obj.get());
+            if(circle!=nullptr){
+                circle->setRadius(circle->getRadius()/oldsf*scaleFactor);
+            }
+        }
     });
     scaleFactorSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(scaleFactorSlider));

@@ -2,7 +2,17 @@
 #include <iostream>
 
 Gravity::Gravity(float colRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func)
-: colRestitution(colRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){}
+: colRestitution(colRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){
+    sf::Vector2f position{simBounds.position.x+simBounds.size.x/2.f,simBounds.position.y+simBounds.size.y/2.f};
+    float radius=200.f;
+    float mass=5000;
+    sf::Color color(
+        (rand()%256),
+        (rand()%256),
+        (rand()%256)
+    );
+    objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+}
 
 void Gravity::update(float dt){
     //If simulation is not running, skip physics update
@@ -14,9 +24,16 @@ void Gravity::update(float dt){
     sm.clear();
 
     //Update position of all objects
-    for(auto& obj : objects){
-        obj->move(timeFactor*dt);
-        sm.enterCell(obj.get());
+    for(int i=0;i<objects.size();i++){
+        objects[i]->move(timeFactor*dt);
+        for(int j=i+1;j<objects.size();j++){
+            sf::Vector2f dist=(objects[j]->getPos()-objects[i]->getPos())/scaleFactor;
+            //Newtons gravitational law plus newtons 3rd law
+            sf::Vector2f gravityForce=(G*objects[i]->getMass()*objects[j]->getMass()/dist.lengthSquared())*dist.normalized();
+            objects[i]->push(gravityForce,dt);
+            objects[j]->push(-gravityForce,dt);
+        }
+        sm.enterCell(objects[i].get());
     }
 
     //Check for collisions between objects in cells and adjacent cells
@@ -101,7 +118,7 @@ void Gravity::handleEvent(const sf::Event& event){
             if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
                mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
                 sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
-                float radius=2.f;
+                float radius=10.f;
                 float mass=5;
                 sf::Color color(
                     (rand()%256),
@@ -151,25 +168,7 @@ void Gravity::handleEvent(const sf::Event& event){
         }
     }
 
-    //if mouse is held down and moved, add circles along the drag path
-    if(event.getIf<sf::Event::MouseMoved>()){
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
-            sf::Vector2i mousePos=sf::Mouse::getPosition();
-            //if mouse is within simulation bounds, place a new circle
-            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
-               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
-                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
-                float radius=2.f;
-                float mass=5.f;
-                sf::Color color(
-                    (rand()%256),
-                    (rand()%256),
-                    (rand()%256)
-                );
-                objects.push_back(std::make_unique<Circle>(position, radius, mass, color)); 
-            }
-        }
-    }
+    
 
     //update all UI elements
     for(auto& element : UIElements){

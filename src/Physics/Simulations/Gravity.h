@@ -13,7 +13,8 @@
 
 class Gravity: public Simulation{
     private:
-        const float G=6.6743e-11f;
+        //const float G=6.6743e-11f;
+        const float G=1.f;
         float colRestitution;
         SpatialMap sm;
         sf::FloatRect simBounds;
