@@ -2,12 +2,18 @@
 #define SIMULATION_H
 
 #include <SFML/Graphics.hpp>
+#include <functional>
 #include "../Objects/PhysicsObject.h"
 #include "../../UI/UI.h"
 
 struct SaveState{
     std::vector<std::unique_ptr<PhysicsObject>> savedObjects;
     std::vector<std::unique_ptr<UI>> savedUIElements;
+};
+
+enum class SimType{
+    Menu,
+    Collisions
 };
 
 

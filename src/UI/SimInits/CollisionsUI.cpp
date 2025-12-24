@@ -7,6 +7,13 @@
 void Collisions::initUI(sf::Font& font){
     /** CORE SIM CONTROL BUTTONS */
 
+    Button* exitSim = new Button({5.f,5.f},{50.f,50.f},font);
+    exitSim->setText("<");
+    exitSim->setOnClick([this,exitSim](){
+        switchSim(SimType::Menu);
+    });
+    UIElements.push_back(std::unique_ptr<Button>(exitSim));
+
     Button* startStop = new Button({345.f,5.f},{150.f,50.f},font);
     startStop->setText(std::string("Start/Stop"));
     startStop->setOnClick([this,startStop](){

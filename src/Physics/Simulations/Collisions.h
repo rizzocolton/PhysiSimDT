@@ -20,12 +20,12 @@ class Collisions: public Simulation{
         float boundsRestitution;
         SpatialMap sm;
         sf::FloatRect simBounds;
-        
+        std::function<void(SimType type)> switchSim;
        
 
     public:
-        Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds);
-        
+        Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func);
+
         void update(float dt) override;
             
         void draw(sf::RenderWindow& window) override;

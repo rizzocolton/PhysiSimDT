@@ -4,7 +4,8 @@
 #include <iostream>
 
 void Menu::initUI(sf::Font& font){
-    Button* collisionsButton = new Button({600.f,10.f},{150.f,50.f},font);
+
+    Button* collisionsButton = new Button({860.f,100.f},{200.f,50.f},font);
     collisionsButton->setText("Collisions");
     collisionsButton->setOnClick([sm=this->switchSim](){
         std::cout << "Lambda called!" << std::endl;

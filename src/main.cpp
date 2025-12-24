@@ -33,6 +33,7 @@ int main(){
 
     //Simulation management
     std::unique_ptr<Simulation> currentSim;
+    std::unique_ptr<Simulation> nextSim;
 
     //lambda that the menu class can call to switch the sim. 
     //Menu has access to it because it's passed in to its constructor
@@ -42,27 +43,29 @@ int main(){
     switchSim=[&](SimType type){
         switch(type){
             case SimType::Menu:
-                currentSim= std::make_unique<Menu>(
+                nextSim= std::make_unique<Menu>(
                     switchSim
                 );
                 break;
             case SimType::Collisions:
-                currentSim= std::make_unique<Collisions>(
+                nextSim= std::make_unique<Collisions>(
                     9.8f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
                     100,    //cell size (in pixels)
-                    simSpace.getGlobalBounds() //simulation bounds
+                    simSpace.getGlobalBounds(), //simulation bounds
+                    switchSim //lambda allowing switching to the menu
                 );
                 break;
         }
-        currentSim->initUI(icelandFont);
+        nextSim->initUI(icelandFont);
     };
 
     
 
     //start off on menu
     switchSim(SimType::Menu);
+    currentSim=std::move(nextSim);
 
     //FPS and population counter
 
@@ -76,12 +79,6 @@ int main(){
     sf::Clock deltaClock;
     
     while(window.isOpen()){
-        window.clear();
-
-        //Render all three sections
-        window.draw(simSpace);
-        window.draw(simControls);
-        window.draw(simObjectDetail);
 
         //Handle events
 
@@ -98,6 +95,23 @@ int main(){
             currentSim->handleEvent(*event);
         }
 
+        //if next sim is loaded, make current sim point to it
+        if(nextSim!=nullptr){
+            currentSim=std::move(nextSim);
+        }
+
+        //boolean for seeing if current sim is pointing to the menu
+        bool inMenu=dynamic_cast<Menu*>(currentSim.get())!=nullptr;
+
+        window.clear();
+
+        //Render all three sections of screen if active sim is not menu
+        if(!inMenu){
+            window.draw(simSpace);
+            window.draw(simControls);
+            window.draw(simObjectDetail);
+        }
+        
         //Do live updates for UI elements
         for(auto& element : currentSim->UIElements){
             //If element is a Spinner, run its live update
@@ -126,10 +140,13 @@ int main(){
             fps=0;
             fpsClock.restart();
         }
-        window.draw(fpsCounter);
-
         populationCounter.setString("Population: "+std::to_string(currentSim->getPopulation()));
-        window.draw(populationCounter);
+
+        //draw fps and population if not in menu
+        if(!inMenu){
+            window.draw(fpsCounter);
+            window.draw(populationCounter);
+        }
 
         window.display();
     }

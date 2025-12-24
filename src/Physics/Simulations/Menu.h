@@ -2,12 +2,9 @@
 #define MENU_H
 
 #include "Simulation.h"
-#include <functional>
 
-enum class SimType{
-    Menu,
-    Collisions
-};
+
+
 
 class Menu: public Simulation{
 public:
