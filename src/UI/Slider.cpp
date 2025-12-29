@@ -34,14 +34,6 @@ void Slider::setRange(float min, float max){
     if(currentValue>maxValue) currentValue=maxValue;
 }
 
-void Slider::setOnChange(std::function<void()> func){
-    onChange=func;
-}
-
-void Slider::runOnChange(){
-    onChange();
-}
-
 void Slider::handleEvent(const sf::Event& event){
     sf::Vector2i mousePos=sf::Mouse::getPosition();
     bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);

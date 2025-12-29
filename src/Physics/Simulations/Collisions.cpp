@@ -93,7 +93,7 @@ void Collisions::handleEvent(const sf::Event& event){
     //if space pressed, toggle simulation state
     if(event.getIf<sf::Event::KeyPressed>()){
         if(event.getIf<sf::Event::KeyPressed>()->scancode==sf::Keyboard::Scancode::Space){
-            simulating = !simulating;
+            simulating=!simulating;
         }
     }
 

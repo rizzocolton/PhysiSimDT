@@ -2,13 +2,11 @@
 #include "Button.h"
 
 Button::Button(const sf::Vector2f& p, const sf::Vector2f& s, sf::Font& font):UI(p),
-text(font),size(s),state(ButtonState::Normal),onClick([](){}){
+text(font),size(s),state(ButtonState::Normal){
     text.setFillColor(sf::Color::Black);
     shape.setPosition(pos);
     shape.setSize(size);
 }
-
-
 
 void Button::setText(const std::string& str){
     text.setString(str);
@@ -42,7 +40,7 @@ void Button::handleEvent(const sf::Event& event){
         if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
            mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
             state=ButtonState::Pressed;
-            runOnClick();
+            runOnChange();
         }
     }
 
@@ -56,14 +54,6 @@ void Button::handleEvent(const sf::Event& event){
             }
         }
     }
-}
-
-void Button::setOnClick(std::function<void()> func){
-    onClick=func;
-}
-
-void Button::runOnClick(){
-    onClick();
 }
 
 void Button::draw(sf::RenderWindow& window){

@@ -2,7 +2,6 @@
 #define SPINNER_H
 
 #include <SFML/Graphics.hpp>
-#include <functional>
 #include "UI.h"
 #include "Button.h"
 
@@ -15,8 +14,6 @@ class Spinner: public UI{
         Button upButton;
         Button downButton;
         sf::Text label;
-        std::function<void()> onChange;
-        std::function<void()> liveUpdate;
 
     public:
         Spinner(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value);
@@ -28,14 +25,6 @@ class Spinner: public UI{
         float getValue();
 
         void setRange(float min, float max);
-
-        void setOnChange(std::function<void()> func);
-
-        void runOnChange();
-
-        void setLiveUpdate(std::function<void()> func);
-
-        void runLiveUpdate();
 
         void handleEvent(const sf::Event& event) override;
 

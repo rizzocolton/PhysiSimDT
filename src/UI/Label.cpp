@@ -9,14 +9,6 @@ void Label::setText(const std::string& str){
     text.setString(str);
 }
 
-void Label::setLiveUpdate(std::function<void()> func){
-    liveUpdate=func;
-}
-
-void Label::runLiveUpdate(){
-    liveUpdate();
-}
-
 void Label::handleEvent(const sf::Event& event){
     //Labels do not handle events
 }

@@ -124,15 +124,7 @@ int main(){
         
         //Do live updates for UI elements
         for(auto& element : currentSim->UIElements){
-            //If element is a Spinner, run its live update
-            Spinner* spinnerPtr = dynamic_cast<Spinner*>(element.get());
-            Label* labelPtr = dynamic_cast<Label*>(element.get());
-            if(spinnerPtr!=nullptr){
-                spinnerPtr->runLiveUpdate();
-            }
-            if(labelPtr!=nullptr){
-                labelPtr->runLiveUpdate();
-            }
+            element->runLiveUpdate();
         }
 
         //Update simulation

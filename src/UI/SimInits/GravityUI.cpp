@@ -9,14 +9,15 @@ void Gravity::initUI(sf::Font& font){
 
     Button* exitSim = new Button({5.f,5.f},{50.f,50.f},font);
     exitSim->setText("<");
-    exitSim->setOnClick([this,exitSim](){
-        switchSim(SimType::Menu);
+    //need to capture switching function by value instead of reference, otherwise the lambda may delete itself!
+    exitSim->setOnChange([sm=this->switchSim,exitSim](){
+        sm(SimType::Menu);
     });
     UIElements.push_back(std::unique_ptr<Button>(exitSim));
 
     Button* startStop = new Button({345.f,5.f},{150.f,50.f},font);
     startStop->setText(std::string("Start/Stop"));
-    startStop->setOnClick([this,startStop](){
+    startStop->setOnChange([this,startStop](){
         if(simulating){
             simulating=false;
             startStop->setText("Start");
@@ -25,11 +26,18 @@ void Gravity::initUI(sf::Font& font){
             startStop->setText("Stop");
         }
     });
+    startStop->setLiveUpdate([this,startStop](){
+        if(simulating){
+            startStop->setText("Stop");
+        }else{
+            startStop->setText("Start");
+        }
+    });
     UIElements.push_back(std::unique_ptr<Button>(startStop));
 
     Button* saveState = new Button({345.f,65.f},{150.f,50.f},font);
     saveState->setText(std::string("Save State"));
-    saveState->setOnClick([this](){
+    saveState->setOnChange([this](){
         this->save.savedObjects.clear();
         for(auto& obj: this->objects){
             this->save.savedObjects.push_back(obj->clone());
@@ -39,7 +47,7 @@ void Gravity::initUI(sf::Font& font){
 
     Button* loadState = new Button({345.f,125.f},{150.f,50.f},font);
     loadState->setText(std::string("Load State"));
-    loadState->setOnClick([this](){
+    loadState->setOnChange([this](){
         this->selectedObject=nullptr;
         this->objects.clear();
         for(auto& obj: this->save.savedObjects){
@@ -51,7 +59,7 @@ void Gravity::initUI(sf::Font& font){
 
     Button* reset = new Button({345.f,185.f},{150.f,50.f},font);
     reset->setText(std::string("Reset"));
-    reset->setOnClick([this,&font](){
+    reset->setOnChange([this,&font](){
         selectedObject=nullptr;
         objects.clear();
     });

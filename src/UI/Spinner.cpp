@@ -9,14 +9,14 @@ downButton({p.x + s.x+5.f, p.y + s.y / 2.f}, {20.f, s.y / 2.f}, f),
     if(currentValue>maxValue) currentValue=maxValue;
 
     upButton.setText("^");
-    upButton.setOnClick([this]() {
+    upButton.setOnChange([this]() {
         setValue(currentValue + 0.01f);
         runOnChange();
     });
 
     downButton.setText("^");
     downButton.rotateText(180.f);
-    downButton.setOnClick([this]() {
+    downButton.setOnChange([this]() {
         setValue(currentValue - 0.01f);
         runOnChange();
     });
@@ -46,22 +46,6 @@ void Spinner::setRange(float min, float max){
     maxValue=max;
     if(currentValue<minValue) currentValue=minValue;
     if(currentValue>maxValue) currentValue=maxValue;
-}
-
-void Spinner::setOnChange(std::function<void()> func){
-    onChange=func;
-}
-
-void Spinner::runOnChange(){
-    onChange();
-}
-
-void Spinner::setLiveUpdate(std::function<void()> func){
-    liveUpdate=func;
-}
-
-void Spinner::runLiveUpdate(){
-    liveUpdate();
 }
 
 void Spinner::handleEvent(const sf::Event& event){

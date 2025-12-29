@@ -15,8 +15,6 @@ private:
     sf::RectangleShape bar;
     sf::Text label;
 
-    std::function<void()> onChange;
-
 public:
     Slider(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value);
 
@@ -27,10 +25,6 @@ public:
     float getValue();
 
     void setRange(float min, float max);
-
-    void setOnChange(std::function<void()> func);
-
-    void runOnChange();
 
     void handleEvent(const sf::Event& event) override;
 
