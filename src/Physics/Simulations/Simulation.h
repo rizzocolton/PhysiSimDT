@@ -17,7 +17,7 @@ enum class SimType{
     Menu,
     Collisions,
     Gravity,
-    ElectricitynMagnetism
+    EM
 };
 
 //all in pixel units

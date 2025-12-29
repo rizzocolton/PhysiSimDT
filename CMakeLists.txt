@@ -11,6 +11,8 @@ add_executable(PhysiSim
     src/UI/SimInits/CollisionsUI.cpp
     src/Physics/Simulations/Gravity.cpp
     src/UI/SimInits/GravityUI.cpp
+    src/Physics/Simulations/EM.cpp
+    src/UI/SimInits/EMUI.cpp
     src/Physics/Simulations/Menu.cpp
     src/UI/SimInits/MenuUI.cpp
     src/Physics/Objects/PhysicsObject.cpp
