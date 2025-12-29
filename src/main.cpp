@@ -60,10 +60,10 @@ int main(){
                 break;
             case SimType::Gravity:
                 nextSim= std::make_unique<Gravity>(
-                    1.0f,
-                    100,
-                    simSpace.getGlobalBounds(),
-                    switchSim
+                    1.0f, //collision restitution
+                    500,    //cell size (in pixels)
+                    simSpace.getGlobalBounds(), //simulation bounds
+                    switchSim //lambda allowing switching to menu
                 );
                 break;
             case SimType::ElectricitynMagnetism:
@@ -117,11 +117,9 @@ int main(){
 
         window.clear();
 
-        //Render all three sections of screen if active sim is not menu
+        //Render sim space if active sim is not menu
         if(!inMenu){
             window.draw(simSpace);
-            window.draw(simControls);
-            window.draw(simObjectDetail);
         }
         
         //Do live updates for UI elements
@@ -137,9 +135,6 @@ int main(){
             }
         }
 
-        //Draw UI
-        currentSim->drawUI(window);
-
         //Update simulation
         float dt=deltaClock.restart().asSeconds();
 
@@ -154,11 +149,14 @@ int main(){
         }
         populationCounter.setString("Population: "+std::to_string(currentSim->getPopulation()));
 
-        //draw fps and population if not in menu
+        //draw ui and stats if menu is not active
         if(!inMenu){
+            window.draw(simControls);
+            window.draw(simObjectDetail);
             window.draw(fpsCounter);
             window.draw(populationCounter);
         }
+        currentSim->drawUI(window);
 
         window.display();
     }

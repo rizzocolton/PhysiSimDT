@@ -184,6 +184,8 @@ void Collisions::initUI(sf::Font& font){
                 velXSpinner->getValue()*scaleFactor,
                 this->selectedObject->getVel().y
             });
+        }else{
+
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
@@ -239,7 +241,7 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
 
     //radius spinner (for circles)
-    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,FLT_MAX,0.f);
+    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
         //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){
@@ -247,6 +249,9 @@ void Collisions::initUI(sf::Font& font){
             if(circle!=nullptr){
                 circle->setRadius(radiusSpinner->getValue()*scaleFactor);
             }
+        }else{
+            //if no object selected update spawning params
+            params.radius=radiusSpinner->getValue()*scaleFactor;
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");
     });

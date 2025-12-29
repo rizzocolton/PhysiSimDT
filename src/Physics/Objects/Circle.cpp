@@ -85,14 +85,11 @@ void Circle::collide(PhysicsObject& other, float res){
 
     
 
-    /*
-    if intersecting push back so no longer intersecting
-    sf::Vector2f correction=(radius+other.radius-diff.length())*diff.normalized()/2.0f;
-    pos-=correction;
-    other.pos+=correction;
-    */
-    
-    //^I'm not going to do the one above as it will result in inaccurate positions.
+    //tentatively not including the following to preserve positional accuracy
+    //if intersecting push back so no longer intersecting
+    //sf::Vector2f correction=(radius+otherCircle->radius-diff.length())*diff.normalized()/2.0f;
+    //pos-=correction;
+    //otherCircle->pos+=correction;
     
     //COLLISION CALCULATION
 
