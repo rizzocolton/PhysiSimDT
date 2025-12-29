@@ -193,7 +193,8 @@ void Collisions::initUI(sf::Font& font){
                 this->selectedObject->getVel().y
             });
         }else{
-
+            //if no object selected update spawning params
+            params.vx=velXSpinner->getValue()*scaleFactor;
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
@@ -215,6 +216,9 @@ void Collisions::initUI(sf::Font& font){
                 this->selectedObject->getVel().x,
                 -velYSpinner->getValue()*scaleFactor
             });
+        }else{
+            //if no object selected update spawning params
+            params.vy=velYSpinner->getValue()*scaleFactor;
         }
         velYSpinner->setText("Y [" + formatFloatToSigFigs(velYSpinner->getValue(),3)+"]");
     });
@@ -235,6 +239,9 @@ void Collisions::initUI(sf::Font& font){
         //if selected object exists, update its mass
         if(this->selectedObject!=nullptr){
             this->selectedObject->setMass(massSpinner->getValue());
+        }else{
+            //if no object selected update spawning params
+            params.mass=massSpinner->getValue();
         }
         massSpinner->setText("Mass [" + formatFloatToSigFigs(massSpinner->getValue(),3)+"]");
     });

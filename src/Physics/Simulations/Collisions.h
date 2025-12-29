@@ -17,7 +17,8 @@ struct SpawnParams{
     float radius;
     float mass;
     sf::Color color;
-    sf::Vector2f vel;
+    float vx;
+    float vy;
 };
 
 class Collisions: public Simulation{
