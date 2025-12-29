@@ -177,6 +177,9 @@ void Gravity::initUI(sf::Font& font){
                 velXSpinner->getValue()*scaleFactor,
                 this->selectedObject->getVel().y
             });
+        }else{
+            //if no object selected update spawning params
+            params.vx=velXSpinner->getValue()*scaleFactor;
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
@@ -198,6 +201,9 @@ void Gravity::initUI(sf::Font& font){
                 this->selectedObject->getVel().x,
                 -velYSpinner->getValue()*scaleFactor
             });
+        }else{
+            //if no object selected update spawning params
+            params.vy=-velYSpinner->getValue()*scaleFactor;
         }
         velYSpinner->setText("Y [" + formatFloatToSigFigs(velYSpinner->getValue(),3)+"]");
     });
@@ -218,6 +224,9 @@ void Gravity::initUI(sf::Font& font){
         //if selected object exists, update its mass
         if(this->selectedObject!=nullptr){
             this->selectedObject->setMass(massSpinner->getValue());
+        }else{
+            //if no object selected update spawning params
+            params.mass=massSpinner->getValue();
         }
         massSpinner->setText("Mass [" + formatFloatToSigFigs(massSpinner->getValue(),3)+"]");
     });
@@ -232,7 +241,7 @@ void Gravity::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
 
     //radius spinner (for circles)
-    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,FLT_MAX,0.f);
+    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
         //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){
@@ -240,6 +249,9 @@ void Gravity::initUI(sf::Font& font){
             if(circle!=nullptr){
                 circle->setRadius(radiusSpinner->getValue()*scaleFactor);
             }
+        }else{
+            //if no object selected update spawning params
+            params.radius=radiusSpinner->getValue()*scaleFactor;
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");
     });

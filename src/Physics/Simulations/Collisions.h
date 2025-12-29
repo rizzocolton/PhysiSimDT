@@ -12,14 +12,7 @@
 #include "../../UI/Label.h"
 
 
-//all in pixel units
-struct SpawnParams{
-    float radius;
-    float mass;
-    sf::Color color;
-    float vx;
-    float vy;
-};
+
 
 class Collisions: public Simulation{
     private:
@@ -29,7 +22,7 @@ class Collisions: public Simulation{
         SpatialMap sm;
         sf::FloatRect simBounds;
         std::function<void(SimType type)> switchSim;
-        SpawnParams params;
+        
        
 
     public:

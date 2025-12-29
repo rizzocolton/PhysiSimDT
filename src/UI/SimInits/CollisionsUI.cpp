@@ -218,7 +218,7 @@ void Collisions::initUI(sf::Font& font){
             });
         }else{
             //if no object selected update spawning params
-            params.vy=velYSpinner->getValue()*scaleFactor;
+            params.vy=-velYSpinner->getValue()*scaleFactor;
         }
         velYSpinner->setText("Y [" + formatFloatToSigFigs(velYSpinner->getValue(),3)+"]");
     });

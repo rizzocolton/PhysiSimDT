@@ -118,14 +118,15 @@ void Gravity::handleEvent(const sf::Event& event){
             if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
                mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
                 sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
-                float radius=10.f;
-                float mass=5;
+                float radius=params.radius;
+                float mass=params.mass;
                 sf::Color color(
                     (rand()%256),
                     (rand()%256),
                     (rand()%256)
                 );
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+                objects.back()->setVel({params.vx,params.vy});
                 sm.enterCell(objects.back().get());
             }
         }

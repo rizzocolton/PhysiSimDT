@@ -20,6 +20,15 @@ enum class SimType{
     ElectricitynMagnetism
 };
 
+//all in pixel units
+struct SpawnParams{
+    float radius;
+    float mass;
+    sf::Color color;
+    float vx;
+    float vy;
+};
+
 
 class Simulation{
     public:
@@ -33,6 +42,9 @@ class Simulation{
 
         //Selected object for detail panel
         PhysicsObject* selectedObject=nullptr;
+
+        //Spawning parameters for new objects
+        SpawnParams params;
 
         bool simulating=false;
         
