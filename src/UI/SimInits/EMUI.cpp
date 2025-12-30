@@ -297,7 +297,7 @@ void EM::initUI(sf::Font& font){
                     V+=k*obj->getCharge()/dist;
                 }
             }
-            float Ue=V*this->selectedObject->getCharge();
+            float Ue=0.5*V*this->selectedObject->getCharge();
             float Ug=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
             mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(Ue+Ug+KE,3));
         }
@@ -331,7 +331,7 @@ void EM::initUI(sf::Font& font){
                     V+=k*obj->getCharge()/dist;
                 }
             }
-            float Ue=V*this->selectedObject->getCharge();
+            float Ue=0.5*V*this->selectedObject->getCharge();
             potentialEnergyLabel->setText("U=" + formatFloatToSigFigs(
                 Ug+Ue,3
             ));
