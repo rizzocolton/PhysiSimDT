@@ -10,17 +10,32 @@ void EM::update(float dt){
         return;
     }
 
-    //Clear spatial map for new frame
+    //Clear spatial map hash map for new frame
     sm.clear();
 
-    //Update position of all objects
-    for(auto& obj : objects){
-        sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
+    
+    
+    //Calculate forces on all objects
+    for(int i=0;i<objects.size();i++){
+        for(int j=i+1;j<objects.size();j++){
+            sf::Vector2f dist=(objects[j]->getPos()-objects[i]->getPos())/scaleFactor;
+            //Colombs Law plus newtons 3rd law
+            sf::Vector2f electricForce=-(k*objects[i]->getCharge()*objects[j]->getCharge()/dist.lengthSquared())*dist.normalized();
+            objects[i]->push(electricForce*scaleFactor,timeFactor*dt);
+            objects[j]->push(-electricForce*scaleFactor,timeFactor*dt);
+        }
+        sf::Vector2f weight{0.0f,objects[i]->getMass()*gravity*scaleFactor};
+        objects[i]->push(weight,timeFactor*dt);
+    }
+
+    //Move all objects
+
+    for(auto& obj:objects){
         obj->move(timeFactor*dt);
         obj->checkBounds(simBounds,boundsRestitution);
-        obj->push(weight,timeFactor*dt);
         sm.enterCell(obj.get());
     }
+
 
     //Check for collisions between objects in cells and adjacent cells
     for(auto& [cell,objs]: sm.getMap()){
@@ -96,27 +111,6 @@ void EM::handleEvent(const sf::Event& event){
             simulating=!simulating;
         }
     }
-
-    //if mouse is held down and moved, add circles along the drag path
-    if(event.getIf<sf::Event::MouseMoved>()){
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
-            sf::Vector2i mousePos=sf::Mouse::getPosition();
-            //if mouse is within simulation bounds, place a new circle
-            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
-               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
-                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
-                float radius=params.radius;
-                float mass=params.mass;
-                sf::Color color(
-                    (rand()%256),
-                    (rand()%256),
-                    (rand()%256)
-                );
-                objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
-                objects.back()->setVel({params.vx,params.vy}); 
-            }
-        }
-    }
     
     //if mouse pressed on sim screen, add a new circle at mouse position
     if(event.getIf<sf::Event::MouseButtonPressed>()){
@@ -127,12 +121,15 @@ void EM::handleEvent(const sf::Event& event){
                 sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
                 float radius=params.radius;
                 float mass=params.mass;
-                sf::Color color(
-                    (rand()%256),
-                    (rand()%256),
-                    (rand()%256)
-                );
-                objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
+                float charge=rand()%2;
+                sf::Color color;
+                if(charge==0){
+                    charge=-1.f;
+                    color=sf::Color::Red;
+                }else{
+                    color=sf::Color::Blue;
+                }
+                objects.push_back(std::make_unique<Circle>(position, radius, mass, charge, color));
                 objects.back()->setVel({params.vx,params.vy});
                 sm.enterCell(objects.back().get());
             }

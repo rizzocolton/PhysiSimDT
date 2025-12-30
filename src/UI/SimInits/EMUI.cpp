@@ -288,11 +288,18 @@ void EM::initUI(sf::Font& font){
     mechEnergyLabel->setLiveUpdate([this,mechEnergyLabel](){
         //if selected object exists, update label to match its total mechanical energy
         if(this->selectedObject!=nullptr){
-            //KE=0.5*m*v^2
             float KE=this->selectedObject->getMass()*(this->selectedObject->getVel().lengthSquared()/(scaleFactor*scaleFactor))*0.5;
-            //U=mgh (don't need to divide by scale factor twice as gravity is already in correct units)
-            float U=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
-            mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(U+KE,3));
+            float V=0.f;
+            sf::Vector2f pos1=this->selectedObject->getPos();
+            for(auto& obj: this->objects){
+                float dist=(obj->getPos()-pos1).length()/scaleFactor;
+                if(dist!=0){
+                    V+=k*obj->getCharge()/dist;
+                }
+            }
+            float Ue=V*this->selectedObject->getCharge();
+            float Ug=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
+            mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(Ue+Ug+KE,3));
         }
     });
     UIElements.push_back(std::unique_ptr<Label>(mechEnergyLabel));
@@ -301,6 +308,7 @@ void EM::initUI(sf::Font& font){
     kineticEnergyLabel->setLiveUpdate([this,kineticEnergyLabel](){
         //if selected object exists, update label to match its kinetic energy
         if(this->selectedObject!=nullptr){
+            //KE=0.5*m*v^2
             kineticEnergyLabel->setText("KE=" + formatFloatToSigFigs(
                 this->selectedObject->getMass()*(this->selectedObject->getVel().lengthSquared()/(scaleFactor*scaleFactor))*0.5,3
             ));
@@ -312,8 +320,20 @@ void EM::initUI(sf::Font& font){
     potentialEnergyLabel->setLiveUpdate([this,potentialEnergyLabel](){
         //if selected object exists, update label to match its potential energy
         if(this->selectedObject!=nullptr){
+            //U=mgh (don't need to divide by scale factor twice as gravity is already in correct units)
+            float Ug=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
+            //Ue=summation of all V=kq2/r *q1
+            float V=0.f;
+            sf::Vector2f pos1=this->selectedObject->getPos();
+            for(auto& obj: this->objects){
+                float dist=(obj->getPos()-pos1).length()/scaleFactor;
+                if(dist!=0){
+                    V+=k*obj->getCharge()/dist;
+                }
+            }
+            float Ue=V*this->selectedObject->getCharge();
             potentialEnergyLabel->setText("U=" + formatFloatToSigFigs(
-                this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor),3
+                Ug+Ue,3
             ));
         }
     });

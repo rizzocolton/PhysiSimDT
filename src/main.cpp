@@ -69,7 +69,7 @@ int main(){
                 break;
             case SimType::EM:
                 nextSim= std::make_unique<EM>(
-                    9.8f, //gravity
+                    0.f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
                     100,    //cell size (in pixels)

@@ -23,9 +23,8 @@ void Gravity::update(float dt){
     //Clear spatial map for new frame
     sm.clear();
 
-    //Update position of all objects
+    //Calculate forces on all objects
     for(int i=0;i<objects.size();i++){
-        objects[i]->move(timeFactor*dt);
         for(int j=i+1;j<objects.size();j++){
             sf::Vector2f dist=(objects[j]->getPos()-objects[i]->getPos())/scaleFactor;
             //Newtons gravitational law plus newtons 3rd law
@@ -33,8 +32,10 @@ void Gravity::update(float dt){
             objects[i]->push(gravityForce,dt);
             objects[j]->push(-gravityForce,dt);
         }
+        objects[i]->move(timeFactor*dt);
         sm.enterCell(objects[i].get());
     }
+    
 
     //Check for collisions between objects in cells and adjacent cells
     for(auto& [cell,objs]: sm.getMap()){

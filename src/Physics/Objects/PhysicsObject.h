@@ -10,10 +10,12 @@ protected:
     //x,y velocity
     sf::Vector2f vel;
     float mass;
+    float charge;
 
 public:
     //Constructor
     PhysicsObject(sf::Vector2f& p, float m);
+    PhysicsObject(sf::Vector2f& p, float m, float c);
 
     //Physics
 
@@ -25,12 +27,14 @@ public:
     sf::Vector2f getPos();
     sf::Vector2f getVel();
     float getMass();
+    float getCharge();
 
     //Mutators
 
     void setPos(sf::Vector2f p);
     void setVel(sf::Vector2f v);
     void setMass(float m);
+    void setCharge(float m);
 
     //Virtuals
 

@@ -10,6 +10,19 @@ PhysicsObject(p,m){
     color=c;
     shape.setRadius(radius);
     shape.setPosition(pos);
+    shape.setPointCount(20);
+    //makes origin of circle at its center, much easier/intuitive for collisions
+    shape.setOrigin({radius,radius});
+    shape.setFillColor(color);
+};
+
+Circle::Circle(sf::Vector2f& p, float r, float m, float c, sf::Color& col):
+PhysicsObject(p,m,c){
+    radius=r;
+    color=col;
+    shape.setRadius(radius);
+    shape.setPosition(pos);
+    shape.setPointCount(20);
     //makes origin of circle at its center, much easier/intuitive for collisions
     shape.setOrigin({radius,radius});
     shape.setFillColor(color);

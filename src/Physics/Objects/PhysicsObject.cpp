@@ -6,6 +6,14 @@
 PhysicsObject::PhysicsObject(sf::Vector2f& p, float m){
     pos=p;
     mass=m;
+    charge=0.f;
+    vel={0.f,0.f};
+}
+
+PhysicsObject::PhysicsObject(sf::Vector2f& p, float m, float c){
+    pos=p;
+    mass=m;
+    charge=c;
     vel={0.f,0.f};
 }
 
@@ -35,6 +43,10 @@ float PhysicsObject::getMass(){
     return mass;
 }
 
+float PhysicsObject::getCharge(){
+    return charge;
+}
+
 //Mutators
 
 void PhysicsObject::setPos(sf::Vector2f p){
@@ -47,4 +59,8 @@ void PhysicsObject::setVel(sf::Vector2f v){
 
 void PhysicsObject::setMass(float m){
     mass=m;
+}
+
+void PhysicsObject::setCharge(float c){
+    charge=c;
 }

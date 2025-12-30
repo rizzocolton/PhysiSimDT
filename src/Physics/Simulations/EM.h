@@ -16,6 +16,7 @@
 
 class EM: public Simulation{
     private:
+        const float k=1.f;
         float gravity;
         float colRestitution;
         float boundsRestitution;
