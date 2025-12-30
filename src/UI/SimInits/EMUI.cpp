@@ -300,6 +300,25 @@ void EM::initUI(sf::Font& font){
             float Ue=0.5*V*this->selectedObject->getCharge();
             float Ug=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
             mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(Ue+Ug+KE,3));
+        }else{
+            float KE=0.f;
+            for(auto& obj: this->objects){
+                KE+=.5f*obj->getMass()*obj->getVel().lengthSquared()/(scaleFactor*scaleFactor);
+            }
+            float Ue=0.f;
+            for(auto& obj: this->objects){
+                float V=0.f;
+                sf::Vector2f pos1=obj->getPos();
+                for(auto& other:this->objects){
+                    float dist=(other->getPos()-pos1).length()/scaleFactor;
+                    if(dist!=0){
+                        V+=k*other->getCharge()/dist;
+                    }
+                }
+                Ue+=0.5*V*obj->getCharge();
+            }
+
+            mechEnergyLabel->setText("ME="+formatFloatToSigFigs(KE+Ue,3));
         }
     });
     UIElements.push_back(std::unique_ptr<Label>(mechEnergyLabel));
