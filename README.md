@@ -104,7 +104,7 @@ PhysiSim is a computational physics engine that demonstrates core concepts inclu
 
 ### Main Menu
 - Start the application to see the menu screen
-- Use the "Start" button to launch the default collision simulation or navigate to other simulation types
+- Navigate to simulation type
 
 ### During Simulation
 
