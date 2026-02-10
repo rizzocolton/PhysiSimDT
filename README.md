@@ -46,11 +46,9 @@ PhysiSim is a computational physics engine that demonstrates core concepts inclu
   - Separate detail view window for object inspection
 
 ## Screenshots & Demo
+- Collision Simulation Demo:
 
-- Collision Simulation Demo: 
-- Gravity Simulation Demo: 
-- Electromagnetic Forces: 
-- UI Controls & Object Inspector: 
+![Collision Simulation Demo](https://github.com/user-attachments/assets/ccd9dd96-8568-443b-b436-4519e2a9d32f)
 
 ## System Requirements
 
