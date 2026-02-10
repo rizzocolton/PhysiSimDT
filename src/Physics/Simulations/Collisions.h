@@ -20,6 +20,7 @@ class Collisions: public Simulation{
         float colRestitution;
         float boundsRestitution;
         SpatialMap sm;
+        bool showGrid=false;
         sf::FloatRect simBounds;
         std::function<void(SimType type)> switchSim;
         

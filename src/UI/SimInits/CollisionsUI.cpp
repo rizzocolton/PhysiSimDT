@@ -124,6 +124,14 @@ void Collisions::initUI(sf::Font& font){
     scaleFactorSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(scaleFactorSlider));
 
+    Button* showGridButton=new Button({23.f,490.f},{300.f,40.f},font);
+    showGridButton->setText("Show Grid: " + std::string(showGrid?"On":"Off"));
+    showGridButton->setOnChange([this,showGridButton](){
+        this->showGrid=!this->showGrid;
+        showGridButton->setText("Show Grid: " + std::string(showGrid?"On":"Off"));
+    });
+    UIElements.push_back(std::unique_ptr<Button>(showGridButton));
+
 
     /** DETAIL PANEL */
 

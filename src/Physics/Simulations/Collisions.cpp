@@ -70,7 +70,9 @@ void Collisions::update(float dt){
 
 void Collisions::draw(sf::RenderWindow& window){
     //Optionally draw spatial map grid
-    //sm.draw(window);
+    if(showGrid){
+        sm.draw(window);
+    }
 
     //Draw all objects
     for(auto& obj : objects){
