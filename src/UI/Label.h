@@ -11,6 +11,8 @@ class Label: public UI{
     public:
         Label(const sf::Vector2f& p, sf::Font& font);
 
+        Label(const sf::Vector2f& p, sf::Font& font, int fontSize);
+
         void setText(const std::string& str);
 
         void handleEvent(const sf::Event& event) override;

@@ -4,6 +4,9 @@
 #include <iostream>
 
 void Menu::initUI(sf::Font& font){
+    Label* titleLabel = new Label({860.f,20.f},font, 50);
+    titleLabel->setText("PhysiSim");
+    UIElements.push_back(std::unique_ptr<Label>(titleLabel));
 
     Button* collisionsButton = new Button({860.f,100.f},{300.f,50.f},font);
     collisionsButton->setText("Collisions");
