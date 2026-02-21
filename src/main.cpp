@@ -87,16 +87,20 @@ int main(){
     switchSim(SimType::Menu);
     currentSim=std::move(nextSim);
 
-    //FPS and population counter
+    //FPS, time elapsed, and population counter
 
     sf::Text fpsCounter(icelandFont);
     fpsCounter.setPosition({500.f,0.f});
     sf::Text populationCounter(icelandFont);
-    populationCounter.setPosition({500.f,20.f});
+    populationCounter.setPosition({500.f,40.f});
 
     int fps=0;
     sf::Clock fpsClock;
     sf::Clock deltaClock;
+    
+    float fixedDT=1.f/120.f;
+    float accumulator=0;
+
     
     while(window.isOpen()){
 
@@ -135,12 +139,16 @@ int main(){
             element->runLiveUpdate();
         }
 
-        //Update simulation
+        //Update simulation in fixed time-steps
         float dt=deltaClock.restart().asSeconds();
+        accumulator+=dt;
 
-        currentSim->update(dt);
+        while(accumulator>=fixedDT){
+            currentSim->update(fixedDT);
+            accumulator-=fixedDT;
+        }
+
         currentSim->draw(window);
-
         fps++;
         if(fpsClock.getElapsedTime().asSeconds()>=1.f){
             fpsCounter.setString("FPS: "+std::to_string(fps));
