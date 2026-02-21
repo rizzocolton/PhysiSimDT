@@ -22,7 +22,7 @@ PhysiSim is a computational physics engine that demonstrates core concepts inclu
 - **Realistic Physics**: 
   - Vector mathematics-based collision response
   - Energy and momentum conservation in collisions
-  - Accurate velocity and position calculations using frame-dependent euler integration
+  - Accurate velocity and position calculations using frame-independent euler integration
   - Proportional gravitational and electromagnetic force calculations
 
 - **Performance Optimization**:

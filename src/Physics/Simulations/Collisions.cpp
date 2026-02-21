@@ -66,6 +66,8 @@ void Collisions::update(float dt){
             }
         }
     }
+
+    timeElapsed+=dt*timeFactor; //add the amount of time elapsed in this frame
 }
 
 void Collisions::draw(sf::RenderWindow& window){

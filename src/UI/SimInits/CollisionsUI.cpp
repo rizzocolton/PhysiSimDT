@@ -42,6 +42,7 @@ void Collisions::initUI(sf::Font& font){
         for(auto& obj: this->objects){
             this->save.savedObjects.push_back(obj->clone());
         }
+        this->save.savedTimeElapsed=timeElapsed;
     });
     UIElements.push_back(std::unique_ptr<Button>(saveState));
 
@@ -54,6 +55,7 @@ void Collisions::initUI(sf::Font& font){
             this->objects.push_back(obj->clone());
             this->sm.enterCell(this->objects.back().get());
         }
+        timeElapsed=this->save.savedTimeElapsed;
     });
     UIElements.push_back(std::unique_ptr<Button>(loadState));
 
@@ -61,6 +63,7 @@ void Collisions::initUI(sf::Font& font){
     reset->setText(std::string("Reset"));
     reset->setOnChange([this,&font](){
         selectedObject=nullptr;
+        timeElapsed=0;
         objects.clear();
     });
     UIElements.push_back(std::unique_ptr<Button>(reset));

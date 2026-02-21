@@ -88,9 +88,10 @@ int main(){
     currentSim=std::move(nextSim);
 
     //FPS, time elapsed, and population counter
-
+    sf::Text timeCounter(icelandFont);
+    timeCounter.setPosition({500.f,0.f});
     sf::Text fpsCounter(icelandFont);
-    fpsCounter.setPosition({500.f,0.f});
+    fpsCounter.setPosition({500.f,20.f});
     sf::Text populationCounter(icelandFont);
     populationCounter.setPosition({500.f,40.f});
 
@@ -98,7 +99,7 @@ int main(){
     sf::Clock fpsClock;
     sf::Clock deltaClock;
     
-    float fixedDT=1.f/120.f;
+    float fixedDT=0.01f;
     float accumulator=0;
 
     
@@ -155,6 +156,7 @@ int main(){
             fps=0;
             fpsClock.restart();
         }
+        timeCounter.setString("Time Elapsed: "+std::to_string(currentSim->timeElapsed));
         populationCounter.setString("Population: "+std::to_string(currentSim->getPopulation()));
 
         //draw ui and stats if menu is not active
@@ -162,6 +164,7 @@ int main(){
             window.draw(simControls);
             window.draw(simObjectDetail);
             window.draw(fpsCounter);
+            window.draw(timeCounter);
             window.draw(populationCounter);
         }
         currentSim->drawUI(window);
