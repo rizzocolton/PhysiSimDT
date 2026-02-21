@@ -69,9 +69,24 @@ each object should only check its own cell and the cells to the right, down righ
 every celll only once checks every other cell adjacent once
 
 
-## Adding More UI
+## Revisiting Devlog After Significant Development
 
+Unfortunately I have made a lot of changes since the last time I updated this page without making any new updates here.
+I'll just quickly go over some of the biggest developments:
+* Made an E&M mode and a Gravity mode
+* Made UI initializations separate files for every simulation subclass
+* Switched from frame dependent to frame independent timesteps
+    * Basically I now use a fixed timestep instead of relying on the amount of time it takes for the program to complete a frame to dictate the next frames dt
+    * Much more deterministic sims, plus a lot more accurate at faster sim speeds
+    * This has however significantly impacted performance for high object counts, 10k objects is somewhat infeasible atp
 
-## TO-DO
+## Optimizing Performance in Collision Sim
 
-* Refine keyboard input functionality
+Before I refactor the other sims to use the frame independent calculations I need to go over the performance in collision sim now. It's a weird question of how to actually measure performance whenever I can lower the sim speed and have a higher fps due to the frame independence. What I can say for certain though is that this move has made *real time* performance for 10k objects drop significantly. I can only get about 15 fps with a similar sized spatial grid sizing as before. I'm going to do some profiling of my collisions update to see if there's anything I can optimize.
+
+So right now at 10k objects, real time:
+Accumulator Cycle: 70-100ms
+Collision Physics Update: 6-8ms
+Object Rendering: 7-10ms
+
+Looking at those numbers I think I'm just going to cap the iterations for the accumulator. This means that my sim will lag behind at real

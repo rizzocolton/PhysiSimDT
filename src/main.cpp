@@ -99,7 +99,7 @@ int main(){
     sf::Clock fpsClock;
     sf::Clock deltaClock;
     
-    float fixedDT=0.01f;
+    float fixedDT=1/1000.f;
     float accumulator=0;
 
     
@@ -144,9 +144,14 @@ int main(){
         float dt=deltaClock.restart().asSeconds();
         accumulator+=dt*currentSim->timeFactor;
 
-        while(accumulator>=fixedDT){
+        int iterations=0;
+        while(accumulator>=fixedDT&&iterations<5){
             currentSim->update(fixedDT);
             accumulator-=fixedDT;
+            iterations++;
+        }
+        if(accumulator>=fixedDT){
+            std::cout<<"Simulation Is Running Behind...\n";
         }
 
         currentSim->draw(window);
