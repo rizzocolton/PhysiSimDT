@@ -72,7 +72,7 @@ int main(){
                     0.f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
-                    100,    //cell size (in pixels)
+                    1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds
                     switchSim //lambda allowing switching to the menu
                 );
@@ -158,7 +158,7 @@ int main(){
             warningText.setPosition({1300.f,0.f});
             window.draw(warningText);
         }
-        
+
         fps++;
         if(fpsClock.getElapsedTime().asSeconds()>=1.f){
             fpsCounter.setString("FPS: "+std::to_string(fps));

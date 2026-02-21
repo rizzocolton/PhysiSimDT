@@ -1,8 +1,15 @@
 #include "EM.h"
 #include <iostream>
 
+
+
 EM::EM(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func)
-: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){}
+: gravity(gravity), colRestitution(colRestitution), sm(cellSize*scaleFactor,bounds), simBounds(bounds),boundsRestitution(boundsRestitution),switchSim(func){
+    simBounds.position.x/=scaleFactor;
+    simBounds.position.y/=scaleFactor;
+    simBounds.size.x/=scaleFactor;
+    simBounds.size.y/=scaleFactor;
+}
 
 void EM::update(float dt){
     //If simulation is not running, skip physics update
@@ -10,34 +17,31 @@ void EM::update(float dt){
         return;
     }
 
-    //Clear spatial map hash map for new frame
+    //Clear spatial map for new frame
     sm.clear();
 
-    
-    
     //Calculate forces on all objects
     for(int i=0;i<objects.size();i++){
         for(int j=i+1;j<objects.size();j++){
-            sf::Vector2f dist=(objects[j]->getPos()-objects[i]->getPos())/scaleFactor;
+            sf::Vector2f dist=(objects[j]->getPos()-objects[i]->getPos());
             //Colombs Law plus newtons 3rd law
             sf::Vector2f electricForce=-(k*objects[i]->getCharge()*objects[j]->getCharge()/dist.lengthSquared())*dist.normalized();
-            objects[i]->push(electricForce*scaleFactor,timeFactor*dt);
-            objects[j]->push(-electricForce*scaleFactor,timeFactor*dt);
+            objects[i]->push(electricForce,dt);
+            objects[j]->push(-electricForce,dt);
         }
-        sf::Vector2f weight{0.0f,objects[i]->getMass()*gravity*scaleFactor};
-        objects[i]->push(weight,timeFactor*dt);
+        sf::Vector2f weight{0.0f,objects[i]->getMass()*gravity};
+        objects[i]->push(weight,dt);
     }
 
-    //Move all objects
-
-    for(auto& obj:objects){
-        obj->move(timeFactor*dt);
+    //Update position of all objects
+    for(auto& obj : objects){
+        obj->move(dt);
         obj->checkBounds(simBounds,boundsRestitution);
+        //need scale factor for spatial map as it is in pixel units
         sm.enterCell(obj.get(),scaleFactor);
     }
 
-
-    //Check for collisions between objects in cells and adjacent cells
+    //Check for collision between objects in cells and adjacent cells
     for(auto& [cell,objs]: sm.getMap()){
         //makes a vector of all objs in set
         std::vector<PhysicsObject*> objVec(objs.begin(),objs.end());
@@ -81,11 +85,15 @@ void EM::update(float dt){
             }
         }
     }
+
+    timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
 
 void EM::draw(sf::RenderWindow& window){
     //Optionally draw spatial map grid
-    //sm.draw(window);
+    if(showGrid){
+        sm.draw(window);
+    }
 
     //Draw all objects
     for(auto& obj : objects){
@@ -102,8 +110,12 @@ void EM::drawUI(sf::RenderWindow& window){
 }
 
 void EM::handleEvent(const sf::Event& event){
-    //useful for a lot of event handling
-    sf::Vector2i mousePos=sf::Mouse::getPosition();
+    //translate raw mouse position into simulation coordinates (meters),
+    //relative to the top‑left corner of the simBounds.
+    sf::Vector2i raw = sf::Mouse::getPosition();
+    sf::Vector2f mousePos;
+    mousePos.x = (raw.x) / scaleFactor - simBounds.position.x;
+    mousePos.y = (raw.y) / scaleFactor - simBounds.position.y;
 
     //if space pressed, toggle simulation state
     if(event.getIf<sf::Event::KeyPressed>()){
@@ -111,22 +123,46 @@ void EM::handleEvent(const sf::Event& event){
             simulating=!simulating;
         }
     }
-    
-    //if mouse pressed on sim screen, add a new circle at mouse position
-    if(event.getIf<sf::Event::MouseButtonPressed>()){
-        if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Left){
-            //if mouse is within simulation bounds, place a new circle
-            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
-               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
-                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
+
+    //if mouse is held down and moved, add circles along the drag path
+    if(event.getIf<sf::Event::MouseMoved>()){
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
+            //if mouse is within simulation bounds, place a new circle at mouse position
+            if(mousePos.x>0 && mousePos.x<simBounds.size.x &&
+               mousePos.y>0 && mousePos.y<simBounds.size.y){
+                sf::Vector2f position{mousePos};
                 float radius=params.radius;
                 float mass=params.mass;
                 float charge=rand()%2;
                 sf::Color color;
                 if(charge==0){
-                    charge=-1.f;
+                    charge=-1E-6f; //-1 microcoulomb
                     color=sf::Color::Red;
                 }else{
+                    charge=1E-6f; //1 microcoulomb
+                    color=sf::Color::Blue;
+                }
+                objects.push_back(std::make_unique<Circle>(position, radius, mass, charge, color));
+                objects.back()->setVel({params.vx,params.vy}); 
+            }
+        }
+    }
+    
+    //if mouse pressed on sim screen, add a new circle at mouse position
+    if(event.getIf<sf::Event::MouseButtonPressed>()){
+        if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Left){
+            if(mousePos.x>0 && mousePos.x<simBounds.size.x &&
+               mousePos.y>0 && mousePos.y<simBounds.size.y){
+                sf::Vector2f position{mousePos};
+                float radius=params.radius;
+                float mass=params.mass;
+                float charge=rand()%2;
+                sf::Color color;
+                if(charge==0){
+                    charge=-1E-6f; //-1 microcoulomb
+                    color=sf::Color::Red;
+                }else{
+                    charge=1E-6f; //1 microcoulomb
                     color=sf::Color::Blue;
                 }
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, charge, color));
@@ -137,8 +173,8 @@ void EM::handleEvent(const sf::Event& event){
 
         //if the right mouse is pressed, get the nearest object at that position
         if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Right){
-            //mouse's current position
-            sf::Vector2f mousePosf(mousePos.x,mousePos.y);
+            //mouse's current position in pixels (spatial grid in pixels)
+            sf::Vector2f mousePosf(mousePos.x*scaleFactor,mousePos.y*scaleFactor);
             //set of all objects at that cell
             std::unordered_set objs=sm.getMap()[sm.getKey(mousePosf)];
             //vector pointing to every object in that cell

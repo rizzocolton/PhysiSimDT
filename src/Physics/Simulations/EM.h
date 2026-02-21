@@ -16,11 +16,12 @@
 
 class EM: public Simulation{
     private:
-        const float k=1.f;
+        const float k=9E9f;
         float gravity;
         float colRestitution;
         float boundsRestitution;
         SpatialMap sm;
+        bool showGrid=false;
         sf::FloatRect simBounds;
         std::function<void(SimType type)> switchSim;
         
