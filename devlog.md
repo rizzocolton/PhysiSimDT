@@ -90,3 +90,7 @@ Collision Physics Update: 6-8ms
 Object Rendering: 7-10ms
 
 Looking at those numbers I think I'm just going to cap the iterations for the accumulator. This means that my sim will lag behind at real
+
+## Refactoring Sim Units
+
+Did a massive refactoring to use SI units in all physics calculations leaving pixels for rendering and the spatial map.
