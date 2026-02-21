@@ -54,7 +54,7 @@ int main(){
                     9.8f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
-                    5,    //cell size (in meters)
+                    1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim //lambda allowing switching to the menu
                 );
@@ -145,16 +145,20 @@ int main(){
         accumulator+=dt*currentSim->timeFactor;
 
         int iterations=0;
-        while(accumulator>=fixedDT&&iterations<5){
+        while(accumulator>=fixedDT&&iterations<10){ //cap iterations to prevent spiral of death
             currentSim->update(fixedDT);
             accumulator-=fixedDT;
             iterations++;
         }
-        if(accumulator>=fixedDT){
-            std::cout<<"Simulation Is Running Behind...\n";
-        }
-
         currentSim->draw(window);
+        if(currentSim->simulating && accumulator>=fixedDT){
+            sf::Text warningText(icelandFont);
+            warningText.setFillColor(sf::Color::Red);
+            warningText.setString("Warning: Simulation is running slowly! Consider:\n-Reducing the population\n-Reducing the simulation speed\n-Decreasing the cell size");
+            warningText.setPosition({1300.f,0.f});
+            window.draw(warningText);
+        }
+        
         fps++;
         if(fpsClock.getElapsedTime().asSeconds()>=1.f){
             fpsCounter.setString("FPS: "+std::to_string(fps));

@@ -10,14 +10,14 @@ downButton({p.x + s.x+5.f, p.y + s.y / 2.f}, {20.f, s.y / 2.f}, f),
 
     upButton.setText("^");
     upButton.setOnChange([this]() {
-        setValue(currentValue + 0.01f);
+        setValue(currentValue + 0.1f);
         runOnChange();
     });
 
     downButton.setText("^");
     downButton.rotateText(180.f);
     downButton.setOnChange([this]() {
-        setValue(currentValue - 0.01f);
+        setValue(currentValue - 0.1f);
         runOnChange();
     });
 };
@@ -52,6 +52,16 @@ void Spinner::handleEvent(const sf::Event& event){
     if(event.getIf<sf::Event::MouseButtonPressed>() || event.getIf<sf::Event::MouseButtonReleased>() || event.getIf<sf::Event::MouseMoved>()){
         upButton.handleEvent(event);
         downButton.handleEvent(event);
+        if(auto* click = event.getIf<sf::Event::MouseButtonPressed>()){
+            sf::Vector2i mousePos = click->position;
+            //check if mouse is over label
+            if(mousePos.x >= pos.x && mousePos.x <= pos.x + size.x &&
+               mousePos.y >= pos.y && mousePos.y <= pos.y + size.y){
+                //if mouse is clicking on label, need to enter edit mode to allow typing in a value
+                editing=true;
+                input="";
+            }
+        }
     }
     if(event.getIf<sf::Event::MouseWheelScrolled>()){
         const sf::Event::MouseWheelScrolled* wheelEvent = event.getIf<sf::Event::MouseWheelScrolled>();
@@ -61,13 +71,31 @@ void Spinner::handleEvent(const sf::Event& event){
            mousePos.y >= pos.y && mousePos.y <= pos.y + size.y){
             //scroll up
             if(wheelEvent->delta > 0){
-                setValue(currentValue + 0.1f);
+                setValue(currentValue*1.1f);
                 runOnChange();
             }
             //scroll down
             else if(wheelEvent->delta < 0){
-                setValue(currentValue - 0.1f);
+                setValue(currentValue*0.9f);
                 runOnChange();
+            }
+        }
+    }
+    if(editing){
+        if(auto* textEvent = event.getIf<sf::Event::TextEntered>()){
+            if(textEvent->unicode >= '0' && textEvent->unicode <= '9' || textEvent->unicode == '.' || textEvent->unicode == '-'){
+                input += static_cast<char>(textEvent->unicode);
+            }else if(textEvent->unicode == '\b' && !input.empty()){
+                input.pop_back();
+            }else if(textEvent->unicode == '\r' && !input.empty()){
+                try{
+                    float value = std::stof(input);
+                    setValue(value);
+                    runOnChange();
+                }catch(const std::exception& e){
+                    //invalid input, ignore
+                }
+                editing=false;
             }
         }
     }
@@ -75,6 +103,9 @@ void Spinner::handleEvent(const sf::Event& event){
 
 void Spinner::draw(sf::RenderWindow& window){
     //Draw main label
+    if(editing){
+        setText(input);
+    }
     window.draw(label);
 
     //Draw buttons

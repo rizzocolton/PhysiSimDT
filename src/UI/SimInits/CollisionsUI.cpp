@@ -129,7 +129,7 @@ void Collisions::initUI(sf::Font& font){
         simBounds.size.y=simBounds.size.y*(scaleFactor/scaleFactorSpinner->getValue());
         simBounds.position.x=simBounds.position.x*(scaleFactor/scaleFactorSpinner->getValue());
         simBounds.position.y=simBounds.position.y*(scaleFactor/scaleFactorSpinner->getValue());
-        
+
         this->scaleFactor = scaleFactorSpinner->getValue();
         scaleFactorSpinner->setText("Scale (ppm): "+formatFloatToSigFigs(scaleFactorSpinner->getValue(),3));
     });
@@ -149,7 +149,7 @@ void Collisions::initUI(sf::Font& font){
 
     //Position spinners
     
-    Spinner* posXSpinner = new Spinner({10.f,650.f},{120.f,40.f},font,0.f,simBounds.size.x,0.f);
+    Spinner* posXSpinner = new Spinner({50.f,650.f},{120.f,40.f},font,0.f,simBounds.size.x,0.f);
     posXSpinner->setOnChange([this,posXSpinner](){
         //if selected object exists, update its x position
         if(this->selectedObject!=nullptr){
@@ -176,7 +176,7 @@ void Collisions::initUI(sf::Font& font){
     posXSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(posXSpinner));
 
-    Spinner* posYSpinner = new Spinner({170.f,650.f},{120.f,40.f},font,0.f,simBounds.size.y,0.f);
+    Spinner* posYSpinner = new Spinner({200.f,650.f},{120.f,40.f},font,0.f,simBounds.size.y,0.f);
     posYSpinner->setOnChange([this,posYSpinner](){
         //if selected object exists, update its y position
         if(this->selectedObject!=nullptr){
@@ -204,7 +204,7 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(posYSpinner));   
 
     //velocity spinners
-    Spinner* velXSpinner = new Spinner({10.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
+    Spinner* velXSpinner = new Spinner({50.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
     velXSpinner->setOnChange([this,velXSpinner](){
         //if selected object exists, update its x velocity (meters per second)
         if(this->selectedObject!=nullptr){
@@ -227,7 +227,7 @@ void Collisions::initUI(sf::Font& font){
     velXSpinner->runOnChange();
     UIElements.push_back(std::unique_ptr<Spinner>(velXSpinner));
 
-    Spinner* velYSpinner = new Spinner({170.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
+    Spinner* velYSpinner = new Spinner({200.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
     velYSpinner->setOnChange([this,velYSpinner](){
         //if selected object exists, update its y velocity (meters per second)
         if(this->selectedObject!=nullptr){
@@ -253,7 +253,7 @@ void Collisions::initUI(sf::Font& font){
 
     //mass spinner
 
-    Spinner* massSpinner = new Spinner({50.f,800.f},{120.f,40.f}, font,0.1f,FLT_MAX,0.f);
+    Spinner* massSpinner = new Spinner({50.f,800.f},{220.f,40.f}, font,0.1f,FLT_MAX,0.f);
     massSpinner->setOnChange([this,massSpinner](){
         //if selected object exists, update its mass
         if(this->selectedObject!=nullptr){
@@ -275,7 +275,7 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
 
     //radius spinner (for circles), ranges from 1 pixel to half the cell size (to prevent excessively large circles that could cause clipping)
-    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.1f);
+    Spinner* radiusSpinner = new Spinner({50.f,850.f},{220.f,40.f}, font,1/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.1f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
         //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){

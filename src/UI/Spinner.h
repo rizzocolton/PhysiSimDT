@@ -15,6 +15,9 @@ class Spinner: public UI{
         Button downButton;
         sf::Text label;
 
+        bool editing=false;
+        std::string input;
+
     public:
         Spinner(sf::Vector2f p, sf::Vector2f s, sf::Font& f, float min, float max, float value);
 
