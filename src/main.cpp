@@ -142,7 +142,7 @@ int main(){
 
         //Update simulation in fixed time-steps
         float dt=deltaClock.restart().asSeconds();
-        accumulator+=dt;
+        accumulator+=dt*currentSim->timeFactor;
 
         while(accumulator>=fixedDT){
             currentSim->update(fixedDT);

@@ -16,9 +16,9 @@ void Collisions::update(float dt){
     //Update position of all objects
     for(auto& obj : objects){
         sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
-        obj->move(timeFactor*dt);
+        obj->move(dt);
         obj->checkBounds(simBounds,boundsRestitution);
-        obj->push(weight,timeFactor*dt);
+        obj->push(weight,dt);
         sm.enterCell(obj.get());
     }
 
@@ -67,7 +67,7 @@ void Collisions::update(float dt){
         }
     }
 
-    timeElapsed+=dt*timeFactor; //add the amount of time elapsed in this frame
+    timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
 
 void Collisions::draw(sf::RenderWindow& window){
