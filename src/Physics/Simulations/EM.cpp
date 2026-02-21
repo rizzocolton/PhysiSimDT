@@ -33,7 +33,7 @@ void EM::update(float dt){
     for(auto& obj:objects){
         obj->move(timeFactor*dt);
         obj->checkBounds(simBounds,boundsRestitution);
-        sm.enterCell(obj.get());
+        sm.enterCell(obj.get(),scaleFactor);
     }
 
 
@@ -89,7 +89,7 @@ void EM::draw(sf::RenderWindow& window){
 
     //Draw all objects
     for(auto& obj : objects){
-        obj->draw(window);
+        obj->draw(window,simBounds.position,scaleFactor);
     }
 }
 
@@ -131,7 +131,7 @@ void EM::handleEvent(const sf::Event& event){
                 }
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, charge, color));
                 objects.back()->setVel({params.vx,params.vy});
-                sm.enterCell(objects.back().get());
+                sm.enterCell(objects.back().get(),scaleFactor);
             }
         }
 

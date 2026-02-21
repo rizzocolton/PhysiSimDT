@@ -53,7 +53,7 @@ void Collisions::initUI(sf::Font& font){
         this->objects.clear();
         for(auto& obj: this->save.savedObjects){
             this->objects.push_back(obj->clone());
-            this->sm.enterCell(this->objects.back().get());
+            this->sm.enterCell(this->objects.back().get(),scaleFactor);
         }
         timeElapsed=this->save.savedTimeElapsed;
     });
@@ -114,15 +114,9 @@ void Collisions::initUI(sf::Font& font){
 
     Slider* scaleFactorSlider = new Slider({23.f,420.f},{300.f,40.f},font,1.f,500.f,100.f);
     scaleFactorSlider->setOnChange([this,scaleFactorSlider](){
-        float oldsf=this->scaleFactor;
-        this->scaleFactor=scaleFactorSlider->getValue();
+        this->scaleFactor = scaleFactorSlider->getValue();
         scaleFactorSlider->setText("Scale (ppm): "+formatFloatToSigFigs(scaleFactorSlider->getValue(),3));
-        for(auto& obj: objects){
-            Circle* circle = dynamic_cast<Circle*>(obj.get());
-            if(circle!=nullptr){
-                circle->setRadius(circle->getRadius()/oldsf*scaleFactor);
-            }
-        }
+        //no need to adjust object radii – they are stored in meters; drawing will use new scaleFactor automatically
     });
     scaleFactorSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(scaleFactorSlider));
@@ -197,22 +191,21 @@ void Collisions::initUI(sf::Font& font){
     //velocity spinners
     Spinner* velXSpinner = new Spinner({10.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
     velXSpinner->setOnChange([this,velXSpinner](){
-        //if selected object exists, update its x position
+        //if selected object exists, update its x velocity (meters per second)
         if(this->selectedObject!=nullptr){
             this->selectedObject->setVel({
-                velXSpinner->getValue()*scaleFactor,
+                velXSpinner->getValue(),
                 this->selectedObject->getVel().y
             });
         }else{
             //if no object selected update spawning params
-            params.vx=velXSpinner->getValue()*scaleFactor;
+            params.vx=velXSpinner->getValue();
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
     velXSpinner->setLiveUpdate([this,velXSpinner](){
-        //if selected object exists, update spinner text to match its x position
         if(this->selectedObject!=nullptr){
-             velXSpinner->setValue(this->selectedObject->getVel().x/scaleFactor);
+             velXSpinner->setValue(this->selectedObject->getVel().x);
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
@@ -267,17 +260,17 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Spinner>(massSpinner));
 
     //radius spinner (for circles)
-    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.f);
+    Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f,sm.getCellSize()/(2*scaleFactor),1.f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
         //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
-                circle->setRadius(radiusSpinner->getValue()*scaleFactor);
+                circle->setRadius(radiusSpinner->getValue());
             }
         }else{
             //if no object selected update spawning params
-            params.radius=radiusSpinner->getValue()*scaleFactor;
+            params.radius=radiusSpinner->getValue();
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");
     });
@@ -286,8 +279,8 @@ void Collisions::initUI(sf::Font& font){
         if(this->selectedObject!=nullptr){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
-                radiusSpinner->setRange(1.f/scaleFactor,this->sm.getCellSize()/(2*scaleFactor));
-                radiusSpinner->setValue(circle->getRadius()/scaleFactor);
+                radiusSpinner->setRange(1.f,this->sm.getCellSize()/(2*scaleFactor));
+                radiusSpinner->setValue(circle->getRadius());
             }
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");
@@ -297,23 +290,22 @@ void Collisions::initUI(sf::Font& font){
 
     Label* mechEnergyLabel = new Label({20.f,900.f},font);
     mechEnergyLabel->setLiveUpdate([this,mechEnergyLabel](){
-        //if selected object exists, update label to match its total mechanical energy
         if(this->selectedObject!=nullptr){
-            //KE=0.5*m*v^2
-            float KE=this->selectedObject->getMass()*(this->selectedObject->getVel().lengthSquared()/(scaleFactor*scaleFactor))*0.5;
-            //U=mgh (don't need to divide by scale factor twice as gravity is already in correct units)
-            float U=this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor);
-            mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(U+KE,3));
+            //KE = 0.5 * m * v^2  (v in m/s, mass in kg)
+            float KE = 0.5f * this->selectedObject->getMass() * this->selectedObject->getVel().lengthSquared();
+            //U = m * g * h  (h measured in meters from bottom of sim)
+            float U = this->selectedObject->getMass() * this->gravity *
+                      (this->simBounds.position.y + this->simBounds.size.y - this->selectedObject->getPos().y);
+            mechEnergyLabel->setText("ME=" + formatFloatToSigFigs(U + KE,3));
         }
     });
     UIElements.push_back(std::unique_ptr<Label>(mechEnergyLabel));
 
     Label* kineticEnergyLabel = new Label({20.f,920.f},font);
     kineticEnergyLabel->setLiveUpdate([this,kineticEnergyLabel](){
-        //if selected object exists, update label to match its kinetic energy
         if(this->selectedObject!=nullptr){
             kineticEnergyLabel->setText("KE=" + formatFloatToSigFigs(
-                this->selectedObject->getMass()*(this->selectedObject->getVel().lengthSquared()/(scaleFactor*scaleFactor))*0.5,3
+                0.5f * this->selectedObject->getMass() * this->selectedObject->getVel().lengthSquared(),3
             ));
         }
     });
@@ -321,10 +313,10 @@ void Collisions::initUI(sf::Font& font){
 
     Label* potentialEnergyLabel = new Label({20.f,940.f},font);
     potentialEnergyLabel->setLiveUpdate([this,potentialEnergyLabel](){
-        //if selected object exists, update label to match its potential energy
         if(this->selectedObject!=nullptr){
             potentialEnergyLabel->setText("U=" + formatFloatToSigFigs(
-                this->selectedObject->getMass()*this->gravity*(this->simBounds.position.y+this->simBounds.size.y-this->selectedObject->getPos().y)/(scaleFactor),3
+                this->selectedObject->getMass() * this->gravity *
+                (this->simBounds.position.y + this->simBounds.size.y - this->selectedObject->getPos().y),3
             ));
         }
     });

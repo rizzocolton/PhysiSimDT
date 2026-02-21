@@ -38,15 +38,19 @@ SpatialMap::SpatialMap(int cs, sf::FloatRect bounds){
 
 
 GridKey SpatialMap::getKey(PhysicsObject& c){
-    return GridKey(c.getPos(),cellSize);
+    sf::Vector2f& pos = c.getPos();
+    return GridKey(pos,cellSize);
 }
 
 GridKey SpatialMap::getKey(sf::Vector2f p){
     return GridKey(p,cellSize);
 }
 
-void SpatialMap::enterCell(PhysicsObject* c){
-    sm[getKey(*c)].insert(c);
+void SpatialMap::enterCell(PhysicsObject* c, float scaleFactor){
+    sf::Vector2f pos = c->getPos();
+    pos.x*=scaleFactor;
+    pos.y*=scaleFactor;
+    sm[getKey(pos)].insert(c);
 }
 
 int SpatialMap::getCellSize(){

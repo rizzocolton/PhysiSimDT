@@ -52,7 +52,7 @@ void EM::initUI(sf::Font& font){
         this->objects.clear();
         for(auto& obj: this->save.savedObjects){
             this->objects.push_back(obj->clone());
-            this->sm.enterCell(this->objects.back().get());
+            this->sm.enterCell(this->objects.back().get(),scaleFactor);
         }
     });
     UIElements.push_back(std::unique_ptr<Button>(loadState));

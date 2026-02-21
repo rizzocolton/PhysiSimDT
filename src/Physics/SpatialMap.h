@@ -33,7 +33,7 @@ public:
     //alternate constructor for mouse button checks
     GridKey getKey(sf::Vector2f p);
     
-    void enterCell(PhysicsObject* c);
+    void enterCell(PhysicsObject* c,float scaleFactor);
 
     int getCellSize();
 

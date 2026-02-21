@@ -21,7 +21,8 @@ enum class SimType{
     EM
 };
 
-//all in pixel units
+//all in simulation units (meters for length, kg for mass, m/s for velocity).
+//display and spatial calculations convert to pixels using the global scaleFactor.
 struct SpawnParams{
     float radius;
     float mass;

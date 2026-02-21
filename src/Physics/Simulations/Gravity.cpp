@@ -33,7 +33,7 @@ void Gravity::update(float dt){
             objects[j]->push(-gravityForce,dt);
         }
         objects[i]->move(timeFactor*dt);
-        sm.enterCell(objects[i].get());
+        sm.enterCell(objects[i].get(),scaleFactor);
     }
     
 
@@ -89,7 +89,7 @@ void Gravity::draw(sf::RenderWindow& window){
 
     //Draw all objects
     for(auto& obj : objects){
-        obj->draw(window);
+        obj->draw(window,simBounds.position,scaleFactor);
     }
 }
 
@@ -128,7 +128,7 @@ void Gravity::handleEvent(const sf::Event& event){
                 );
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
                 objects.back()->setVel({params.vx,params.vy});
-                sm.enterCell(objects.back().get());
+                sm.enterCell(objects.back().get(),scaleFactor);
             }
         }
 

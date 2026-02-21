@@ -41,7 +41,7 @@ public:
     //Subclasses (different shaped objects) may check to see if their projection is within bounds (the screen in which they are enclosed)
     virtual void checkBounds(sf::FloatRect bounds,float restitution)=0;
     //Subclasses (different shaped objects) utilize their own draw implementation according to their geometry
-    virtual void draw(sf::RenderWindow& window)=0;
+    virtual void draw(sf::RenderWindow& window, sf::Vector2f offset, float scaleFactor)=0;
     //Subclasses (different shaped objects) utilize their own collision detection and response according to their geometry
     virtual void collide(PhysicsObject& other, float restitution)=0;
     //Subclasses should be able to highlight themselves when selected

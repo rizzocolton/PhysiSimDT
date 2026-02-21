@@ -32,7 +32,7 @@ public:
     void checkBounds(sf::FloatRect bounds,float restitution) override;
 
     //Rendering of circle onto screen
-    void draw(sf::RenderWindow& window) override;
+    void draw(sf::RenderWindow& window, sf::Vector2f offset, float scaleFactor) override;
 
     //Collision detection/response with another PhysicsObject depending on coefficient of restitution
     void collide(PhysicsObject& other, float res) override;

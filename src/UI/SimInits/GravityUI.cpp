@@ -52,7 +52,7 @@ void Gravity::initUI(sf::Font& font){
         this->objects.clear();
         for(auto& obj: this->save.savedObjects){
             this->objects.push_back(obj->clone());
-            this->sm.enterCell(this->objects.back().get());
+            this->sm.enterCell(this->objects.back().get(),scaleFactor);
         }
     });
     UIElements.push_back(std::unique_ptr<Button>(loadState));
@@ -96,15 +96,9 @@ void Gravity::initUI(sf::Font& font){
 
     Slider* scaleFactorSlider = new Slider({23.f,420.f},{300.f,40.f},font,1.f,500.f,100.f);
     scaleFactorSlider->setOnChange([this,scaleFactorSlider](){
-        float oldsf=this->scaleFactor;
-        this->scaleFactor=scaleFactorSlider->getValue();
+        this->scaleFactor = scaleFactorSlider->getValue();
         scaleFactorSlider->setText("Scale (ppm): "+formatFloatToSigFigs(scaleFactorSlider->getValue(),3));
-        for(auto& obj: objects){
-            Circle* circle = dynamic_cast<Circle*>(obj.get());
-            if(circle!=nullptr){
-                circle->setRadius(circle->getRadius()/oldsf*scaleFactor);
-            }
-        }
+        //physics radii remain unchanged
     });
     scaleFactorSlider->runOnChange();
     UIElements.push_back(std::unique_ptr<Slider>(scaleFactorSlider));
@@ -171,22 +165,19 @@ void Gravity::initUI(sf::Font& font){
     //velocity spinners
     Spinner* velXSpinner = new Spinner({10.f,750.f},{120.f,40.f}, font,-FLT_MAX,FLT_MAX,0.f);
     velXSpinner->setOnChange([this,velXSpinner](){
-        //if selected object exists, update its x position
         if(this->selectedObject!=nullptr){
             this->selectedObject->setVel({
-                velXSpinner->getValue()*scaleFactor,
+                velXSpinner->getValue(),
                 this->selectedObject->getVel().y
             });
         }else{
-            //if no object selected update spawning params
-            params.vx=velXSpinner->getValue()*scaleFactor;
+            params.vx=velXSpinner->getValue();
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
     velXSpinner->setLiveUpdate([this,velXSpinner](){
-        //if selected object exists, update spinner text to match its x position
         if(this->selectedObject!=nullptr){
-             velXSpinner->setValue(this->selectedObject->getVel().x/scaleFactor);
+             velXSpinner->setValue(this->selectedObject->getVel().x);
         }
         velXSpinner->setText("X [" + formatFloatToSigFigs(velXSpinner->getValue(),3)+"]");
     });
@@ -243,15 +234,13 @@ void Gravity::initUI(sf::Font& font){
     //radius spinner (for circles)
     Spinner* radiusSpinner = new Spinner({50.f,850.f},{120.f,40.f}, font,1.f/scaleFactor,sm.getCellSize()/(2*scaleFactor),0.f);
     radiusSpinner->setOnChange([this,radiusSpinner](){
-        //if selected object exists and is a circle, update its radius
         if(this->selectedObject!=nullptr){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
-                circle->setRadius(radiusSpinner->getValue()*scaleFactor);
+                circle->setRadius(radiusSpinner->getValue());
             }
         }else{
-            //if no object selected update spawning params
-            params.radius=radiusSpinner->getValue()*scaleFactor;
+            params.radius=radiusSpinner->getValue();
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");
     });
@@ -261,7 +250,7 @@ void Gravity::initUI(sf::Font& font){
             Circle* circle = dynamic_cast<Circle*>(this->selectedObject);
             if(circle!=nullptr){
                 radiusSpinner->setRange(1.f/scaleFactor,this->sm.getCellSize()/(2*scaleFactor));
-                radiusSpinner->setValue(circle->getRadius()/scaleFactor);
+                radiusSpinner->setValue(circle->getRadius());
             }
         }
         radiusSpinner->setText("Radius [" + formatFloatToSigFigs(radiusSpinner->getValue(),3)+"]");

@@ -4,27 +4,19 @@
 
 //Constructor
 
-Circle::Circle(sf::Vector2f& p, float r, float m, sf::Color& c):
+Circle::Circle(sf::Vector2f& p, float r, float m, sf::Color& col):
 PhysicsObject(p,m){
-    radius=r;
-    color=c;
-    shape.setRadius(radius);
-    shape.setPosition(pos);
+    setRadius(r);
+    color=col;
     shape.setPointCount(20);
-    //makes origin of circle at its center, much easier/intuitive for collisions
-    shape.setOrigin({radius,radius});
     shape.setFillColor(color);
 };
 
 Circle::Circle(sf::Vector2f& p, float r, float m, float c, sf::Color& col):
 PhysicsObject(p,m,c){
-    radius=r;
+    setRadius(r);
     color=col;
-    shape.setRadius(radius);
-    shape.setPosition(pos);
     shape.setPointCount(20);
-    //makes origin of circle at its center, much easier/intuitive for collisions
-    shape.setOrigin({radius,radius});
     shape.setFillColor(color);
 };
 
@@ -39,8 +31,6 @@ void Circle::unhighlight(){
 
 void Circle::setRadius(float r){
     radius=r;
-    shape.setRadius(radius);
-    shape.setOrigin({radius,radius});
 }
 
 float Circle::getRadius(){
@@ -52,24 +42,27 @@ void Circle::checkBounds(sf::FloatRect bounds,float restitution){
     float timeOutsideBounds;
     //if the circle is outside of the sim and actively moving outside of the sim, reverse the component moving away
     // Check X bounds
-    if((vel.x<0&&pos.x-radius<bounds.position.x)|| 
-       (vel.x > 0&&pos.x+radius>bounds.position.x+bounds.size.x)){
+    if((vel.x < 0 && pos.x - radius < 0) || 
+       (vel.x > 0 && pos.x + radius > bounds.size.x)){
         vel.x *= -1 * restitution;
-        if(pos.x - radius < bounds.position.x){
-            pos.x = bounds.position.x + radius;
+        if(pos.x - radius < 0){
+            pos.x = radius;
         } else {
-            pos.x = bounds.position.x + bounds.size.x - radius;
+            pos.x = bounds.size.x - radius;
+        }
+        if(abs(vel.x)<0.01){
+            vel.x=0;
         }
     }
 
     // Check Y bounds
-    if((vel.y < 0 && pos.y - radius < bounds.position.y) || 
-       (vel.y > 0 && pos.y + radius > bounds.position.y + bounds.size.y)){
+    if((vel.y < 0 && pos.y - radius < 0) || 
+       (vel.y > 0 && pos.y + radius > bounds.size.y)){
         vel.y *= -1 * restitution;
-        if(pos.y - radius < bounds.position.y){
-            pos.y = bounds.position.y + radius;
+        if(pos.y - radius < 0){
+            pos.y = radius;
         } else {
-            pos.y = bounds.position.y + bounds.size.y - radius;
+            pos.y = bounds.size.y - radius;
         }
         if(abs(vel.y)<0.01){
             vel.y=0;
@@ -78,8 +71,12 @@ void Circle::checkBounds(sf::FloatRect bounds,float restitution){
 }
 
 //renders the circle onto selected window
-void Circle::draw(sf::RenderWindow& window){
-    shape.setPosition(pos);
+void Circle::draw(sf::RenderWindow& window,sf::Vector2f offset, float scaleFactor){
+    float scaledRadius=radius*scaleFactor;
+    shape.setRadius(scaledRadius);
+    //makes origin of circle at its center, much easier/intuitive for collisions
+    shape.setOrigin({scaledRadius,scaledRadius});
+    shape.setPosition((pos+offset)*scaleFactor);
     window.draw(shape);
 }
 

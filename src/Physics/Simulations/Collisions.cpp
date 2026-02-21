@@ -2,7 +2,12 @@
 #include <iostream>
 
 Collisions::Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func)
-: gravity(gravity), colRestitution(colRestitution), boundsRestitution(boundsRestitution), sm(cellSize,bounds), simBounds(bounds), switchSim(func){}
+: gravity(gravity), colRestitution(colRestitution), sm(cellSize*scaleFactor,bounds), simBounds(bounds),boundsRestitution(boundsRestitution),switchSim(func){
+    simBounds.position.x/=scaleFactor;
+    simBounds.position.y/=scaleFactor;
+    simBounds.size.x/=scaleFactor;
+    simBounds.size.y/=scaleFactor;
+}
 
 void Collisions::update(float dt){
     //If simulation is not running, skip physics update
@@ -15,11 +20,12 @@ void Collisions::update(float dt){
 
     //Update position of all objects
     for(auto& obj : objects){
-        sf::Vector2f weight{0.0f,obj->getMass()*gravity*scaleFactor};
+        sf::Vector2f weight{0.0f,obj->getMass()*gravity};
         obj->move(dt);
         obj->checkBounds(simBounds,boundsRestitution);
         obj->push(weight,dt);
-        sm.enterCell(obj.get());
+        //need scale factor for spatial map as it is in pixel units
+        sm.enterCell(obj.get(),scaleFactor);
     }
 
     //Check for collisions between objects in cells and adjacent cells
@@ -78,7 +84,7 @@ void Collisions::draw(sf::RenderWindow& window){
 
     //Draw all objects
     for(auto& obj : objects){
-        obj->draw(window);
+        obj->draw(window,simBounds.position,scaleFactor);
     }
 }
 
@@ -91,8 +97,12 @@ void Collisions::drawUI(sf::RenderWindow& window){
 }
 
 void Collisions::handleEvent(const sf::Event& event){
-    //useful for a lot of event handling
-    sf::Vector2i mousePos=sf::Mouse::getPosition();
+    //translate raw mouse position into simulation coordinates (meters),
+    //relative to the top‑left corner of the simBounds.
+    sf::Vector2i raw = sf::Mouse::getPosition();
+    sf::Vector2f mousePos;
+    mousePos.x = (raw.x) / scaleFactor - simBounds.position.x;
+    mousePos.y = (raw.y) / scaleFactor - simBounds.position.y;
 
     //if space pressed, toggle simulation state
     if(event.getIf<sf::Event::KeyPressed>()){
@@ -104,11 +114,10 @@ void Collisions::handleEvent(const sf::Event& event){
     //if mouse is held down and moved, add circles along the drag path
     if(event.getIf<sf::Event::MouseMoved>()){
         if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
-            sf::Vector2i mousePos=sf::Mouse::getPosition();
-            //if mouse is within simulation bounds, place a new circle
-            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
-               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
-                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
+            //if mouse is within simulation bounds, place a new circle at mouse position
+            if(mousePos.x>0 && mousePos.x<simBounds.size.x &&
+               mousePos.y>0 && mousePos.y<simBounds.size.y){
+                sf::Vector2f position{mousePos};
                 float radius=params.radius;
                 float mass=params.mass;
                 sf::Color color(
@@ -125,10 +134,9 @@ void Collisions::handleEvent(const sf::Event& event){
     //if mouse pressed on sim screen, add a new circle at mouse position
     if(event.getIf<sf::Event::MouseButtonPressed>()){
         if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Left){
-            //if mouse is within simulation bounds, place a new circle
-            if(mousePos.x>simBounds.position.x && mousePos.x<simBounds.position.x+simBounds.size.x &&
-               mousePos.y>simBounds.position.y && mousePos.y<simBounds.position.y+simBounds.size.y){
-                sf::Vector2f position{static_cast<float>(mousePos.x),static_cast<float>(mousePos.y)};
+            if(mousePos.x>0 && mousePos.x<simBounds.size.x &&
+               mousePos.y>0 && mousePos.y<simBounds.size.y){
+                sf::Vector2f position{mousePos};
                 float radius=params.radius;
                 float mass=params.mass;
                 sf::Color color(
@@ -138,14 +146,14 @@ void Collisions::handleEvent(const sf::Event& event){
                 );
                 objects.push_back(std::make_unique<Circle>(position, radius, mass, color));
                 objects.back()->setVel({params.vx,params.vy});
-                sm.enterCell(objects.back().get());
+                sm.enterCell(objects.back().get(),scaleFactor);
             }
         }
 
         //if the right mouse is pressed, get the nearest object at that position
         if(event.getIf<sf::Event::MouseButtonPressed>()->button==sf::Mouse::Button::Right){
-            //mouse's current position
-            sf::Vector2f mousePosf(mousePos.x,mousePos.y);
+            //mouse's current position in pixels (spatial grid in pixels)
+            sf::Vector2f mousePosf(mousePos.x*scaleFactor,mousePos.y*scaleFactor);
             //set of all objects at that cell
             std::unordered_set objs=sm.getMap()[sm.getKey(mousePosf)];
             //vector pointing to every object in that cell

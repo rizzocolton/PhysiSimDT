@@ -54,8 +54,8 @@ int main(){
                     9.8f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
-                    100,    //cell size (in pixels)
-                    simSpace.getGlobalBounds(), //simulation bounds
+                    5,    //cell size (in meters)
+                    simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim //lambda allowing switching to the menu
                 );
                 break;
