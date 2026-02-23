@@ -85,9 +85,9 @@ I'll just quickly go over some of the biggest developments:
 Before I refactor the other sims to use the frame independent calculations I need to go over the performance in collision sim now. It's a weird question of how to actually measure performance whenever I can lower the sim speed and have a higher fps due to the frame independence. What I can say for certain though is that this move has made *real time* performance for 10k objects drop significantly. I can only get about 15 fps with a similar sized spatial grid sizing as before. I'm going to do some profiling of my collisions update to see if there's anything I can optimize.
 
 So right now at 10k objects, real time:
-Accumulator Cycle: 70-100ms
-Collision Physics Update: 6-8ms
-Object Rendering: 7-10ms
+* Accumulator Cycle: 70-100ms
+* Collision Physics Update: 6-8ms
+* Object Rendering: 7-10ms
 
 Looking at those numbers I think I'm just going to cap the iterations for the accumulator. This means that my sim will lag behind at real
 
@@ -106,9 +106,46 @@ Completely rebuilt using a different design philosophy. Will be putting performa
 
 ## Same as above but with Velocity Verlet integration:
 
-* Computation Time Per Time-Step: ~100 microseconds
+* Computation Time Per Time-Step: ~130 microseconds
 * Energy Leakage: 0 J/s
 
 Using velocity Verlet integration literally deleted all energy leakage, at least for this simple system. Wow. I can't believe I've been using Euler integration for so long until this point and wondering where all of the energy in my system went!
 
-## Same parameters but using optimized sf::VertexArrays
+## Same parameters but comparing render times before and after optimizing drawing
+
+After using textures + vertex arrays:
+
+* Object Rendering: ~400 microseconds
+
+With 10k objects thats a crazy 17x improvement!!!
+
+## Now before doing anymore optimizations, let's test this version's limits!
+
+So keep in mind we're doing velocity verlet integration, optimized vertex array for rendering, random dispersion of objects. Also I had made the boundary collision detection more elaborate for circles which may explain the jump in physics update time.
+
+10k Objects:
+* Physics Update: ~190 microseconds
+* Object Rendering: ~400 microseconds
+
+20k Objects:
+* Physics Update: ~280 microseconds
+* Object Rendering: ~700 microseconds
+
+50k Objects:
+* Physics Update: ~560 microseconds
+* Object Rendering: ~1820 microseconds
+
+100k Objects:
+* Physics Update: ~930 microseconds
+* Object Rendering: ~3360 microseconds
+
+500k Objects:
+* Physics Update: ~6460 microseconds
+* Object Rendering: ~17800 microseconds
+
+The physics engine finally started running behind only at 500k objects. 
+
+### This is an astronomical improvement over the original PhysiSim!!!
+
+Now I'm going to implement collisions, and we'll unfortunately see those physics update numbers drop...
+

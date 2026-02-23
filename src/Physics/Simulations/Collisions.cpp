@@ -18,7 +18,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
             (float)rand()/RAND_MAX*simBounds.size.y,
-            (1.f/scaleFactor)*4
+            (1.f/scaleFactor)
         );
     }
 }
@@ -39,14 +39,15 @@ void Collisions::update(float dt){
         return;
     }
 
+    auto start=std::chrono::steady_clock::now();
+
     Systems::ZeroForces(state);
     Systems::GlobalGravity(state, gravity);
     Systems::Movement(state, dt);
     Systems::BoundaryCollisions(state, boundsRestitution);
     
-    // 1/2 m v^2 + mgh = ME
-    std::cout<<"ME "<<.5f*(1.f/state.invmass[0])*(pow(state.vx[0],2)+pow(state.vy[0],2))+(1.f/state.invmass[0])*-gravity*state.y[0]
-             <<" at time "<<timeElapsed<<"s\n";
+    auto end=std::chrono::steady_clock::now();
+    std::cout<<"Physics Update Time: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
@@ -56,14 +57,18 @@ void Collisions::draw(sf::RenderWindow& window){
     if(showGrid){
         
     }
-
-    //Draw all circles
     ObjectRenderer::clear();
+    
+    //Add all circles to draw
+    auto start=std::chrono::steady_clock::now();
     for(int i=0; i<state.hasRadius.size(); i++){
         int particleId=state.hasRadius[i];
         ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], sf::Color::White, scaleFactor, simBounds.position.x, simBounds.position.y);
     }
     ObjectRenderer::draw(window);
+    //read out time in milliseconds
+    auto end=std::chrono::steady_clock::now();
+    std::cout<<"Draw time: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
 }
 
 //initUI defined in SimInits under UI
