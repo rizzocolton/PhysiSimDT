@@ -38,8 +38,6 @@ struct PhysicsState{
         fx.reserve(maxEntities);
         fy.reserve(maxEntities);
         invmass.reserve(maxEntities);
-        radius.reserve(maxEntities);
-        charge.reserve(maxEntities);
         sm=SpatialHashMap(maxEntities,maxx,maxy,5.f); //initial cell size of 5 meters, can be changed later with sm.setCellSize()
         maxPopulation=maxEntities;
     }

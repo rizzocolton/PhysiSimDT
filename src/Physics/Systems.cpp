@@ -1,4 +1,5 @@
 #include "Systems.h"
+#include <execution>
 
 void Systems::ZeroForces(PhysicsState& state){
     std::fill(state.fx.begin(), state.fx.end(), 0.f);
@@ -36,22 +37,31 @@ void Systems::Movement(PhysicsState& state, float dt){
 }
 
 void Systems::BoundaryCollisions(PhysicsState& state, float restitution){
-    for(int i=0; i<state.population; i++){
-        //check for collision with left and right boundaries
-        if(state.x[i]<0){
-            state.x[i]=0;
-            state.vx[i]=-state.vx[i]*restitution;
-        }else if(state.x[i]>state.maxx){
-            state.x[i]=state.maxx;
-            state.vx[i]=-state.vx[i]*restitution;
+
+    //Circle boundary collisions
+    std::for_each(std::execution::par, state.hasRadius.begin(), state.hasRadius.end(), [&](int particleId){
+        float radius = state.radius[particleId];
+        if(state.x[particleId]<radius){
+            state.x[particleId]=radius;
+            if(state.vx[particleId]<0){ //only reverse velocity if moving towards the wall, otherwise we can get stuck objects with high restitution
+                state.vx[particleId]=-state.vx[particleId]*restitution;
+            }
+        }else if(state.x[particleId]>state.maxx-radius){
+            state.x[particleId]=state.maxx-radius;
+            if(state.vx[particleId]>0){ //only reverse velocity if moving towards the wall, otherwise we can get stuck objects with high restitution
+                state.vx[particleId]=-state.vx[particleId]*restitution;
+            }
         }
-        //check for collision with top and bottom boundaries
-        if(state.y[i]<0){
-            state.y[i]=0;
-            state.vy[i]=-state.vy[i]*restitution;
-        }else if(state.y[i]>state.maxy){
-            state.y[i]=state.maxy;
-            state.vy[i]=-state.vy[i]*restitution;
+        if(state.y[particleId]<radius){
+            state.y[particleId]=radius;
+            if(state.vy[particleId]<0){ //only reverse velocity if moving towards the wall, otherwise we can get stuck objects with high restitution
+                state.vy[particleId]=-state.vy[particleId]*restitution;
+            }
+        }else if(state.y[particleId]>state.maxy-radius){
+            state.y[particleId]=state.maxy-radius;
+            if(state.vy[particleId]>0){ //only reverse velocity if moving towards the wall, otherwise we can get stuck objects with high restitution
+                state.vy[particleId]=-state.vy[particleId]*restitution;
+            }
         }
-    }
+    });
 }
