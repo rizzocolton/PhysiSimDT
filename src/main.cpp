@@ -55,7 +55,7 @@ int main(){
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim, //lambda allowing switching to the menu
-                    10 //max entities
+                    10000 //max entities
                 );
                 break;
         }
@@ -80,7 +80,7 @@ int main(){
     sf::Clock fpsClock;
     sf::Clock deltaClock;
     
-    float fixedDT=1/60.f;
+    float fixedDT=1/120.f;
     float accumulator=0;
 
     

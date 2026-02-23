@@ -12,12 +12,14 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     state.maxy=simBounds.size.y;
     state.reserve(maxEntities);
 
-    state.x[0]=simBounds.size.x/2.f;
-    state.y[0]=simBounds.size.y/2.f;
-    state.vx[0]=0.f;
-    state.vy[0]=0.f;
-    state.invmass[0]=1.f;
-    state.population=1;
+    for(int i=0;i<state.maxPopulation;i++){
+        int pId=state.spawnParticle(
+            rand()/(float)RAND_MAX*simBounds.size.x, //random x position within bounds
+            rand()/(float)RAND_MAX*simBounds.size.y  //random y position within bounds
+        );
+        objectShapes.push_back(std::make_unique<sf::CircleShape>(1.f));
+        objectShapes.back()->setOrigin(sf::Vector2f(1.f,1.f));
+    }
 }
 
 void Collisions::update(float dt){
@@ -26,15 +28,17 @@ void Collisions::update(float dt){
         return;
     }
 
-    std::cout<<"Current State:\n";
-    for(int i=0; i<state.population; i++){
-        std::cout<<"Object "<<i<<": x="<<state.x[i]<<", y="<<state.y[i]<<", vx="<<state.vx[i]<<", vy="<<state.vy[i]<<", time="<<timeElapsed<<"\n";
-    }
+    const auto start=std::chrono::steady_clock::now();
 
     Systems::ZeroForces(state);
     Systems::GlobalGravity(state, gravity);
     Systems::Movement(state, dt);
     Systems::BoundaryCollisions(state, boundsRestitution);
+
+    const auto end=std::chrono::steady_clock::now();
+    const auto elapsed=std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
+    std::cout<<"Update took "<<elapsed<<" microseconds\n";
+    
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
@@ -45,16 +49,14 @@ void Collisions::draw(sf::RenderWindow& window){
         
     }
 
-    //Draw all objects
+    //Draw all objects, the index in objectShapes corresponds to the index of the physics object in state, so we can use the same index to get the position for drawing
+    const auto start=std::chrono::steady_clock::now();
     for(int i=0;i<state.population;i++){
-        sf::CircleShape shape;
-        shape.setRadius(10.f);
-        shape.setOrigin(sf::Vector2f(10.f,10.f));
-        shape.setPosition(sf::Vector2f(
-            (state.x[i]+simBounds.position.x)*scaleFactor,
+        objectShapes[i]->setPosition(sf::Vector2f(
+            (state.x[i]+simBounds.position.x)*scaleFactor, 
             (simBounds.size.y-state.y[i]+simBounds.position.y)*scaleFactor
         ));
-        window.draw(shape);
+        window.draw(*objectShapes[i]);
     }
 }
 

@@ -36,6 +36,4 @@ void Collisions::initUI(sf::Font& font){
     UIElements.push_back(std::unique_ptr<Button>(startStop));
 
     
-
-    
 }

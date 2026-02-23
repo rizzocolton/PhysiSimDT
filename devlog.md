@@ -93,4 +93,12 @@ Looking at those numbers I think I'm just going to cap the iterations for the ac
 
 ## Refactoring Sim Units
 
-Did a massive refactoring to use SI units in all physics calculations leaving pixels for rendering and the spatial map.
+Did massive refactoring to use SI units in all physics calculations leaving pixels for rendering and the spatial map.
+
+## Refactoring for ECS
+
+Completely rebuilt using a different design philosophy. Will be putting performance metrics here:
+
+10k objects w/no collision affected by uniform gravitational field with reflective boundary:
+
+Computation time per frame: ~100 microseconds
