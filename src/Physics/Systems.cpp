@@ -15,13 +15,23 @@ void Systems::GlobalGravity(PhysicsState& state, float gravity){
 
 void Systems::Movement(PhysicsState& state, float dt){
     for(int i=0; i<state.population; i++){
-        //update velocity based on acceleration, then update position based on velocity, using simple Euler integration
+        //numerical integration using velocity Verlet method
+
+        //calculate velocity at half time step
+        float vxHalf=state.vx[i]+0.5f*state.ax[i]*dt; 
+        float vyHalf=state.vy[i]+0.5f*state.ay[i]*dt;
+
+        //update position using velocity at half time step
+        state.x[i]+=vxHalf*dt;
+        state.y[i]+=vyHalf*dt;
+
+        //update acceleration using new forces
         state.ax[i]=state.fx[i]*state.invmass[i];
         state.ay[i]=state.fy[i]*state.invmass[i];
-        state.vx[i]+=state.ax[i]*dt;
-        state.vy[i]+=state.ay[i]*dt;
-        state.x[i]+=state.vx[i]*dt;
-        state.y[i]+=state.vy[i]*dt;
+        
+        //update velocity using new acceleration
+        state.vx[i]=vxHalf+0.5f*state.ax[i]*dt;
+        state.vy[i]=vyHalf+0.5f*state.ay[i]*dt;
     }
 }
 

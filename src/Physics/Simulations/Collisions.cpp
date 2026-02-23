@@ -12,10 +12,10 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     state.maxy=simBounds.size.y;
     state.reserve(maxEntities);
 
-    for(int i=0;i<state.maxPopulation;i++){
+    for(int i=0;i<1;i++){
         int pId=state.spawnParticle(
-            rand()/(float)RAND_MAX*simBounds.size.x, //random x position within bounds
-            rand()/(float)RAND_MAX*simBounds.size.y  //random y position within bounds
+            simBounds.size.x/2.f,
+            1.f
         );
         objectShapes.push_back(std::make_unique<sf::CircleShape>(1.f));
         objectShapes.back()->setOrigin(sf::Vector2f(1.f,1.f));
@@ -28,17 +28,14 @@ void Collisions::update(float dt){
         return;
     }
 
-    const auto start=std::chrono::steady_clock::now();
-
     Systems::ZeroForces(state);
     Systems::GlobalGravity(state, gravity);
     Systems::Movement(state, dt);
     Systems::BoundaryCollisions(state, boundsRestitution);
-
-    const auto end=std::chrono::steady_clock::now();
-    const auto elapsed=std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
-    std::cout<<"Update took "<<elapsed<<" microseconds\n";
     
+    // 1/2 m v^2 + mgh = ME
+    std::cout<<"ME "<<.5f*(1.f/state.invmass[0])*(pow(state.vx[0],2)+pow(state.vy[0],2))+(1.f/state.invmass[0])*-gravity*state.y[0]
+             <<" at time "<<timeElapsed<<"s\n";
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }

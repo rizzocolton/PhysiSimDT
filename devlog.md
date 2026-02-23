@@ -99,6 +99,15 @@ Did massive refactoring to use SI units in all physics calculations leaving pixe
 
 Completely rebuilt using a different design philosophy. Will be putting performance metrics here:
 
-10k objects w/no collision affected by uniform gravitational field with reflective boundary:
+### 10k objects w/no collision affected by uniform gravitational field with reflective boundary, Euler Integration:
 
-Computation time per frame: ~100 microseconds
+* Computation Time Per Time-Step: ~100 microseconds
+* Energy Leakage: -0.191 J/s
+
+## Same as above but with Velocity Verlet integration:
+
+* Computation Time Per Time-Step: ~100 microseconds
+* Energy Leakage: 0 J/s
+
+Using velocity Verlet integration literally deleted all energy leakage, at least for this simple system. Wow. I can't believe I've been using Euler integration for so long until this point and wondering where all of the energy in my system went!
+
