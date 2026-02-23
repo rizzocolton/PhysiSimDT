@@ -111,3 +111,4 @@ Completely rebuilt using a different design philosophy. Will be putting performa
 
 Using velocity Verlet integration literally deleted all energy leakage, at least for this simple system. Wow. I can't believe I've been using Euler integration for so long until this point and wondering where all of the energy in my system went!
 
+## Same parameters but using optimized sf::VertexArrays

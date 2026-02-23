@@ -3,8 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "Simulation.h"
-#include "../../ObjectRenders.h"
-#include "../SpatialHashMap.h"
 #include "../../UI/UI.h"
 #include "../../UI/Button.h"
 #include "../../UI/Slider.h"

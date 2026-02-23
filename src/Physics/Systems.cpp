@@ -38,8 +38,8 @@ void Systems::Movement(PhysicsState& state, float dt){
 
 void Systems::BoundaryCollisions(PhysicsState& state, float restitution){
 
-    //Circle boundary collisions
-    std::for_each(std::execution::par, state.hasRadius.begin(), state.hasRadius.end(), [&](int particleId){
+    //Circle boundary collisions, can use parallelization since there are no race conditions here
+    std::for_each(std::execution::par_unseq, state.hasRadius.begin(), state.hasRadius.end(), [&](int particleId){
         float radius = state.radius[particleId];
         if(state.x[particleId]<radius){
             state.x[particleId]=radius;
@@ -64,4 +64,5 @@ void Systems::BoundaryCollisions(PhysicsState& state, float restitution){
             }
         }
     });
+
 }

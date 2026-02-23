@@ -8,6 +8,7 @@ find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 add_executable(PhysiSim 
     src/main.cpp
     src/Physics/Systems.cpp
+    src/ObjectRenderer.cpp
     src/Physics/Simulations/Collisions.cpp
     src/UI/SimInits/CollisionsUI.cpp
     src/Physics/Simulations/Menu.cpp

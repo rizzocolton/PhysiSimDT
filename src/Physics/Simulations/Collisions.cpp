@@ -12,11 +12,13 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     state.maxy=simBounds.size.y;
     state.reserve(maxEntities);
 
+    ObjectRenderer::initTexture();
+
     for(int i=0;i<maxEntities;i++){
         createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
             (float)rand()/RAND_MAX*simBounds.size.y,
-            (1.f/scaleFactor)*2
+            (1.f/scaleFactor)*4
         );
     }
 }
@@ -26,9 +28,7 @@ int Collisions::createCircle(float x, float y, float r){
     state.hasRadius.push_back(particleId);
     state.radius.push_back(r);
 
-    float pixelR=r*scaleFactor;
-    objectShapes.push_back(std::make_unique<sf::CircleShape>(pixelR));
-    objectShapes.back()->setOrigin(sf::Vector2f(pixelR,pixelR));
+    
 
     return particleId;
 }
@@ -58,20 +58,12 @@ void Collisions::draw(sf::RenderWindow& window){
     }
 
     //Draw all circles
-   
-    for(int i=0;i<state.hasRadius.size();i++){
+    ObjectRenderer::clear();
+    for(int i=0; i<state.hasRadius.size(); i++){
         int particleId=state.hasRadius[i];
-
-        //wish i could do this but setRadius is not a function of sf::Shape
-        //objectShapes[particleId]->setRadius(state.radius[i]*scaleFactor);
-
-        objectShapes[particleId]->setPosition(sf::Vector2f(
-            (state.x[particleId]+simBounds.position.x)*scaleFactor, 
-            (simBounds.size.y-state.y[particleId]+simBounds.position.y)*scaleFactor
-        ));
-
-        window.draw(*objectShapes[particleId]);
+        ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], sf::Color::White, scaleFactor, simBounds.position.x, simBounds.position.y);
     }
+    ObjectRenderer::draw(window);
 }
 
 //initUI defined in SimInits under UI

@@ -9,10 +9,10 @@
 #include <sstream>
 
 #include "../PhysicsState.h"
+#include "../../ObjectRenderer.h"
 
 struct SaveState{
     PhysicsState savedState;
-    std::vector<std::unique_ptr<sf::Shape>> savedObjectShapes;
     std::vector<std::unique_ptr<UI>> savedUIElements;
     float savedTimeElapsed;
 };
@@ -35,8 +35,6 @@ class Simulation{
     public:
          //Collection of physics objects in the simulation
         PhysicsState state;
-        //Collection of shapes corresponding to physics objects, used for drawing. Index of shape in this vector corresponds to index of physics object in physicsState
-        std::vector<std::unique_ptr<sf::Shape>> objectShapes;
         //Collection of UI elements
         std::vector<std::unique_ptr<UI>> UIElements;
 
