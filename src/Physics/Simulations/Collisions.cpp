@@ -14,6 +14,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
 
     ObjectRenderer::initTexture();
 
+    /*
     for(int i=0;i<maxEntities;i++){
         createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
@@ -21,14 +22,17 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
             (1.f/scaleFactor)
         );
     }
+    */
+    int id1=createCircle(simBounds.size.x/2.f-1.f, simBounds.size.y/2.f+0.1f, 1.f);
+    state.vx[id1]=5.f;
+    int id2=createCircle(simBounds.size.x/2.f+1.f, simBounds.size.y/2.f, 1.f);
+    state.vx[id2]=-5.f;
 }
 
 int Collisions::createCircle(float x, float y, float r){
     int particleId=state.spawnParticle(x,y);
     state.hasRadius.push_back(particleId);
     state.radius.push_back(r);
-
-    
 
     return particleId;
 }
@@ -44,6 +48,7 @@ void Collisions::update(float dt){
     Systems::ZeroForces(state);
     Systems::GlobalGravity(state, gravity);
     Systems::Movement(state, dt);
+    Systems::Collisions(state, colRestitution);
     Systems::BoundaryCollisions(state, boundsRestitution);
     
     auto end=std::chrono::steady_clock::now();

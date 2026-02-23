@@ -66,3 +66,42 @@ void Systems::BoundaryCollisions(PhysicsState& state, float restitution){
     });
 
 }
+
+void Systems::Collisions(PhysicsState& state, float restitution){
+    for(int i=0; i<state.hasRadius.size();i++){
+        int id1=state.hasRadius[i];
+        for(int j=i+1; j<state.hasRadius.size();j++){
+            int id2=state.hasRadius[j];
+
+            float dx=state.x[id2]-state.x[id1];
+            float dy=state.y[id2]-state.y[id1];
+            float distSq=dx*dx+dy*dy;
+            float radiusSum=state.radius[i]+state.radius[j];
+            if(distSq<radiusSum*radiusSum){ //if the distance between the centers of the circles is less than the sum of their radii, they are colliding
+                //shared multiple in both x and y impulse calculation
+                float impulseMultiplier=-(1+restitution)/(state.invmass[id1]+state.invmass[id2]);
+
+                //finding the unit normal coming pointing from circle one to two
+                float inverseDist=1.f/sqrt(distSq);
+                float normalx=dx*inverseDist;
+                float normaly=dy*inverseDist;
+
+                //finding v normal
+                float vnormal=(state.vx[id1]-state.vx[id2])*normalx+(state.vy[id1]-state.vy[id2])*normaly;
+
+                if(vnormal<0){ //only apply impulse if objects are moving towards each other, otherwise we can get stuck objects with high restitution
+                    continue;
+                }
+
+                //finding impulse magnitude
+                float J=impulseMultiplier*vnormal;
+
+                //adding impulse to velocities
+                state.vx[id1]+=J*normalx*state.invmass[id1];
+                state.vx[id2]-=J*normalx*state.invmass[id2];
+                state.vy[id1]+=J*normaly*state.invmass[id1];
+                state.vy[id2]-=J*normaly*state.invmass[id2];
+            }
+        }
+    }
+}

@@ -55,7 +55,7 @@ int main(){
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim, //lambda allowing switching to the menu
-                    1000 //max entities
+                    10 //max entities
                 );
                 break;
         }
