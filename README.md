@@ -6,6 +6,13 @@ A 2D physics simulation engine built from scratch in C++, designed as a learning
 
 PhysiSim is a computational physics engine that demonstrates core concepts including collision detection/response, spatial hashing for optimization, gravity simulation, and electromagnetic forces. The project showcases software engineering principles like polymorphism, efficient data structures, modular architecture and performance optimization through real-time rendering and complex physics calculations.
 
+## Main Goals
+
+The three main goals of PhysiSim for it to be:
+* Fast
+* Numerically Accurate
+* Interactive
+
 **Note:**  One of the key purposes of this project is to help me gain familiarity and experience with C++. Generative AI was used only for debugging during development, ocassional refactoring, and for developing parts of this readme.
 
 ## Features

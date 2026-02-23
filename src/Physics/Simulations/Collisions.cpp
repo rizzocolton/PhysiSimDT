@@ -7,6 +7,9 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     simBounds.position.y/=scaleFactor;
     simBounds.size.x/=scaleFactor;
     simBounds.size.y/=scaleFactor;
+    
+
+    
 }
 
 void Collisions::update(float dt){
