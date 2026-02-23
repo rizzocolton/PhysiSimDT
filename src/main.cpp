@@ -2,8 +2,6 @@
 #include <iostream>
 #include "Physics/Simulations/Menu.h"
 #include "Physics/Simulations/Collisions.h"
-#include "Physics/Simulations/Gravity.h"
-#include "Physics/Simulations/EM.h"
 
 int main(){
 
@@ -51,30 +49,13 @@ int main(){
                 break;
             case SimType::Collisions:
                 nextSim= std::make_unique<Collisions>(
-                    9.8f, //gravity
+                    -9.8f, //gravity
                     1.0f,  //collision restitution
                     1.0f,  //bounds restitution
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
-                    switchSim //lambda allowing switching to the menu
-                );
-                break;
-            case SimType::Gravity:
-                nextSim= std::make_unique<Gravity>(
-                    1.0f, //collision restitution
-                    500,    //cell size (in pixels)
-                    simSpace.getGlobalBounds(), //simulation bounds
-                    switchSim //lambda allowing switching to menu
-                );
-                break;
-            case SimType::EM:
-                nextSim= std::make_unique<EM>(
-                    0.f, //gravity
-                    1.0f,  //collision restitution
-                    1.0f,  //bounds restitution
-                    1,    //cell size (in meters)
-                    simSpace.getGlobalBounds(), //simulation bounds
-                    switchSim //lambda allowing switching to the menu
+                    switchSim, //lambda allowing switching to the menu
+                    10 //max entities
                 );
                 break;
         }
@@ -99,7 +80,7 @@ int main(){
     sf::Clock fpsClock;
     sf::Clock deltaClock;
     
-    float fixedDT=1/1000.f;
+    float fixedDT=1/60.f;
     float accumulator=0;
 
     

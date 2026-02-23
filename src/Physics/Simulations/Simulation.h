@@ -2,14 +2,16 @@
 #define SIMULATION_H
 
 #include <SFML/Graphics.hpp>
+#include "../Systems.h"
 #include <functional>
-#include "../Objects/PhysicsObject.h"
 #include "../../UI/UI.h"
 #include <iomanip>
 #include <sstream>
 
+#include "../PhysicsState.h"
+
 struct SaveState{
-    std::vector<std::unique_ptr<PhysicsObject>> savedObjects;
+    PhysicsState savedPhysicsState;
     std::vector<std::unique_ptr<UI>> savedUIElements;
     float savedTimeElapsed;
 };
@@ -21,12 +23,8 @@ enum class SimType{
     EM
 };
 
-//all in simulation units (meters for length, kg for mass, m/s for velocity).
-//display and spatial calculations convert to pixels using the global scaleFactor.
 struct SpawnParams{
-    float radius;
     float mass;
-    sf::Color color;
     float vx;
     float vy;
 };
@@ -35,7 +33,7 @@ struct SpawnParams{
 class Simulation{
     public:
          //Collection of physics objects in the simulation
-        std::vector<std::unique_ptr<PhysicsObject>> objects;
+        PhysicsState state;
         //Collection of UI elements
         std::vector<std::unique_ptr<UI>> UIElements;
 
@@ -43,7 +41,7 @@ class Simulation{
         SaveState save;
 
         //Selected object for detail panel
-        PhysicsObject* selectedObject=nullptr;
+        int selectedObjectIndex=-1; //index of selected object in physicsState, -1 if no object is selected
 
         //Spawning parameters for new objects
         SpawnParams params;

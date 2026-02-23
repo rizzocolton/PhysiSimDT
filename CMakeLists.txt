@@ -7,17 +7,12 @@ find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
 add_executable(PhysiSim 
     src/main.cpp
+    src/Physics/Systems.cpp
     src/Physics/Simulations/Collisions.cpp
     src/UI/SimInits/CollisionsUI.cpp
-    src/Physics/Simulations/Gravity.cpp
-    src/UI/SimInits/GravityUI.cpp
-    src/Physics/Simulations/EM.cpp
-    src/UI/SimInits/EMUI.cpp
     src/Physics/Simulations/Menu.cpp
     src/UI/SimInits/MenuUI.cpp
-    src/Physics/Objects/PhysicsObject.cpp
-    src/Physics/Objects/Circle.cpp
-    src/Physics/SpatialMap.cpp
+    src/Physics/SpatialHashMap.cpp
     src/UI/Button.cpp
     src/UI/Slider.cpp
     src/UI/Spinner.cpp
