@@ -12,7 +12,8 @@ struct PhysicsState{
     std::vector<float> invmass; //mass inverse (for easier calculations, as multiplying by inverse is faster than dividing by mass)
     
     //ARBITRARY COMPONENTS
-    std::vector<float> radius; //for collision detection with circles
+    std::vector<float> hasRadius; //for circles, stores the index of the object in the core kinematics array
+    std::vector<float> radius; //shares index with hasRadius, but stores the actual radius value for circles
     std::vector<float> charge; //for EM sim
 
     //GLOBAL STRUCTURES AND VARIABLES

@@ -12,14 +12,25 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     state.maxy=simBounds.size.y;
     state.reserve(maxEntities);
 
-    for(int i=0;i<1;i++){
-        int pId=state.spawnParticle(
-            simBounds.size.x/2.f,
-            1.f
+    for(int i=0;i<maxEntities;i++){
+        createCircle(
+            (float)rand()/RAND_MAX*simBounds.size.x,
+            (float)rand()/RAND_MAX*simBounds.size.y,
+            (1.f/scaleFactor)*2
         );
-        objectShapes.push_back(std::make_unique<sf::CircleShape>(1.f));
-        objectShapes.back()->setOrigin(sf::Vector2f(1.f,1.f));
     }
+}
+
+int Collisions::createCircle(float x, float y, float r){
+    int particleId=state.spawnParticle(x,y);
+    state.hasRadius.push_back(particleId);
+    state.radius.push_back(r);
+
+    float pixelR=r*scaleFactor;
+    objectShapes.push_back(std::make_unique<sf::CircleShape>(pixelR));
+    objectShapes.back()->setOrigin(sf::Vector2f(pixelR,pixelR));
+
+    return particleId;
 }
 
 void Collisions::update(float dt){
@@ -46,14 +57,20 @@ void Collisions::draw(sf::RenderWindow& window){
         
     }
 
-    //Draw all objects, the index in objectShapes corresponds to the index of the physics object in state, so we can use the same index to get the position for drawing
-    const auto start=std::chrono::steady_clock::now();
-    for(int i=0;i<state.population;i++){
-        objectShapes[i]->setPosition(sf::Vector2f(
-            (state.x[i]+simBounds.position.x)*scaleFactor, 
-            (simBounds.size.y-state.y[i]+simBounds.position.y)*scaleFactor
+    //Draw all circles
+   
+    for(int i=0;i<state.hasRadius.size();i++){
+        int particleId=state.hasRadius[i];
+
+        //wish i could do this but setRadius is not a function of sf::Shape
+        //objectShapes[particleId]->setRadius(state.radius[i]*scaleFactor);
+
+        objectShapes[particleId]->setPosition(sf::Vector2f(
+            (state.x[particleId]+simBounds.position.x)*scaleFactor, 
+            (simBounds.size.y-state.y[particleId]+simBounds.position.y)*scaleFactor
         ));
-        window.draw(*objectShapes[i]);
+
+        window.draw(*objectShapes[particleId]);
     }
 }
 

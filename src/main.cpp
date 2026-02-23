@@ -135,7 +135,7 @@ int main(){
         if(currentSim->simulating && accumulator>=fixedDT){
             sf::Text warningText(icelandFont);
             warningText.setFillColor(sf::Color::Red);
-            warningText.setString("Warning: Simulation is running slowly! Consider:\n-Reducing the population\n-Reducing the simulation speed\n-Decreasing the cell size");
+            warningText.setString("Warning: Simulation is running slowly! Consider reducing simulation speed");
             warningText.setPosition({1300.f,0.f});
             window.draw(warningText);
         }

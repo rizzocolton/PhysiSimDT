@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Simulation.h"
+#include "../../ObjectRenders.h"
 #include "../SpatialHashMap.h"
 #include "../../UI/UI.h"
 #include "../../UI/Button.h"
@@ -24,6 +25,12 @@ class Collisions: public Simulation{
 
     public:
         Collisions(float gravity, float colRestitution, float boundsRestitution, int cellSize, sf::FloatRect bounds, std::function<void(SimType type)> func, int maxEntities);
+
+        //populating methods
+
+        int createCircle(float x, float y, float r);
+
+        //core methods
 
         void update(float dt) override;
             
