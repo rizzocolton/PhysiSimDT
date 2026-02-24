@@ -2,9 +2,10 @@
 
 The first thing one needs to think about when creating a 2D physics simulation program is what a particle actually is and what kind of properties it has.
 At a base level a particle can be comprised of:
-* Position (2D Vector)
-* Velocity (2D Vector)
-* Force (2D Vector)
+* Position (Vector)
+* Velocity (Vector)
+* Acceleration (Vector)
+* Force (Vector)
 * Mass (Scalar)
 * Charge (Scalar)
 
@@ -13,7 +14,7 @@ A particle in a physics sense is a sizeless thing that can be described as a poi
 You can further classify into different particles with actual size, making something more akin to a rigid-body object.
 This is the approach to model rigid-body physics.
 
-As an example, a (non-rotating) circle would have:
+As an example, a (non-rotating) circle could have:
 * All properties of the particle
 * Radius
 * Color
@@ -28,7 +29,7 @@ There are a few different approaches to storing particles/objects in a program t
 
 Object oriented programming is perhaps the most clean and understandable method of storing these physics objects in a program. It's quite literally in the name.
 We can represent every particle as an instance of its "class". Furthermore, we can subdivide our kinds of objects using inheritance in subclasses.
-The Physics Object can be the standard base class which Circle inherits from.
+A Physics Object can be the standard base class which Circle inherits from.
 
 This makes simulation very intuitive as you can simply store an array of these objects (or pointers to them) which are iterated over every "frame" in the simulation to do force and movement calculations. Storing this array of objects is known as Array of Structures (AoS) design.
 It's certainly an intuitive approach which made it great to start for building this simulation software. However, it does have its drawbacks...
@@ -37,3 +38,15 @@ Even if you go with the modular approach of storing pointers to base Physics Obj
 ## 2. Data Oriented Design (DoD)
 
 ### Entity-Component-System (ECS)
+
+# How Do You Move A Particle?
+
+## Integration Techniques
+
+# How Do We Detect Collisions & Forces?
+
+## Broad Phase
+
+## Narrow Phase
+
+## Resolution

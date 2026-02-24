@@ -251,3 +251,22 @@ Still, these numbers aren't awful... let's see what happens at 10k objects. This
 Yikes, that's a tenth of an actual second to go through that. Let's see how much we can improve this performance with some sort of spatial hashing.
 
 # Collision Detection/Response Algorithm Testing With Spatial Hashing
+
+
+## Key features
+
+Entity Component System Design
+
+Velocity Verlet Integration
+
+## To Do
+
+Look into GJK distance/ SaT for polygons.
+
+Look into Continuous Collision Detection for collision checks.
+
+Look into Baumgarte Stabilization for stacked object impulses.
+
+Figure out how rotations work.
+
+
