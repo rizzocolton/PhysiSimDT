@@ -49,13 +49,13 @@ int main(){
                 break;
             case SimType::Collisions:
                 nextSim= std::make_unique<Collisions>(
-                    -9.8f, //gravity
-                    1.0f,  //collision restitution
-                    1.0f,  //bounds restitution
+                    0.f, //gravity
+                    1.f,  //collision restitution
+                    1.f,  //bounds restitution
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim, //lambda allowing switching to the menu
-                    10 //max entities
+                    10000 //max entities
                 );
                 break;
         }

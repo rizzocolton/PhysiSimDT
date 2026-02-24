@@ -149,3 +149,105 @@ The physics engine finally started running behind only at 500k objects.
 
 Now I'm going to implement collisions, and we'll unfortunately see those physics update numbers drop...
 
+Collisions implemented. Now I'm going to check physical accuracy.
+
+# Collision Detection/Response Algorithm Testing
+
+### Trial 1
+
+#### Inputs
+
+Circle1:
+* pos: [2, 2]
+* vel: [4, 0]
+* radius: 1
+* mass: 1
+
+Circle2:
+* pos:[5, 2]
+* vel:[0, 0]
+* radius: 1
+* mass: 1
+
+#### Expected Output
+
+Circle 1:
+* vel: [0, 0]
+
+Circle 2:
+* vel: [4, 0]
+
+#### Results
+
+Perfect! Stable even with multiple iterations (circles bouncing off boundary)
+
+### Trial 2
+
+#### Inputs
+Circle 1:
+* pos: [2, 3]
+* vel: [2, 0]
+* mass: 1
+* radius: 1
+
+Circle 2:
+* pos: [5, 2]
+* vel: [0, 0]
+* mass: 1
+* radius: 1
+
+#### Expected Output
+
+Glancing blows should cause a 90 degree separation, so the dot product of the resultant velocities should be zero.
+
+#### Results
+
+Circle 1 Velocity: (0.506721, 0.869871)
+Circle 2 Velocity: (1.49328, -0.869871)
+
+[0.506721, 0.869871] dot [1.49328, -0.869871] = ~0, Success!
+
+
+### Trial 3
+
+#### Inputs
+
+This one will be a little different. We'll set gravity to -9.81, collision restitution to 0.8 and put a circle with mass of 1 on top of an identical circle with mass of infinity (invmass=0) to see if there's any jittering or sinking
+
+#### Results
+
+There was sinking... Im going to implement a push back correction to see if that fixes it.
+
+I used a "slop" correcting position adjustment when the objects were moving away from eachother which completely fixes the sinking!
+
+
+
+# Performance
+
+All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels.
+Collision and Boundary restitutions are 1, gravity is 0.
+
+10 Objects:
+* Total Physics Update: ~16 microseconds
+* Collision Check/Response: ~1 microsecond
+
+Granted, at least low object counts the computations are mostly just collision detection...
+
+100 Objects:
+* Total Physics Update: ~42 microseconds
+* Collision Check/Response: ~18 microseconds
+
+1k Objects:
+* Total Physics Update: ~1700 microseconds
+* Collision Check/Response: ~1600 microseconds
+
+Looks like at this point the collision check and response starts to take a majority of the time frame.
+Still, these numbers aren't awful... let's see what happens at 10k objects. This will surely scale horribly with O(n^2) checks...
+
+10k Objects:
+* Total Physics Update: ~138000 microseconds
+* Collision Check/Response: ~138000 microseconds
+
+Yikes, that's a tenth of an actual second to go through that. Let's see how much we can improve this performance with some sort of spatial hashing.
+
+# Collision Detection/Response Algorithm Testing With Spatial Hashing

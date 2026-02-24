@@ -14,19 +14,15 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
 
     ObjectRenderer::initTexture();
 
-    /*
     for(int i=0;i<maxEntities;i++){
-        createCircle(
+        int id=createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
             (float)rand()/RAND_MAX*simBounds.size.y,
-            (1.f/scaleFactor)
+            2.f*(1.f/scaleFactor)
         );
+        state.vx[id]=i%5-2;
+        state.vy[id]=i%5-2;
     }
-    */
-    int id1=createCircle(simBounds.size.x/2.f-1.f, simBounds.size.y/2.f+0.1f, 1.f);
-    state.vx[id1]=5.f;
-    int id2=createCircle(simBounds.size.x/2.f+1.f, simBounds.size.y/2.f, 1.f);
-    state.vx[id2]=-5.f;
 }
 
 int Collisions::createCircle(float x, float y, float r){
@@ -48,11 +44,17 @@ void Collisions::update(float dt){
     Systems::ZeroForces(state);
     Systems::GlobalGravity(state, gravity);
     Systems::Movement(state, dt);
+
+    auto colS=std::chrono::steady_clock::now();
     Systems::Collisions(state, colRestitution);
+    auto colE=std::chrono::steady_clock::now();
+    std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
+
     Systems::BoundaryCollisions(state, boundsRestitution);
     
+    
     auto end=std::chrono::steady_clock::now();
-    std::cout<<"Physics Update Time: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
@@ -65,15 +67,11 @@ void Collisions::draw(sf::RenderWindow& window){
     ObjectRenderer::clear();
     
     //Add all circles to draw
-    auto start=std::chrono::steady_clock::now();
     for(int i=0; i<state.hasRadius.size(); i++){
         int particleId=state.hasRadius[i];
         ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], sf::Color::White, scaleFactor, simBounds.position.x, simBounds.position.y);
     }
     ObjectRenderer::draw(window);
-    //read out time in milliseconds
-    auto end=std::chrono::steady_clock::now();
-    std::cout<<"Draw time: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
 }
 
 //initUI defined in SimInits under UI

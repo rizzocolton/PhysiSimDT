@@ -1,5 +1,6 @@
 #include "Systems.h"
 #include <execution>
+#include <iostream>
 
 void Systems::ZeroForces(PhysicsState& state){
     std::fill(state.fx.begin(), state.fx.end(), 0.f);
@@ -80,9 +81,10 @@ void Systems::Collisions(PhysicsState& state, float restitution){
             if(distSq<radiusSum*radiusSum){ //if the distance between the centers of the circles is less than the sum of their radii, they are colliding
                 //shared multiple in both x and y impulse calculation
                 float impulseMultiplier=-(1+restitution)/(state.invmass[id1]+state.invmass[id2]);
+                float dist=sqrt(distSq);
 
                 //finding the unit normal coming pointing from circle one to two
-                float inverseDist=1.f/sqrt(distSq);
+                float inverseDist=1.f/dist;
                 float normalx=dx*inverseDist;
                 float normaly=dy*inverseDist;
 
@@ -90,9 +92,21 @@ void Systems::Collisions(PhysicsState& state, float restitution){
                 float vnormal=(state.vx[id1]-state.vx[id2])*normalx+(state.vy[id1]-state.vy[id2])*normaly;
 
                 if(vnormal<0){ //only apply impulse if objects are moving towards each other, otherwise we can get stuck objects with high restitution
+                    //correct positions
+                    float penetration=radiusSum-dist;
+                    float totalInvMass=state.invmass[id1]+state.invmass[id2];
+                    float correctionPercent=0.8f; //usually between 20% and 80%, higher values can cause instability but lower values can cause objects to sink into each other
+                    float slop=0.01f; //small value to prevent sinking due to floating point errors
+                    float correctionMagnitude=std::max(penetration-slop,0.f)/(totalInvMass)*correctionPercent;
+                    float correctionX=correctionMagnitude*normalx;
+                    float correctionY=correctionMagnitude*normaly;
+                    state.x[id1]-=correctionX*state.invmass[id1];
+                    state.y[id1]-=correctionY*state.invmass[id1];
+                    state.x[id2]+=correctionX*state.invmass[id2];
+                    state.y[id2]+=correctionY*state.invmass[id2];
                     continue;
                 }
-
+            
                 //finding impulse magnitude
                 float J=impulseMultiplier*vnormal;
 
