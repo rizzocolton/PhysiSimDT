@@ -12,17 +12,25 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
     state.maxy=simBounds.size.y;
     state.reserve(maxEntities);
 
-    ObjectRenderer::initTexture();
+    try {
+        ObjectRenderer::initTexture();
+    } catch (const std::exception& e) {
+        std::cerr << "ERROR in ObjectRenderer initialization: " << e.what() << std::endl;
+    }
 
-    for(int i=0;i<maxEntities;i++){
+    /*for(int i=0;i<maxEntities;i++){
         int id=createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
             (float)rand()/RAND_MAX*simBounds.size.y,
-            2.f*(1.f/scaleFactor)
+            10.f*(1.f/scaleFactor)
         );
         state.vx[id]=i%5-2;
         state.vy[id]=i%5-2;
     }
+        */
+
+    createCircle(5.f,3.f,1.f);
+    createCircle(5.f,1.f,1.f);
 }
 
 int Collisions::createCircle(float x, float y, float r){
@@ -46,7 +54,7 @@ void Collisions::update(float dt){
     Systems::Movement(state, dt);
 
     auto colS=std::chrono::steady_clock::now();
-    Systems::Collisions(state, colRestitution);
+    Systems::Collisions(state, dt, colRestitution);
     auto colE=std::chrono::steady_clock::now();
     std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
 
@@ -69,7 +77,13 @@ void Collisions::draw(sf::RenderWindow& window){
     //Add all circles to draw
     for(int i=0; i<state.hasRadius.size(); i++){
         int particleId=state.hasRadius[i];
-        ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], sf::Color::White, scaleFactor, simBounds.position.x, simBounds.position.y);
+        //generate color based on i
+        sf::Color iColor(
+            50+particleId*30/state.population, //R
+            50+particleId*20/state.population, //G
+            50+particleId*50/state.population  //B
+        );
+        ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], iColor, scaleFactor, simBounds.position.x, simBounds.position.y);
     }
     ObjectRenderer::draw(window);
 }

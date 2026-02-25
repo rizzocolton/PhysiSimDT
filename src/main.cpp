@@ -29,7 +29,12 @@ int main(){
     simObjectDetail.setOutlineThickness(-2.f);
     simObjectDetail.setPosition(sf::Vector2f{0.f,600.f});
 
-    sf::Font icelandFont{"../assets/Iceland-Regular.ttf"};
+    // Load font with error checking
+    sf::Font icelandFont;
+    if (!icelandFont.openFromFile("assets/Iceland-Regular.ttf")) {
+        std::cerr << "ERROR: Failed to load font from assets/Iceland-Regular.ttf" << std::endl;
+        return 1;
+    }
 
     //Simulation management
     std::unique_ptr<Simulation> currentSim;
@@ -49,13 +54,13 @@ int main(){
                 break;
             case SimType::Collisions:
                 nextSim= std::make_unique<Collisions>(
-                    0.f, //gravity
+                    -9.81f, //gravity
                     1.f,  //collision restitution
-                    1.f,  //bounds restitution
+                    1.0f,  //bounds restitution
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim, //lambda allowing switching to the menu
-                    10000 //max entities
+                    1000 //max entities
                 );
                 break;
         }

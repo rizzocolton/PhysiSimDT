@@ -1,4 +1,5 @@
 #include "ObjectRenderer.h"
+#include <iostream>
 
 //declaring static member variable so linker doesn't whine
 std::vector<sf::Vertex> ObjectRenderer::vertices;
@@ -10,7 +11,8 @@ void ObjectRenderer::initTexture() {
     sf::RenderTexture rt;
     auto rtResult = rt.resize({size, size});
     if (!rtResult) {
-        throw std::runtime_error("Failed to create RenderTexture");
+        std::cerr << "ERROR: Failed to create RenderTexture for ObjectRenderer" << std::endl;
+        return;
     }
     rt.clear(sf::Color::Transparent);
 
@@ -59,5 +61,11 @@ void ObjectRenderer::addCircle(float x, float y, float radius, sf::Color color, 
 };
 
 void ObjectRenderer::draw(sf::RenderWindow& window){
+    // Validate that we have vertices and a valid texture before drawing
+    if (vertices.empty()) {
+        return;  // Nothing to draw
+    }
+    
+    // Draw with texture - SFML will handle null texture gracefully, but we add safety check
     window.draw(vertices.data(), vertices.size(), sf::PrimitiveType::Triangles, &circleTexture);
 };

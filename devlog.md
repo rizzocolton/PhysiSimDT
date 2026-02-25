@@ -218,7 +218,8 @@ This one will be a little different. We'll set gravity to -9.81, collision resti
 
 There was sinking... Im going to implement a push back correction to see if that fixes it.
 
-I used a "slop" correcting position adjustment when the objects were moving away from eachother which completely fixes the sinking!
+I used a "slop" correcting position adjustment when the objects were moving away from eachother which completely fixes the sinking! For a single object. With a layer of multiple objects there's still significant sinking. I've heard that Baumgarte stabilization may be an effective solution.
+
 
 
 
@@ -268,5 +269,4 @@ Look into Continuous Collision Detection for collision checks.
 Look into Baumgarte Stabilization for stacked object impulses.
 
 Figure out how rotations work.
-
 
