@@ -89,13 +89,22 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
 
                 //finding v normal
                 float vnormal=rv.dot(n);
-                //The baumgarte correction
-                Vector2f overlap=radiusSum*n-diff;
-                float correction=BAUMGARTE_BETA*overlap.dot(n)/dt;
+
+                //if circles are moving away from eachother, move on
+                if(vnormal<0.f) continue;
+                
+                //correct each circles position weighted by their mass, mass variable will be useful for impulse as well
+                float totalInvInvMass=1.f/(state.invmass[id1]+state.invmass[id2]);
+                float correctionPercentage1=totalInvInvMass*state.invmass[id2];
+                float correctionPercentage2=totalInvInvMass*state.invmass[id1];
+                state.x[id1]-=diff.x*correctionPercentage1;
+                state.y[id1]-=diff.y*correctionPercentage1;
+                state.x[id2]+=diff.x*correctionPercentage2;
+                state.y[id2]+=diff.y*correctionPercentage2;
             
                 //finding impulse magnitude
-                float J=-(1+restitution)*vnormal-correction;
-                J/=(state.invmass[id1]+state.invmass[id2]);
+                float J=-(1+restitution)*vnormal;
+                J*=totalInvInvMass;
 
                 //adding impulse to original velocities in state
                 state.vx[id1]+=J*n.x*state.invmass[id1];

@@ -18,7 +18,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         std::cerr << "ERROR in ObjectRenderer initialization: " << e.what() << std::endl;
     }
 
-    /*for(int i=0;i<maxEntities;i++){
+    for(int i=0;i<maxEntities;i++){
         int id=createCircle(
             (float)rand()/RAND_MAX*simBounds.size.x,
             (float)rand()/RAND_MAX*simBounds.size.y,
@@ -27,10 +27,11 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         state.vx[id]=i%5-2;
         state.vy[id]=i%5-2;
     }
-        */
+        
 
-    createCircle(5.f,3.f,1.f);
-    createCircle(5.f,1.f,1.f);
+    //int id1=createCircle(5.f,5.f,1.f);
+    //int id2=createCircle(5.f,1.f,1.f);
+    //state.invmass[id2]=0.f;
 }
 
 int Collisions::createCircle(float x, float y, float r){
@@ -56,13 +57,18 @@ void Collisions::update(float dt){
     auto colS=std::chrono::steady_clock::now();
     Systems::Collisions(state, dt, colRestitution);
     auto colE=std::chrono::steady_clock::now();
-    std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
+    //std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
 
     Systems::BoundaryCollisions(state, boundsRestitution);
     
     
     auto end=std::chrono::steady_clock::now();
     //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    float KE=Systems::getKineticEnergy(state);
+    float U=Systems::getGravitationalPotentialEnergySimple(state, gravity);
+    std::cout<<"KE: "<<KE<<"\n";
+    std::cout<<"U: "<<U<<"\n";
+    std::cout<<"ME: "<<U+KE<<"\n\n";
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }

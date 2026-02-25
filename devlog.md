@@ -179,11 +179,14 @@ Circle 2:
 
 #### Results
 
+Checking Energy: Good!
+
 Perfect! Stable even with multiple iterations (circles bouncing off boundary)
 
 ### Trial 2
 
 #### Inputs
+
 Circle 1:
 * pos: [2, 3]
 * vel: [2, 0]
@@ -202,6 +205,8 @@ Glancing blows should cause a 90 degree separation, so the dot product of the re
 
 #### Results
 
+Checking Energy: Good!
+
 Circle 1 Velocity: (0.506721, 0.869871)
 Circle 2 Velocity: (1.49328, -0.869871)
 
@@ -210,16 +215,33 @@ Circle 2 Velocity: (1.49328, -0.869871)
 
 ### Trial 3
 
+
+
 #### Inputs
 
-This one will be a little different. We'll set gravity to -9.81, collision restitution to 0.8 and put a circle with mass of 1 on top of an identical circle with mass of infinity (invmass=0) to see if there's any jittering or sinking
+This one will be a little different. We'll set gravity to -9.81, keep collision restitution to 1.0 and put a circle with mass of 1 on top of an identical circle with mass of infinity (invmass=0) to see if there's any energy leak
+
+Circle 1:
+* pos: [5, 1]
+* vel: [0, 0]
+* mass: infinite
+* radius: 1
+
+Circle 2:
+* pos: [5, 5]
+* vel: [0, 0]
+* mass: 1
+* radius: 1
 
 #### Results
 
-There was sinking... Im going to implement a push back correction to see if that fixes it.
+No energy leak with this, everything seems stable...but lets try with a reduced collision restitution of .8
 
-I used a "slop" correcting position adjustment when the objects were moving away from eachother which completely fixes the sinking! For a single object. With a layer of multiple objects there's still significant sinking. I've heard that Baumgarte stabilization may be an effective solution.
+There's sinking now. I think I'll try implementing Baumgarte Stablilization.
 
+#### Testing Baumgarte with same parameters
+
+The object is gaining a lot of energy from collisions now... Im going to tweak more.
 
 
 
