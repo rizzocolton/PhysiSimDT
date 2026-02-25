@@ -17,6 +17,11 @@ struct Systems{
     static void BoundaryCollisions(PhysicsState& state, float restitution);
     //Checks for collisions between objects and applies appropriate response based on restitution
     static void Collisions(PhysicsState& state, float dt, float restitution);
+
+
+    //helpful state reading functions
+    static float getKineticEnergy(PhysicsState& state);
+    static float getGravitationalPotentialEnergySimple(PhysicsState& state, float gravity);
 };
 
 //Vector struct to make physics calculations more readable

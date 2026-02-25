@@ -106,3 +106,21 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
         }
     }
 }
+
+float Systems::getKineticEnergy(PhysicsState& state){
+    float KE=0.f;
+    for(int i=0;i<state.population;i++){
+        if(state.invmass[i]==0.f) continue;
+        KE+=.5f*(state.vx[i]*state.vx[i]+state.vy[i]*state.vy[i])/state.invmass[i];
+    }
+    return KE;
+}
+
+float Systems::getGravitationalPotentialEnergySimple(PhysicsState& state, float gravity){
+    float U=0.f;
+    for(int i=0;i<state.population;i++){
+        if(state.invmass[i]==0.f) continue;
+        U+=-gravity*state.y[i]/state.invmass[i];
+    }
+    return U;
+}
