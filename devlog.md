@@ -249,6 +249,8 @@ Looks like boundary collision is being screwy now. I'm thinking of modifying it 
 
 Fantastic results from using that method. Just need to watch out for particles spawning in the barrier... calculating a time inside barrier while already inside appears to give them infinite energy...
 
+After some finicking around with positional correction in both circle to circle and boundary collisions I appear to have energy conservation in systems with a few entities. However, there is a non-trivial build up in energy over time. About a hundreth of a joule every other frame. This is probably due to my mixing of continuous collision detections at the barriers with positional correction at circle-circle collisions. I do think this system is fine for now though as after decreasing my time step from 1/120 to 1/1000, I'm getting an energy gain rate of 0.2 J over 100 seconds, which is about 0.000002 Joules per frame which honestly isn't that bad.
+
 # Performance
 
 All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels.
@@ -300,7 +302,7 @@ Look into GJK distance/ SaT for polygons.
 
 Look into Continuous Collision Detection for collision checks at high speeds.
 
-Look into Baumgarte Stabilization for stacked object impulses. Not gonna work, need to use position correction
+Courant-Friedrichs-Lewy (CFL) condition research.
 
 Make sure core solver functions vectorize.
 

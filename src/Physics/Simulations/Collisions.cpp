@@ -18,7 +18,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         std::cerr << "ERROR in ObjectRenderer initialization: " << e.what() << std::endl;
     }
 
-    /*for(int i=0;i<maxEntities;i++){
+    for(int i=0;i<maxEntities;i++){
         int id=createCircle(
             1+(float)rand()/RAND_MAX*(simBounds.size.x-2),
             1+(float)rand()/RAND_MAX*(simBounds.size.y-2),
@@ -26,12 +26,12 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         );
         state.vx[id]=i%5-2;
         state.vy[id]=i%5-2;
-    }*/
+    }
         
 
-    int id1=createCircle(5.f,5.f,1.f);
-    int id2=createCircle(5.f,2.f,1.f);
-    state.invmass[id2]=0.f;
+    //int id1=createCircle(5.f,5.f,1.f);
+    //int id2=createCircle(5.f,2.f,1.f);
+    //state.invmass[id2]=0.f;
 }
 
 int Collisions::createCircle(float x, float y, float r){
@@ -66,8 +66,8 @@ void Collisions::update(float dt){
     //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
     float KE=Systems::getKineticEnergy(state);
     float U=Systems::getGravitationalPotentialEnergySimple(state, gravity);
-    if(abs(KE+U-E)>0.001){
-        std::cout<<"ME changed by: "<<KE+U-E<<"\n";
+    if(abs(KE+U-E)>0.01){
+        std::cout<<"ME: "<<KE+U<<"\n";
         E=KE+U;
     }
 

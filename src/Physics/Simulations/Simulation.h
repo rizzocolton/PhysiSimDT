@@ -52,7 +52,7 @@ class Simulation{
         float E=0;
         
         float scaleFactor=100.f; //100 pixels = 1 meter
-        float timeFactor=10.f; //can be used to speed up or slow down the simulation
+        float timeFactor=1.f; //can be used to speed up or slow down the simulation
         float timeElapsed=0.f; //amount of time elapsed in sim
 
 
