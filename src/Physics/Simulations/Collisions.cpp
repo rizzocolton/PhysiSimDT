@@ -59,7 +59,7 @@ void Collisions::update(float dt){
     auto colE=std::chrono::steady_clock::now();
     //std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
 
-    Systems::BoundaryCollisions(state, boundsRestitution);
+    Systems::BoundaryCollisions(state, dt, boundsRestitution);
     
     
     auto end=std::chrono::steady_clock::now();

@@ -247,6 +247,8 @@ Realized that i was using the total difference in position to correct position, 
 
 Looks like boundary collision is being screwy now. I'm thinking of modifying it to use a "time in barrier" calculation.
 
+Fantastic results from using that method. Just need to watch out for particles spawning in the barrier... calculating a time inside barrier while already inside appears to give them infinite energy...
+
 # Performance
 
 All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels.
