@@ -57,13 +57,13 @@ void Collisions::update(float dt){
     auto colS=std::chrono::steady_clock::now();
     Systems::Collisions(state, dt, colRestitution);
     auto colE=std::chrono::steady_clock::now();
-    //std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
+    std::cout<<"Collisions Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(colE-colS).count()<<"us\n";
 
     Systems::BoundaryCollisions(state, dt, boundsRestitution);
     
     
     auto end=std::chrono::steady_clock::now();
-    std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
     
 
     timeElapsed+=abs(dt); //add the amount of time elapsed in this frame

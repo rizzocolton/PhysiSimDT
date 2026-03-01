@@ -31,7 +31,7 @@ int main(){
 
     // Load font with error checking
     sf::Font icelandFont;
-    if (!icelandFont.openFromFile("../assets/Iceland-Regular.ttf")) {
+    if (!icelandFont.openFromFile("assets/Iceland-Regular.ttf")) {
         std::cerr << "ERROR: Failed to load font from assets/Iceland-Regular.ttf" << std::endl;
         return 1;
     }
@@ -60,7 +60,7 @@ int main(){
                     1,    //cell size (in meters)
                     simSpace.getGlobalBounds(), //simulation bounds (in pixels, but will be converted to meters in the sim constructor)
                     switchSim, //lambda allowing switching to the menu
-                    10 //max entities
+                    50000 //max entities
                 );
                 break;
         }
@@ -85,7 +85,7 @@ int main(){
     sf::Clock fpsClock;
     sf::Clock deltaClock;
     
-    float fixedDT=1/1000.f;
+    float fixedDT=1/480.f;
     float accumulator=0;
 
     

@@ -290,10 +290,36 @@ SPATIAL HASHING IMPLEMENTED!!
 Now to test performance. Same situation as last time, just going to be mapping out more segments.
 
 All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels/cm.
-Collision and Boundary restitutions are 1, gravity is 0. Cell size on spatial hash is 10 pixels/cm (trying to account for not checking neighboring cells yet)
+Collision and Boundary restitutions are 1, gravity is 0. Cell size on spatial hash is 4 pixels/cm (twice the radius for minimal clipping)
 
 10 Objects:
-* Total Physics Update: ~
+* Total Physics Update: ~182 microseconds
+* Collision Check/Response: ~172 microseconds
+
+100 Objects: 
+* Total Physics Update: ~207 microseconds
+* Collision Check/Response: ~190 microseconds
+
+1k Objects:
+* Total Physics Update: ~222 microseconds
+* Collision Check/Response: ~210 microseconds
+
+10k Objects:
+* Total Physics Update: ~675 microseconds
+* Collision Check/Response: ~567 microseconds
+
+50k Objects:
+* Total Physics Update: ~3700 microseconds
+* Collision Check/Response: ~3100 microseconds
+
+Amazing progress! It's clear that the spatial map adds some overhead for lower population counts, especially with such a small cell size, but wow it really pays off at higher populations. 50k was so many objects on screen that they basically left no blank space in the simulation area. 
+
+
+# Further Optimizations
+
+I think the last thing I could possibly do to make this run even more absurdly quick is Hardware Acceleration. I'll be parallelizing and vectorizing loops to run SIMD and multi threaded in the CPU.
+
+
 
 
 ## Key features
