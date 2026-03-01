@@ -19,10 +19,17 @@ public:
     inline int getHash(float x, float y) const{
         int bucketX=static_cast<int>(x*conversionFactor);
         int bucketY=static_cast<int>(y*conversionFactor);
+
+        if (bucketX < 0) bucketX = 0;
+        else if (bucketX >= width) bucketX = width - 1;
+
+        if (bucketY < 0) bucketY = 0;
+        else if (bucketY >= height) bucketY = height - 1;
+
         return bucketX+bucketY*width;
     }  
 
-    SpatialHash(float cellSize, int width, int height, int maxEntities);
+    SpatialHash(float cellSize, int simWidth, int simHeight, int maxEntities);
 
     //this is so the compiler doesn't yell at me
     SpatialHash()=default;

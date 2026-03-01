@@ -1,8 +1,8 @@
 #include "SpatialHash.h"
 
 
-SpatialHash::SpatialHash(float cellSize, int width, int height, int maxEntities):
-     conversionFactor(1.f/cellSize),width(width),height(height){
+SpatialHash::SpatialHash(float cellSize, int simWidth, int simHeight, int maxEntities):
+     conversionFactor(1.f/cellSize),width(simWidth*conversionFactor+1),height(simHeight*conversionFactor+1){
 
         //reserving and filling appropriate space for each vector
         cellHead.resize(width*height,-1);

@@ -31,7 +31,7 @@ int main(){
 
     // Load font with error checking
     sf::Font icelandFont;
-    if (!icelandFont.openFromFile("assets/Iceland-Regular.ttf")) {
+    if (!icelandFont.openFromFile("../assets/Iceland-Regular.ttf")) {
         std::cerr << "ERROR: Failed to load font from assets/Iceland-Regular.ttf" << std::endl;
         return 1;
     }

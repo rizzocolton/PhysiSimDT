@@ -22,7 +22,7 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         int id=createCircle(
             0.3+(float)rand()/RAND_MAX*(simBounds.size.x-0.6),
             0.3+(float)rand()/RAND_MAX*(simBounds.size.y-0.6),
-            50.f*(1.f/scaleFactor)
+            2.f*(1.f/scaleFactor)
         );
         state.vx[id]=i%3-1;
         state.vy[id]=i%3-1;
@@ -63,13 +63,8 @@ void Collisions::update(float dt){
     
     
     auto end=std::chrono::steady_clock::now();
-    //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
-    float KE=Systems::getKineticEnergy(state);
-    float U=Systems::getGravitationalPotentialEnergySimple(state, gravity);
-    if(abs(KE+U-E)>0.01){
-        std::cout<<"ME: "<<KE+U<<"\n";
-        E=KE+U;
-    }
+    std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    
 
     timeElapsed+=abs(dt); //add the amount of time elapsed in this frame
 }
