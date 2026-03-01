@@ -312,12 +312,22 @@ Collision and Boundary restitutions are 1, gravity is 0. Cell size on spatial ha
 * Total Physics Update: ~3700 microseconds
 * Collision Check/Response: ~3100 microseconds
 
-Amazing progress! It's clear that the spatial map adds some overhead for lower population counts, especially with such a small cell size, but wow it really pays off at higher populations. 50k was so many objects on screen that they basically left no blank space in the simulation area. 
+Amazing progress! It's clear that the spatial map adds some overhead for lower population counts, especially with such a small cell size, but wow it really pays off at higher populations. 50k was so many objects on screen that they basically left no blank space in the simulation area. This is also a literal 10x improvement over the computation time of the previous version of PhysiSim, so some serious progress is being made!
 
 
 # Further Optimizations
 
-I think the last thing I could possibly do to make this run even more absurdly quick is Hardware Acceleration. I'll be parallelizing and vectorizing loops to run SIMD and multi threaded in the CPU.
+I think the last thing I could possibly do to make this run even more absurdly quick is Hardware Acceleration. I'll be vectorizing and parallelizing loops to run SIMD and multi threaded on the CPU.
+
+First I implemented Vectorization in the Movement Systems function. This should significantly speed it up.
+
+### Vectorization of Movement
+
+10k Objects:
+* Total Physics Update: ~625 microseconds
+* Movement: ~15 microseconds
+
+Great, so about a 50 microsecond improvement
 
 
 

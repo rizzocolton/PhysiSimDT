@@ -16,6 +16,7 @@ void Systems::GlobalGravity(PhysicsState& state, float gravity){
 }
 
 void Systems::Movement(PhysicsState& state, float dt){
+
     auto start=std::chrono::steady_clock::now();
     float* __restrict x=state.x.data();
     float* __restrict y=state.y.data();
@@ -51,7 +52,7 @@ void Systems::Movement(PhysicsState& state, float dt){
         vy[i]=vyHalf+0.5f*ay[i]*dt;
     }
     auto finish=std::chrono::steady_clock::now();
-    std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::microseconds>(finish-start).count()<<" us\n";
+    std::cout<<"Movement Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(finish-start).count()<<"us\n";
 }
 
 void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitution){
