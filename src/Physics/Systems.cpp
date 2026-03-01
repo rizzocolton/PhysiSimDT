@@ -37,26 +37,6 @@ void Systems::Movement(PhysicsState& state, float dt){
     }
 }
 
-void Systems::MovementIndividual(PhysicsState& state, int i, float dt){
-    //numerical integration using velocity Verlet method
-
-        //calculate velocity at half time step
-        float vxHalf=state.vx[i]+0.5f*state.ax[i]*dt; 
-        float vyHalf=state.vy[i]+0.5f*state.ay[i]*dt;
-
-        //update position using velocity at half time step
-        state.x[i]+=vxHalf*dt;
-        state.y[i]+=vyHalf*dt;
-
-        //update acceleration using new forces
-        state.ax[i]=state.fx[i]*state.invmass[i];
-        state.ay[i]=state.fy[i]*state.invmass[i];
-        
-        //update velocity using new acceleration
-        state.vx[i]=vxHalf+0.5f*state.ax[i]*dt;
-        state.vy[i]=vyHalf+0.5f*state.ay[i]*dt;
-}
-
 void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitution){
 
     for(int i=0;i<state.hasRadius.size();i++){
@@ -71,41 +51,39 @@ void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitutio
             state.x[pId]-=state.vx[pId]*tInWall;
             state.y[pId]-=state.vy[pId]*tInWall;
 
-            //figure out time remaining in frame
-            float tRemaining=dt-tInWall;
+            //then reset its velocity to what it was
+            state.vx[pId]-=state.ax[pId]*tInWall;
+            state.vy[pId]-=state.ay[pId]*tInWall;
 
             //flip appropriate v component
             state.vx[pId]=-state.vx[pId];
-
-            //progress remaining amount in frame
-            MovementIndividual(state,pId,tRemaining);
 
         }else if(state.radius[pId]>state.x[pId]){
             //out of left wall, similar logic follows
             float tInWall=abs((state.radius[pId]-state.x[pId])/(state.vx[pId]));
             state.x[pId]-=state.vx[pId]*tInWall;
             state.y[pId]-=state.vy[pId]*tInWall;
-            float tRemaining=dt-tInWall;
+            state.vx[pId]-=state.ax[pId]*tInWall;
+            state.vy[pId]-=state.ay[pId]*tInWall;
             state.vx[pId]=-state.vx[pId];
-            MovementIndividual(state,pId,tRemaining);
         }
         if(state.radius[pId]+state.y[pId]>state.maxy){
             //out of top wall, similar logic follows
             float tInWall=abs((state.radius[pId]+state.y[pId]-state.maxy)/(state.vy[pId]));
             state.x[pId]-=state.vx[pId]*tInWall;
             state.y[pId]-=state.vy[pId]*tInWall;
-            float tRemaining=dt-tInWall;
+            state.vx[pId]-=state.ax[pId]*tInWall;
+            state.vy[pId]-=state.ay[pId]*tInWall;
             state.vy[pId]=-state.vy[pId];
-            MovementIndividual(state,pId,tRemaining);
 
         }else if(state.radius[pId]>state.y[pId]){
             //out of bottom wall, similar logic follows
             float tInWall=abs((state.radius[pId]-state.y[pId])/(state.vy[pId]));
             state.x[pId]-=state.vx[pId]*tInWall;
             state.y[pId]-=state.vy[pId]*tInWall;
-            float tRemaining=dt-tInWall;
+            state.vx[pId]-=state.ax[pId]*tInWall;
+            state.vy[pId]-=state.ay[pId]*tInWall;
             state.vy[pId]=-state.vy[pId];
-            MovementIndividual(state,pId,tRemaining);
         }
     }
 
@@ -142,8 +120,8 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
                 //the correction should be diff-radius so we need to get radius vector
                 Vector2f r=radiusSum*n;
                 diff=diff-r;
-                float correctionPercentage1=totalInvInvMass*state.invmass[id2];
-                float correctionPercentage2=totalInvInvMass*state.invmass[id1];
+                float correctionPercentage1=totalInvInvMass*state.invmass[id1];
+                float correctionPercentage2=totalInvInvMass*state.invmass[id2];
                 state.x[id1]-=diff.x/2.f*correctionPercentage1;
                 state.y[id1]-=diff.y/2.f*correctionPercentage1;
                 state.x[id2]+=diff.x/2.f*correctionPercentage2;

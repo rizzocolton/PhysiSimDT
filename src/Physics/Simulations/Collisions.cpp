@@ -18,20 +18,20 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
         std::cerr << "ERROR in ObjectRenderer initialization: " << e.what() << std::endl;
     }
 
-    for(int i=0;i<maxEntities;i++){
+    /*for(int i=0;i<maxEntities;i++){
         int id=createCircle(
-            (float)rand()/RAND_MAX*simBounds.size.x,
-            (float)rand()/RAND_MAX*simBounds.size.y,
+            1+(float)rand()/RAND_MAX*(simBounds.size.x-2),
+            1+(float)rand()/RAND_MAX*(simBounds.size.y-2),
             10.f*(1.f/scaleFactor)
         );
         state.vx[id]=i%5-2;
         state.vy[id]=i%5-2;
-    }
+    }*/
         
 
-    //int id1=createCircle(5.f,5.f,1.f);
-    //int id2=createCircle(5.f,1.f,1.f);
-    //state.invmass[id2]=0.f;
+    int id1=createCircle(5.f,5.f,1.f);
+    int id2=createCircle(5.f,2.f,1.f);
+    state.invmass[id2]=0.f;
 }
 
 int Collisions::createCircle(float x, float y, float r){
@@ -71,7 +71,7 @@ void Collisions::update(float dt){
         E=KE+U;
     }
 
-    timeElapsed+=dt; //add the amount of time elapsed in this frame
+    timeElapsed+=abs(dt); //add the amount of time elapsed in this frame
 }
 
 void Collisions::draw(sf::RenderWindow& window){

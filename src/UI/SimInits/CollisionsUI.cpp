@@ -35,5 +35,19 @@ void Collisions::initUI(sf::Font& font){
     });
     UIElements.push_back(std::unique_ptr<Button>(startStop));
 
+    Button* rewindButton = new Button({345.f,100.f},{150.f,50.f},font);
+    rewindButton->setText(std::string("<<"));
+    rewindButton->setOnChange([this,rewindButton](){
+        if(this->timeFactor>0.f){
+            rewindButton->setText(">>");
+        }else{
+            rewindButton->setText("<<");
+        }
+        timeFactor=-timeFactor;
+    });
+    rewindButton->setLiveUpdate([this,rewindButton](){
+    });
+    UIElements.push_back(std::unique_ptr<Button>(rewindButton));
+
     
 }

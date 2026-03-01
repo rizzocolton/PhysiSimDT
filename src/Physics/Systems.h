@@ -13,8 +13,6 @@ struct Systems{
     static void GlobalGravity(PhysicsState& state, float gravity);
     //THE numerical integration step. Uses integration techniques to move objects based on force and velocity. Currently uses Verlet
     static void Movement(PhysicsState& state, float dt);
-    //A useful one for moving individual entities
-    static void MovementIndividual(PhysicsState& state, int particleId, float dt);
     //Checks for collisions with boundaries and applies appropriate response (velocity reversal and restitution)
     static void BoundaryCollisions(PhysicsState& state, float dt, float restitution);
     //Checks for collisions between objects and applies appropriate response based on restitution
