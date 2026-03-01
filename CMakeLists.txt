@@ -13,7 +13,7 @@ add_executable(PhysiSim
     src/UI/SimInits/CollisionsUI.cpp
     src/Physics/Simulations/Menu.cpp
     src/UI/SimInits/MenuUI.cpp
-    src/Physics/SpatialHashMap.cpp
+    src/Physics/SpatialHash.cpp
     src/UI/Button.cpp
     src/UI/Slider.cpp
     src/UI/Spinner.cpp

@@ -33,6 +33,7 @@ struct SpawnParams{
 
 class Simulation{
     public:
+        
          //Collection of physics objects in the simulation
         PhysicsState state;
         //Collection of UI elements

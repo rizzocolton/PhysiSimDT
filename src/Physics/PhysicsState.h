@@ -1,7 +1,8 @@
 #ifndef PHYSICSSTATE_H
 #define PHYSICSSTATE_H
 
-#include "SpatialHashMap.h"
+#include <vector>
+#include "SpatialHash.h"
 
 struct PhysicsState{
     //CORE KINEMATICS ALL OBJECTS MUST HAVE
@@ -22,7 +23,7 @@ struct PhysicsState{
     int population=0; //number of entities currently in the simulation, used for iterating over entities and spawning new ones
     int maxPopulation; //maximum number of entities allowed in the simulation, used to prevent spawning more entities than the vectors can handle
 
-    SpatialHashMap sm; //spatial map for efficient collision detection
+    SpatialHash sm; //spatial map for efficient collision detection
 
 
     //HELPER FUNCTIONS
@@ -38,7 +39,7 @@ struct PhysicsState{
         fx.reserve(maxEntities);
         fy.reserve(maxEntities);
         invmass.reserve(maxEntities);
-        sm=SpatialHashMap(maxEntities,maxx,maxy,5.f); //initial cell size of 5 meters, can be changed later with sm.setCellSize()
+        sm=SpatialHash(1.f,maxx,maxy,maxEntities); //initial cell size of 1 meter, can be changed later with sm.setCellSize()
         maxPopulation=maxEntities;
     }
 

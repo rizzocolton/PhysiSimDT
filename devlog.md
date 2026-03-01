@@ -251,6 +251,8 @@ Fantastic results from using that method. Just need to watch out for particles s
 
 After some finicking around with positional correction in both circle to circle and boundary collisions I appear to have energy conservation in systems with a few entities. However, there is a non-trivial build up in energy over time. About a hundreth of a joule every other frame. This is probably due to my mixing of continuous collision detections at the barriers with positional correction at circle-circle collisions. I do think this system is fine for now though as after decreasing my time step from 1/120 to 1/1000, I'm getting an energy gain rate of 0.2 J over 100 seconds, which is about 0.000002 Joules per frame which honestly isn't that bad.
 
+Only thing is, collisions that aren't perfectly elastic and that pile circles up generally tend to have explosive results... I'll be fixing this later, for now I want to focus on measuring performance.
+
 # Performance
 
 All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels.
@@ -280,6 +282,10 @@ Still, these numbers aren't awful... let's see what happens at 10k objects. This
 Yikes, that's a tenth of an actual second to go through that. Let's see how much we can improve this performance with some sort of spatial hashing.
 
 # Collision Detection/Response Algorithm Testing With Spatial Hashing
+
+using this article for inspiration on algorithm designL [article](https://www.researchgate.net/publication/228958917_Optimization_of_large-scale_real-time_simulations_by_spatial_hashing)
+
+
 
 
 ## Key features
