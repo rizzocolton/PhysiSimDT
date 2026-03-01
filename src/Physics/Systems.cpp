@@ -16,25 +16,42 @@ void Systems::GlobalGravity(PhysicsState& state, float gravity){
 }
 
 void Systems::Movement(PhysicsState& state, float dt){
-    for(int i=0; i<state.population; i++){
+    auto start=std::chrono::steady_clock::now();
+    float* __restrict x=state.x.data();
+    float* __restrict y=state.y.data();
+    float* __restrict vx=state.vx.data();
+    float* __restrict vy=state.vy.data();
+    float* __restrict ax=state.ax.data();
+    float* __restrict ay=state.ay.data();
+    float* __restrict fx=state.fx.data();
+    float* __restrict fy=state.fy.data();
+    float* __restrict invmass=state.invmass.data();
+
+    const int count=state.population;
+    
+    //this guy is too slow. setting up two diff versions bc of conditional with a base unoptimized one
+    //#pragma omp parallel for if(count>5000)
+    for(int i=0; i<count; i++){
         //numerical integration using velocity Verlet method
 
         //calculate velocity at half time step
-        float vxHalf=state.vx[i]+0.5f*state.ax[i]*dt; 
-        float vyHalf=state.vy[i]+0.5f*state.ay[i]*dt;
+        float vxHalf=vx[i]+0.5f*ax[i]*dt; 
+        float vyHalf=vy[i]+0.5f*ay[i]*dt;
 
         //update position using velocity at half time step
-        state.x[i]+=vxHalf*dt;
-        state.y[i]+=vyHalf*dt;
+        x[i]+=vxHalf*dt;
+        y[i]+=vyHalf*dt;
 
         //update acceleration using new forces
-        state.ax[i]=state.fx[i]*state.invmass[i];
-        state.ay[i]=state.fy[i]*state.invmass[i];
+        ax[i]=fx[i]*invmass[i];
+        ay[i]=fy[i]*invmass[i];
         
         //update velocity using new acceleration
-        state.vx[i]=vxHalf+0.5f*state.ax[i]*dt;
-        state.vy[i]=vyHalf+0.5f*state.ay[i]*dt;
+        vx[i]=vxHalf+0.5f*ax[i]*dt;
+        vy[i]=vyHalf+0.5f*ay[i]*dt;
     }
+    auto finish=std::chrono::steady_clock::now();
+    std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::microseconds>(finish-start).count()<<" us\n";
 }
 
 void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitution){
