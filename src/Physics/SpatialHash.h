@@ -2,14 +2,9 @@
 #define SPATIALHASH_H
 
 #include <vector>
-struct AABB{
-    float xMin,xMax;
-    float yMin,yMax;
-};
-
 
 class SpatialHash{
-private:
+public:
     float conversionFactor;
     int width;
     int height;
@@ -27,7 +22,6 @@ private:
         return bucketX+bucketY*width;
     }  
 
-public:
     SpatialHash(float cellSize, int width, int height, int maxEntities);
 
     //this is so the compiler doesn't yell at me
@@ -35,7 +29,7 @@ public:
 
     void clear();
 
-    void insert(int particleId, const AABB& bounds);
+    void insert(int particleId, float x, float y);
 
 };
 

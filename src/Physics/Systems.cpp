@@ -90,53 +90,69 @@ void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitutio
 }
 
 void Systems::Collisions(PhysicsState& state, float dt, float restitution){
+    //FIRST SPATIAL HASH NEEDS CLEARED AND REPOPULATED (just for circles for now)
+    state.sh.clear();
     for(int i=0; i<state.hasRadius.size();i++){
-        int id1=state.hasRadius[i];
-        for(int j=i+1; j<state.hasRadius.size();j++){
-            int id2=state.hasRadius[j];
-            
-            Vector2f p1{state.x[id1],state.y[id1]};
-            Vector2f p2{state.x[id2],state.y[id2]};
-            Vector2f diff=p2-p1;
-            float distSq=diff.magSq();
-            float radiusSum=state.radius[id1]+state.radius[id2];
+        int circleId=state.hasRadius[i];
+        state.sh.insert(circleId,state.x[circleId],state.y[circleId]);
+    }
 
-            if(distSq<radiusSum*radiusSum){ //if the distance between the centers of the circles is less than the sum of their radii, they are colliding
-                //helpful vector assignment of the relative velocity
-                Vector2f rv{state.vx[id1]-state.vx[id2],state.vy[id1]-state.vy[id2]};
-
-                //finding the unit normal coming pointing from circle one to two
-                Vector2f n=diff.normalize();
-
-                //finding v normal
-                float vnormal=rv.dot(n);
+    //for each cell
+    for(int i=0;i<state.sh.cellHead.size();i++){
+        int id1=state.sh.cellHead[i];
+        //while cell not empty
+        while(id1!=-1){
+            int id2=state.sh.nextEntity[id1];
+            //check if colliding with neighbor in cell
+            while(id2!=-1){
+                Vector2f p1{state.x[id1],state.y[id1]};
+                Vector2f p2{state.x[id2],state.y[id2]};
+                Vector2f diff=p2-p1;
+                float distSq=diff.magSq();
+                float radiusSum=state.radius[id1]+state.radius[id2];
+    
+                if(distSq<radiusSum*radiusSum){ //if the distance between the centers of the circles is less than the sum of their radii, they are colliding
+                    //helpful vector assignment of the relative velocity
+                    Vector2f rv{state.vx[id1]-state.vx[id2],state.vy[id1]-state.vy[id2]};
+    
+                    //finding the unit normal coming pointing from circle one to two
+                    Vector2f n=diff.normalize();
+    
+                    //finding v normal
+                    float vnormal=rv.dot(n);
+                    
+                    //correct each circles position weighted by their mass, mass variable will be useful for impulse as well
+                    float totalInvInvMass=1.f/(state.invmass[id1]+state.invmass[id2]);
+    
+                    //the correction should be radius-diff so we need to get radius vector
+                    Vector2f r=radiusSum*n;
+                    diff=r-diff;
+                    float correctionPercentage1=totalInvInvMass*state.invmass[id1];
+                    float correctionPercentage2=totalInvInvMass*state.invmass[id2];
+                    state.x[id1]-=diff.x*correctionPercentage1;
+                    state.y[id1]-=diff.y*correctionPercentage1;
+                    state.x[id2]+=diff.x*correctionPercentage2;
+                    state.y[id2]+=diff.y*correctionPercentage2;
+    
+                    //if circles are moving away from eachother, move on before calculating impulse
+                    if(vnormal<0.f){
+                        id2=state.sh.nextEntity[id2];
+                        continue;
+                    } 
                 
-                //correct each circles position weighted by their mass, mass variable will be useful for impulse as well
-                float totalInvInvMass=1.f/(state.invmass[id1]+state.invmass[id2]);
-
-                //the correction should be radius-diff so we need to get radius vector
-                Vector2f r=radiusSum*n;
-                diff=r-diff;
-                float correctionPercentage1=totalInvInvMass*state.invmass[id1];
-                float correctionPercentage2=totalInvInvMass*state.invmass[id2];
-                state.x[id1]-=diff.x*correctionPercentage1;
-                state.y[id1]-=diff.y*correctionPercentage1;
-                state.x[id2]+=diff.x*correctionPercentage2;
-                state.y[id2]+=diff.y*correctionPercentage2;
-
-                //if circles are moving away from eachother, move on before calculating impulse
-                if(vnormal<0.f) continue;
-            
-                //finding impulse magnitude
-                float J=-(1+restitution)*vnormal;
-                J*=totalInvInvMass;
-
-                //adding impulse to original velocities in state
-                state.vx[id1]+=J*n.x*state.invmass[id1];
-                state.vx[id2]-=J*n.x*state.invmass[id2];
-                state.vy[id1]+=J*n.y*state.invmass[id1];
-                state.vy[id2]-=J*n.y*state.invmass[id2];
+                    //finding impulse magnitude
+                    float J=-(1+restitution)*vnormal;
+                    J*=totalInvInvMass;
+    
+                    //adding impulse to original velocities in state
+                    state.vx[id1]+=J*n.x*state.invmass[id1];
+                    state.vx[id2]-=J*n.x*state.invmass[id2];
+                    state.vy[id1]+=J*n.y*state.invmass[id1];
+                    state.vy[id2]-=J*n.y*state.invmass[id2];
+                }
+                id2=state.sh.nextEntity[id2];
             }
+            id1=state.sh.nextEntity[id1];
         }
     }
 }

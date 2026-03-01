@@ -283,7 +283,7 @@ Yikes, that's a tenth of an actual second to go through that. Let's see how much
 
 # Collision Detection/Response Algorithm Testing With Spatial Hashing
 
-using this article for inspiration on algorithm designL [article](https://www.researchgate.net/publication/228958917_Optimization_of_large-scale_real-time_simulations_by_spatial_hashing)
+using this article for inspiration on algorithm design: [article](https://www.researchgate.net/publication/228958917_Optimization_of_large-scale_real-time_simulations_by_spatial_hashing)
 
 
 

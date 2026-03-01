@@ -23,7 +23,7 @@ struct PhysicsState{
     int population=0; //number of entities currently in the simulation, used for iterating over entities and spawning new ones
     int maxPopulation; //maximum number of entities allowed in the simulation, used to prevent spawning more entities than the vectors can handle
 
-    SpatialHash sm; //spatial map for efficient collision detection
+    SpatialHash sh; //spatial hash for efficient collision detection
 
 
     //HELPER FUNCTIONS
@@ -39,7 +39,7 @@ struct PhysicsState{
         fx.reserve(maxEntities);
         fy.reserve(maxEntities);
         invmass.reserve(maxEntities);
-        sm=SpatialHash(1.f,maxx,maxy,maxEntities); //initial cell size of 1 meter, can be changed later with sm.setCellSize()
+        sh=SpatialHash(5.f,maxx,maxy,maxEntities); //initial cell size of 5 meters, can be changed later with sm.setCellSize()
         maxPopulation=maxEntities;
     }
 
