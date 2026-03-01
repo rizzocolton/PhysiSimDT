@@ -4,8 +4,6 @@
 #include "PhysicsState.h"
 
 struct Systems{
-    //used for avoiding objects sinking into one another.
-    inline static const float BAUMGARTE_BETA=0.1f;
 
     //Makes all force States zero to prepare for new frame
     static void ZeroForces(PhysicsState& state);

@@ -99,7 +99,7 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
             Vector2f p2{state.x[id2],state.y[id2]};
             Vector2f diff=p2-p1;
             float distSq=diff.magSq();
-            float radiusSum=state.radius[i]+state.radius[j];
+            float radiusSum=state.radius[id1]+state.radius[id2];
 
             if(distSq<radiusSum*radiusSum){ //if the distance between the centers of the circles is less than the sum of their radii, they are colliding
                 //helpful vector assignment of the relative velocity
@@ -110,22 +110,22 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
 
                 //finding v normal
                 float vnormal=rv.dot(n);
-
-                //if circles are moving away from eachother, move on
-                if(vnormal<0.f) continue;
                 
                 //correct each circles position weighted by their mass, mass variable will be useful for impulse as well
                 float totalInvInvMass=1.f/(state.invmass[id1]+state.invmass[id2]);
 
-                //the correction should be diff-radius so we need to get radius vector
+                //the correction should be radius-diff so we need to get radius vector
                 Vector2f r=radiusSum*n;
-                diff=diff-r;
+                diff=r-diff;
                 float correctionPercentage1=totalInvInvMass*state.invmass[id1];
                 float correctionPercentage2=totalInvInvMass*state.invmass[id2];
-                state.x[id1]-=diff.x/2.f*correctionPercentage1;
-                state.y[id1]-=diff.y/2.f*correctionPercentage1;
-                state.x[id2]+=diff.x/2.f*correctionPercentage2;
-                state.y[id2]+=diff.y/2.f*correctionPercentage2;
+                state.x[id1]-=diff.x*correctionPercentage1;
+                state.y[id1]-=diff.y*correctionPercentage1;
+                state.x[id2]+=diff.x*correctionPercentage2;
+                state.y[id2]+=diff.y*correctionPercentage2;
+
+                //if circles are moving away from eachother, move on before calculating impulse
+                if(vnormal<0.f) continue;
             
                 //finding impulse magnitude
                 float J=-(1+restitution)*vnormal;

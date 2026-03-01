@@ -243,7 +243,7 @@ Less sinking but still seeing energy generation with many particles, investigati
 
 Realized that i had a error where i was pushing objects away by their total combined radii not just half of it.
 
-Realized that i was using the total difference in position to correct position, should've been using diff-radius. Now things look and behave much more predictably. Moving on to testing energy conservation in large groups again.
+Realized that i was using the total difference in position to correct position, should've been using radius-diff. Now things look and behave much more predictably. Moving on to testing energy conservation in large groups again.
 
 Looks like boundary collision is being screwy now. I'm thinking of modifying it to use a "time in barrier" calculation.
 
