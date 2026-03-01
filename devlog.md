@@ -237,13 +237,15 @@ Circle 2:
 
 No energy leak with this, everything seems stable...but lets try with a reduced collision restitution of .8
 
-There's sinking now. I think I'll try implementing Baumgarte Stablilization.
+There's sinking now. I think I'll try implementing a mass weighted position correction.
 
-#### Testing Baumgarte with same parameters
+Less sinking but still seeing energy generation with many particles, investigating boundary collision now.
 
-The object is gaining a lot of energy from collisions now... Im going to tweak more.
+Realized that i had a error where i was pushing objects away by their total combined radii not just half of it.
 
+Realized that i was using the total difference in position to correct position, should've been using diff-radius. Now things look and behave much more predictably. Moving on to testing energy conservation in large groups again.
 
+Looks like boundary collision is being screwy now. I'm thinking of modifying it to use a "time in barrier" calculation.
 
 # Performance
 
@@ -282,13 +284,23 @@ Entity Component System Design
 
 Velocity Verlet Integration
 
+Multi-Threading* & SIMD
+
+Conservation of Energy* & Momentum
+
+Spatial Hashing*
+
+*Tentative
+
 ## To Do
 
 Look into GJK distance/ SaT for polygons.
 
-Look into Continuous Collision Detection for collision checks.
+Look into Continuous Collision Detection for collision checks at high speeds.
 
-Look into Baumgarte Stabilization for stacked object impulses.
+Look into Baumgarte Stabilization for stacked object impulses. Not gonna work, need to use position correction
+
+Make sure core solver functions vectorize.
 
 Figure out how rotations work.
 

@@ -66,9 +66,10 @@ void Collisions::update(float dt){
     //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
     float KE=Systems::getKineticEnergy(state);
     float U=Systems::getGravitationalPotentialEnergySimple(state, gravity);
-    std::cout<<"KE: "<<KE<<"\n";
-    std::cout<<"U: "<<U<<"\n";
-    std::cout<<"ME: "<<U+KE<<"\n\n";
+    if(abs(KE+U-E)>0.001){
+        std::cout<<"ME changed by: "<<KE+U-E<<"\n";
+        E=KE+U;
+    }
 
     timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
