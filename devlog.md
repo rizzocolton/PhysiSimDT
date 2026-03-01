@@ -285,7 +285,15 @@ Yikes, that's a tenth of an actual second to go through that. Let's see how much
 
 using this article for inspiration on algorithm design: [article](https://www.researchgate.net/publication/228958917_Optimization_of_large-scale_real-time_simulations_by_spatial_hashing)
 
+SPATIAL HASHING IMPLEMENTED!!
 
+Now to test performance. Same situation as last time, just going to be mapping out more segments.
+
+All tests are done using randomly dispersed objects with random velocities and masses of 1 and radii of 2 pixels/cm.
+Collision and Boundary restitutions are 1, gravity is 0. Cell size on spatial hash is 10 pixels/cm (trying to account for not checking neighboring cells yet)
+
+10 Objects:
+* Total Physics Update: ~
 
 
 ## Key features

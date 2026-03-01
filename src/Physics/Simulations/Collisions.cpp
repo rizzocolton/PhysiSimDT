@@ -20,12 +20,12 @@ Collisions::Collisions(float gravity, float colRestitution, float boundsRestitut
 
     for(int i=0;i<maxEntities;i++){
         int id=createCircle(
-            1+(float)rand()/RAND_MAX*(simBounds.size.x-2),
-            1+(float)rand()/RAND_MAX*(simBounds.size.y-2),
-            10.f*(1.f/scaleFactor)
+            0.3+(float)rand()/RAND_MAX*(simBounds.size.x-0.6),
+            0.3+(float)rand()/RAND_MAX*(simBounds.size.y-0.6),
+            50.f*(1.f/scaleFactor)
         );
-        state.vx[id]=i%5-2;
-        state.vy[id]=i%5-2;
+        state.vx[id]=i%3-1;
+        state.vy[id]=i%3-1;
     }
         
 
@@ -85,11 +85,7 @@ void Collisions::draw(sf::RenderWindow& window){
     for(int i=0; i<state.hasRadius.size(); i++){
         int particleId=state.hasRadius[i];
         //generate color based on i
-        sf::Color iColor(
-            50+particleId*30/state.population, //R
-            50+particleId*20/state.population, //G
-            50+particleId*50/state.population  //B
-        );
+        sf::Color iColor(sf::Color::White);
         ObjectRenderer::addCircle(state.x[particleId], (simBounds.size.y-state.y[particleId]), state.radius[i], iColor, scaleFactor, simBounds.position.x, simBounds.position.y);
     }
     ObjectRenderer::draw(window);
