@@ -63,10 +63,10 @@ void Collisions::update(float dt){
     
     
     auto end=std::chrono::steady_clock::now();
-    //std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    std::cout<<"Physics Update Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(end-start).count()<<"us\n";
+    //std::cout<<"Energy: "<<Systems::getKineticEnergy(state)<<"\n";
     
-
-    timeElapsed+=abs(dt); //add the amount of time elapsed in this frame
+    timeElapsed+=dt; //add the amount of time elapsed in this frame
 }
 
 void Collisions::draw(sf::RenderWindow& window){

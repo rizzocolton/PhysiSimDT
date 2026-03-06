@@ -330,6 +330,35 @@ First I implemented Vectorization in the Movement Systems function. This should 
 Great, so about a 50 microsecond improvement
 
 
+## Linux Surprise
+
+I just tried porting this over to linux using GCC as the compiler instead and it somehow improved performance 3x???
+
+I'm redoing my performance benchmarks again to account for this switch. I was not expecting this much of a difference. Maybe GCC is able to use more optimizations in vectorizing other snippets than msvc did? Let me check energy cons real quick as i did enable fast math in the compiler in order to vectorize effectively.
+
+Wow. Energy conservation is perfect even for sims with 50k entities. 
+
+Looks like the optimizations specified in the CMakeLists are definitely suspect for this. After disabling march=native and ffast-math performance went from ~80 microseconds to ~320 microseconds for 1k objects.
+
+10 Objects:
+* Total Physics Update: ~66 microseconds
+* Collision Check/Response: ~
+100 Objects: 
+* Total Physics Update: ~68 microseconds
+* Collision Check/Response: ~
+1k Objects:
+* Total Physics Update: ~80 microseconds
+* Collision Check/Response: ~
+10k Objects:
+* Total Physics Update: ~300 microseconds
+* Collision Check/Response: ~
+50k Objects:
+* Total Physics Update: ~1760 microseconds
+* Collision Check/Response: ~
+100k Objects (Needed to shrink objects to 0.5 pixel radius to fit all in bounds): 
+* Total Physics Update: ~5140 microseconds
+* Collision Check/Response
+
 
 
 ## Key features

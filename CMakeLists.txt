@@ -42,9 +42,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     # For Linux / Mac / MinGW
     target_compile_options(PhysiSim PRIVATE 
-        -O3                       # Turn on maximum speed & auto-vectorization
+        -O3 -ffast-math       # Turn on maximum speed & auto-vectorization
         -fopt-info-vec-optimized  # Tell GCC/Clang to report successes
-        # -fopt-info-vec-missed   # (Optional) Uncomment to see what FAILED to vectorize
+        #-fopt-info-vec-missed   # (Optional) Uncomment to see what FAILED to vectorize
+        -march=native
     )
 endif()
 
