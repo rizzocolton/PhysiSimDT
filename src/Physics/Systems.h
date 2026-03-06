@@ -1,6 +1,7 @@
 #ifndef SYSTEMS_H
 #define SYSTEMS_H
 
+#include <cmath>
 #include "PhysicsState.h"
 
 struct Systems{

@@ -2,9 +2,19 @@ cmake_minimum_required(VERSION 3.21)
 project(PhysiSim)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG        3.0.0
+)
 find_package(OpenMP REQUIRED)
+
+FetchContent_MakeAvailable(SFML)
 
 add_executable(PhysiSim 
     src/main.cpp
@@ -20,7 +30,7 @@ add_executable(PhysiSim
     src/UI/Spinner.cpp
     src/UI/Label.cpp
 )
-target_link_libraries(PhysiSim SFML::Graphics SFML::Window SFML::System OpenMP::OpenMP_CXX)
+target_link_libraries(PhysiSim PRIVATE OpenMP::OpenMP_CXX sfml-graphics sfml-window sfml-system)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

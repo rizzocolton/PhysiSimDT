@@ -24,10 +24,8 @@ void Button::rotateText(float angle){
 }
 
 void Button::handleEvent(const sf::Event& event){
-    sf::Vector2i mousePos=sf::Mouse::getPosition();
-    bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-
-    if(event.getIf<sf::Event::MouseMoved>()){
+    if(const auto* mouseMoved = event.getIf<sf::Event::MouseMoved>()){
+        sf::Vector2i mousePos = mouseMoved->position;
         if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
            mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
             state=ButtonState::Hovered;
@@ -36,7 +34,8 @@ void Button::handleEvent(const sf::Event& event){
         }
     }
 
-    if(event.getIf<sf::Event::MouseButtonPressed>()){
+    if(const auto* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()){
+        sf::Vector2i mousePos = mousePressed->position;
         if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
            mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
             state=ButtonState::Pressed;
@@ -44,8 +43,9 @@ void Button::handleEvent(const sf::Event& event){
         }
     }
 
-    if(event.getIf<sf::Event::MouseButtonReleased>()){
+    if(const auto* mouseReleased = event.getIf<sf::Event::MouseButtonReleased>()){
         if(state==ButtonState::Pressed){
+            sf::Vector2i mousePos = mouseReleased->position;
             if(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
                mousePos.y>=pos.y && mousePos.y<=pos.y+size.y){
                 state=ButtonState::Hovered;

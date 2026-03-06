@@ -35,16 +35,17 @@ void Slider::setRange(float min, float max){
 }
 
 void Slider::handleEvent(const sf::Event& event){
-    sf::Vector2i mousePos=sf::Mouse::getPosition();
-    bool mousePressed=sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-    bool isInside=(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
-                   mousePos.y>=pos.y && mousePos.y<=pos.y+size.y);
+    if(const auto* mouseMoved = event.getIf<sf::Event::MouseMoved>()){
+        sf::Vector2i mousePos = mouseMoved->position;
+        bool isInside=(mousePos.x>=pos.x && mousePos.x<=pos.x+size.x &&
+                       mousePos.y>=pos.y && mousePos.y<=pos.y+size.y);
 
-    if(isInside&&mousePressed){
-        float percent=(mousePos.x - pos.x)/size.x;
-        float value=minValue+percent*(maxValue - minValue);
-        setValue(value);
-        runOnChange();
+        if(isInside && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
+            float percent=(mousePos.x - pos.x)/size.x;
+            float value=minValue+percent*(maxValue - minValue);
+            setValue(value);
+            runOnChange();
+        }
     }
 }
 

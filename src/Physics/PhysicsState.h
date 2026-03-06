@@ -2,6 +2,7 @@
 #define PHYSICSSTATE_H
 
 #include <vector>
+#include <cmath>
 #include "SpatialHash.h"
 
 struct PhysicsState{
