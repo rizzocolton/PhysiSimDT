@@ -58,54 +58,49 @@ void Systems::Movement(PhysicsState& state, float dt){
 
 void Systems::BoundaryCollisions(PhysicsState& state, float dt, float restitution){
 
-    for(int i=0;i<state.hasRadius.size();i++){
-        int pId=state.hasRadius[i];
-        if(state.radius[pId]+state.x[pId]>state.maxx){
-            //out of right wall
-            
-            //first calculate time in wall
-            float tInWall=abs((state.radius[pId]+state.x[pId]-state.maxx)/(state.vx[pId]));
 
-            //then push object back to where it collided
-            state.x[pId]-=state.vx[pId]*tInWall;
-            state.y[pId]-=state.vy[pId]*tInWall;
+    auto start=std::chrono::steady_clock::now();
+    float* __restrict x=state.x.data();
+    float* __restrict y=state.y.data();
+    float* __restrict vx=state.vx.data();
+    float* __restrict vy=state.vy.data();
+    float* __restrict ax=state.ax.data();
+    float* __restrict ay=state.ay.data();
+    int* __restrict hasRadius=state.hasRadius.data();
+    float* __restrict radius=state.radius.data();
 
-            //then reset its velocity to what it was
-            state.vx[pId]-=state.ax[pId]*tInWall;
-            state.vy[pId]-=state.ay[pId]*tInWall;
+    const int count=state.population;
+    const int xBound=state.maxx;
+    const int yBound=state.maxy;
 
-            //flip appropriate v component
-            state.vx[pId]=-state.vx[pId];
+    #pragma omp simd
+    for(int i=0; i<count; i++){
+        float right=std::max(radius[i]+x[i]-xBound,0.f);
+        float left=std::max(radius[i]-x[i],0.f);
+        float top=std::max(radius[i]-y[i],0.f);
+        float bottom=std::max(radius[i]+y[i]-yBound,0.f);
 
-        }else if(state.radius[pId]>state.x[pId]){
-            //out of left wall, similar logic follows
-            float tInWall=abs((state.radius[pId]-state.x[pId])/(state.vx[pId]));
-            state.x[pId]-=state.vx[pId]*tInWall;
-            state.y[pId]-=state.vy[pId]*tInWall;
-            state.vx[pId]-=state.ax[pId]*tInWall;
-            state.vy[pId]-=state.ay[pId]*tInWall;
-            state.vx[pId]=-state.vx[pId];
-        }
-        if(state.radius[pId]+state.y[pId]>state.maxy){
-            //out of top wall, similar logic follows
-            float tInWall=abs((state.radius[pId]+state.y[pId]-state.maxy)/(state.vy[pId]));
-            state.x[pId]-=state.vx[pId]*tInWall;
-            state.y[pId]-=state.vy[pId]*tInWall;
-            state.vx[pId]-=state.ax[pId]*tInWall;
-            state.vy[pId]-=state.ay[pId]*tInWall;
-            state.vy[pId]=-state.vy[pId];
+        float penetration=std::max(std::max(right,left),std::max(top,bottom));
 
-        }else if(state.radius[pId]>state.y[pId]){
-            //out of bottom wall, similar logic follows
-            float tInWall=abs((state.radius[pId]-state.y[pId])/(state.vy[pId]));
-            state.x[pId]-=state.vx[pId]*tInWall;
-            state.y[pId]-=state.vy[pId]*tInWall;
-            state.vx[pId]-=state.ax[pId]*tInWall;
-            state.vy[pId]-=state.ay[pId]*tInWall;
-            state.vy[pId]=-state.vy[pId];
+        if(penetration!=0){
+            //if penetration is greater than zero, t in wall is >0 and calculates time in wall, else =0
+            float tInWall=std::abs(penetration/vx[i]);
+            //push back object to where it collided (if t!=0)
+            x[i]-=vx[i]*tInWall;
+            y[i]-=vy[i]*tInWall;
+            //reset its velcity to what it was before (if t!=0)
+            vx[i]-=ax[i]*tInWall;
+            vy[i]-=ay[i]*tInWall;
+            //need something that is zero only when penetration!=0 but 2 when right=0
+            //if right or left is not zero, this will flip the x-velocity
+            vx[i]-=(right>0|left>0)*2*vx[i];
+            //if bottom or top is not zero, this will flip the y-velocity
+            vy[i]-=(top>0|bottom>0)*2*vy[i];
         }
     }
 
+    auto finish=std::chrono::steady_clock::now();
+    //std::cout<<"Bounds Col Took: "<<std::chrono::duration_cast<std::chrono::microseconds>(finish-start).count()<<"us\n";
 }
 
 void Systems::Collisions(PhysicsState& state, float dt, float restitution){
@@ -163,6 +158,7 @@ void Systems::Collisions(PhysicsState& state, float dt, float restitution){
     int gridWidth = state.sh.width;
     int gridHeight = state.sh.height;
 
+    
     for(int y=0;y<gridHeight;y++){
         for(int x=0;x<gridWidth;x++){
             int cellIndex=x+(y*gridWidth);

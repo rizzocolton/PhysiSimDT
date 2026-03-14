@@ -343,22 +343,44 @@ Looks like the optimizations specified in the CMakeLists are definitely suspect 
 10 Objects:
 * Total Physics Update: ~66 microseconds
 * Collision Check/Response: ~
+
 100 Objects: 
 * Total Physics Update: ~68 microseconds
 * Collision Check/Response: ~
+
 1k Objects:
 * Total Physics Update: ~80 microseconds
 * Collision Check/Response: ~
+
 10k Objects:
 * Total Physics Update: ~300 microseconds
 * Collision Check/Response: ~
+
 50k Objects:
 * Total Physics Update: ~1760 microseconds
 * Collision Check/Response: ~
+
 100k Objects (Needed to shrink objects to 0.5 pixel radius to fit all in bounds): 
 * Total Physics Update: ~5140 microseconds
 * Collision Check/Response
 
+### Vectorization of Boundary Checks
+
+Before at 100k objects:
+
+Boundary Check: ~130 microseconds
+
+After:
+
+Boundary Check: ~180 microseconds...
+
+Not able to do vectorization, even with minimal conditionals. I'm pretty sure its due to the fact that im having to chase around indices with hasRadius and radius vectors. I'll just change it to go over all elements given that they're all circles for now
+
+After:
+
+Boundary Check: ~30 microseconds
+
+Great! 100 microsecond improvement is nothing to scoff at!
 
 
 ## Key features
